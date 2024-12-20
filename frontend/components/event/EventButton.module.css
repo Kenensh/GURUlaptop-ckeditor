@@ -1,0 +1,25 @@
+.btnEvent {
+  background: hsla(280, 86%, 25%, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.625rem 1.25rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  border-radius: 16px;
+  transition: all 0.3s ease;
+}
+
+.btnEvent:hover,
+.btnEvent:focus {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.wrapper {
+  display: flex;
+}
+
+.button {
+  margin: auto;
+}

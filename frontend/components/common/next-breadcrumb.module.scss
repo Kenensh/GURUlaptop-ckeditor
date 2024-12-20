@@ -1,0 +1,77 @@
+// 基本樣式設定
+.breadcrumb-chevron {
+  margin-top: -40px;
+  background-color: transparent !important;
+
+  // 移除 Bootstrap 預設的分隔符
+  :global(.breadcrumb-item + .breadcrumb-item::before) {
+    content: '' !important;
+    display: none !important;
+  }
+
+  // 麵包屑項目基本樣式
+  :global(.breadcrumb-item) {
+    display: flex;
+    align-items: center;
+    color: #9333ea !important;
+
+    // 新增分隔符
+    &:not(:last-child)::after {
+      content: '/' !important;
+      margin: 0 0.5rem !important;
+      color: #9333ea !important;
+    }
+
+    // 連結樣式
+    a {
+      color: #9333ea !important;
+      text-decoration: none !important;
+      display: flex;
+      align-items: center;
+
+      &:hover {
+        opacity: 0.7;
+      }
+    }
+
+    svg {
+      color: #9333ea !important;
+    }
+  }
+
+  // 當前頁樣式
+  :global(.breadcrumb-item.active) {
+    pointer-events: none !important;
+    user-select: none !important;
+    opacity: 0.8;
+
+    .breadcrumb-text {
+      color: #9333ea !important;
+      pointer-events: none !important;
+      cursor: default !important;
+      user-select: none !important;
+    }
+  }
+}
+
+// Light 版本
+:global(.text-light) .breadcrumb-chevron {
+  :global(.breadcrumb-item),
+  :global(.breadcrumb-item::after),
+  :global(.breadcrumb-item.active .breadcrumb-text),
+  a,
+  svg {
+    color: #fff !important;
+  }
+}
+
+// Static 版本
+:global(.link-body-emphasis) .breadcrumb-chevron {
+  :global(.breadcrumb-item),
+  :global(.breadcrumb-item::after),
+  :global(.breadcrumb-item.active .breadcrumb-text),
+  a,
+  svg {
+    color: inherit !important;
+  }
+}

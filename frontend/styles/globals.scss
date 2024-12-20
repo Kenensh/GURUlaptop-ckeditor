@@ -1,0 +1,167 @@
+// 檔案位置: styles/global.scss
+// 變數覆蓋用 (Variable overrides)
+// bs5內建圖示字體
+// 如果有使用其它圖示字體可以註解不使用
+@import '~bootstrap-icons/font/bootstrap-icons';
+
+// google Noto Sans TC 字體
+@import 'https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500&display=swap';
+// 全站配色 colors
+$primary: #805af5;
+// $secondary: #f06ce380;
+$secondary: #b4b4b4;
+$success: #457db2;
+$danger: #ffeb36;
+
+$main-color: #805af5;
+
+// 漸層
+$linear_1: linear-gradient(180deg, #9474f7 0%, #573da7 100%);
+$linear_2: linear-gradientlinear-gradient(180deg, #8770fd 0%, #5848b3 100%);
+$linear_3: linear-gradient(180deg, #a793e9 0%, #423db0 50%, #2e256a 100%);
+$linear_4: linear-gradient(180deg, #a660d7 0%, #5b35aa 50%, #281c72 100%);
+$linear_5: linear-gradient(180deg, #6552c6 0%, #1d1a64 50%, #00013a 100%);
+$linear_6: linear-gradient(270deg, #8678c9 0%, #00013a 49%, #00013a 100%);
+$linear_7: linear-gradient(
+  270deg,
+  #a793e9 0%,
+  #5346b6 35%,
+  #34246d 70%,
+  #271948 100%
+);
+$linear_8: linear-gradient(
+  316deg,
+  #05050a 54.58%,
+  #150928 61.63%,
+  #1b1956 74.08%,
+  #402bb0 90.06%,
+  #765bd6 101.57%
+);
+$linear_9: linear-gradient(270deg, #cf8ffc 0%, #5b35aa 50%, #281c72 100%);
+$linear-10: linear-gradient(180deg, #cf8ffc -14.1%, #5b35aa 115.38%);
+
+// 字體大小
+$font_style_1: (
+  font-size: 100px,
+  font-weight: 400,
+  letter-spacing: 20px,
+);
+$font_style_2: (
+  font-size: 96px,
+  font-weight: 400,
+  letter-spacing: 20px,
+);
+$font_style_3: (
+  font-size: 64px,
+  font-weight: 400,
+  letter-spacing: 20px,
+);
+$font_style_4: (
+  font-size: 48px,
+  font-weight: 400,
+  letter-spacing: 20px,
+);
+$font_style_5: (
+  font-size: 36px,
+  font-weight: 400,
+  letter-spacing: 20px,
+);
+$font_style_6: (
+  font-size: 30px,
+  font-weight: 400,
+  letter-spacing: 20px,
+);
+$font_style_7: (
+  font-size: 24px,
+  font-weight: 400,
+  letter-spacing: 20px,
+);
+$font_style_8: (
+  font-size: 20px,
+  font-weight: 400,
+  letter-spacing: 20px,
+);
+$font_style_9: (
+  font-size: 16px,
+  font-weight: 400,
+  letter-spacing: 20px,
+);
+$font_style_10: (
+  font-size: 14px,
+  font-weight: 400,
+  letter-spacing: 20px,
+);
+
+// 按鈕圓角邊 button radius
+$border-radius: 0.2em;
+$border-radius-sm: 0.2em;
+$border-radius-lg: 0.2em;
+
+// 固定card高度
+// https://getbootstrap.com/docs/5.3/components/card/#grid-cards
+$card-height: 100%;
+
+// ↑↑↑  變數覆蓋(Variable overrides) 要寫在這行"上面"  ↑↑↑
+// 這裡導入所有 bootstrap 樣式
+// 最後營運階段(實務)可以用部份導入來進行最佳化
+// 參考: https://getbootstrap.com/docs/5.3/customize/sass/#importing
+@import '~bootstrap/scss/bootstrap';
+// ↓↓↓  其它客製樣式要寫在這行的"下面" ↓↓↓
+.me-7 {
+  margin-right: 7rem;
+}
+
+.bg-main {
+  background: linear-gradient(
+    333deg,
+    #6835a6 9.79%,
+    #150928 27.32%,
+    #000 49.97%,
+    #1b1956 72.85%,
+    #402bb0 86.53%,
+    #d0bcff 98.34%
+  );
+  backdrop-filter: blur(10px) brightness(100%);
+}
+
+// fixed for __next root div
+#__next {
+  flex-direction: column;
+  height: 100%;
+  display: flex;
+}
+
+main > .container {
+  padding: 60px 15px 0;
+}
+
+body {
+  font-family: 'Noto Sans TC Regular', Helvetica, Arial, 'PingFang TC',
+    '苹方-繁', 'Heiti TC', '黑體-繁', 'Microsoft JhengHei', '微軟正黑體',
+    // Cross-platform generic font family (default user interface font)
+    system-ui,
+    // Safari for macOS and iOS (San Francisco)
+    -apple-system,
+    // Windows
+    'Segoe UI',
+    // Android
+    Roboto,
+    // Basic web fallback
+    'Helvetica Neue',
+    Arial,
+    // Linux
+    'Noto Sans',
+    'Liberation Sans',
+    // Sans serif fallback
+    sans-serif,
+    // Emoji fonts
+    'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+.form-member {
+  max-width: 330px;
+  padding: 1rem;
+}
+
+// below is test only
