@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Swal from 'sweetalert2'
-import { useAuth, logout, setAuth } from '@/hooks/use-auth'
+import { useAuth } from '@/hooks/use-auth'
 import axios from 'axios'
 import { taiwanData } from '@/data/address/data.js'
 import styles from '@/styles/dashboard.module.scss'
@@ -8,7 +8,7 @@ import styles from '@/styles/dashboard.module.scss'
 export default function UserProfile() {
   const { auth, setAuth, logout } = useAuth()
   const user_id = auth?.userData?.user_id
- 
+
   const [editableUser, setEditableUser] = useState({
     name: '',
     gender: '',
@@ -26,22 +26,11 @@ export default function UserProfile() {
     valid: 1,
   })
 
-  const [profilePic, setProfilePic] = useState(
-    editableUser.image_path || 
-  (editableUser.gender === 'male' 
-    ? 'signup_login/undraw_profile_2.svg'
-    : editableUser.gender === 'female'
-    ? 'signup_login/undraw_profile_1.svg'
-    : '/Vector.svg')
-  )
+  const [profilePic, setProfilePic] = useState('/Vector.svg')
   const [uploadStatus, setUploadStatus] = useState('')
-  // 沒有寫就是false
   const [selectedImg, setSelectedImg] = useState(null)
-
-  //裡面要放什麼
   const [districts, setDistricts] = useState([])
   const [roads, setRoads] = useState([])
-  // 欄位是否要開放
   const [isDistrictDisabled, setIsDistrictDisabled] = useState(true)
   const [isRoadDisabled, setIsRoadDisabled] = useState(true)
 
@@ -80,6 +69,86 @@ export default function UserProfile() {
     ],
   }
 
+  // Initial Data Fetch
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (!user_id) return
+
+        const response = await axios.get(
+          `http://localhost:3005/api/dashboard/${user_id}`
+        )
+
+        if (response.data?.status === 'success' && response.data?.data?.user) {
+          const userData = response.data.data.user
+
+          setEditableUser((prev) => ({
+            ...prev,
+            name: userData?.name || '',
+            gender: userData?.gender || '',
+            birthdate: userData?.birthdate || '',
+            phone: userData?.phone || '',
+            country: userData?.country || '',
+            city: userData?.city || '',
+            district: userData?.district || '',
+            road_name: userData?.road_name || '',
+            detailed_address: userData?.detailed_address || '',
+            image_path: userData?.image_path || '',
+            remarks: userData?.remarks || '',
+            valid: userData?.valid ?? 1,
+            email: userData?.email || '',
+          }))
+
+          // 設置頭像
+          if (userData?.image_path) {
+            setProfilePic(userData.image_path)
+          }
+
+          // 處理地址相關設定
+          if (userData?.country === '台灣') {
+            setIsDistrictDisabled(false)
+            const selectedCity = taiwanData.find(
+              (city) => city.CityName === userData?.city
+            )
+
+            if (selectedCity) {
+              setDistricts(selectedCity.AreaList)
+              const selectedArea = selectedCity.AreaList.find(
+                (area) => area.AreaName === userData?.district
+              )
+
+              if (selectedArea?.RoadList) {
+                setRoads(selectedArea.RoadList)
+                setIsRoadDisabled(false)
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.error('無法獲取資料:', error)
+        Swal.fire('錯誤', '獲取用戶資料失敗', 'error')
+      }
+    }
+
+    fetchData()
+  }, [user_id])
+
+  // Profile Picture Update
+  useEffect(() => {
+    if (editableUser.image_path) {
+      setProfilePic(editableUser.image_path)
+    } else {
+      setProfilePic(
+        editableUser.gender === 'male'
+          ? '/signup_login/undraw_profile_2.svg'
+          : editableUser.gender === 'female'
+          ? '/signup_login/undraw_profile_1.svg'
+          : '/Vector.svg'
+      )
+    }
+  }, [editableUser.gender, editableUser.image_path])
+
+  // Event Handlers
   const handleCountryChange = (e) => {
     const { name, value } = e.target
     setEditableUser((prev) => ({
@@ -108,9 +177,9 @@ export default function UserProfile() {
       district: '',
       road_name: '',
     }))
-    console.log(value)
+
     const selectedCity = taiwanData.find((city) => city.CityName === value)
-    console.log(selectedCity)
+
     if (selectedCity) {
       setDistricts(selectedCity.AreaList)
       setIsDistrictDisabled(false)
@@ -133,11 +202,12 @@ export default function UserProfile() {
     const selectedCity = taiwanData.find(
       (city) => city.CityName === editableUser.city
     )
+
     if (selectedCity) {
       const selectedArea = selectedCity.AreaList.find(
         (area) => area.AreaName === value
       )
-      if (selectedArea && selectedArea.RoadList) {
+      if (selectedArea?.RoadList) {
         setRoads(selectedArea.RoadList)
         setIsRoadDisabled(false)
       } else {
@@ -154,151 +224,63 @@ export default function UserProfile() {
       [name]: value,
     }))
   }
-// userInfoEdit.js
-useEffect(() => {
-  setProfilePic(
-    editableUser.image_path || 
-    (editableUser.gender === 'male' 
-      ? 'signup_login/undraw_profile_2.svg'
-      : editableUser.gender === 'female'
-      ? 'signup_login/undraw_profile_1.svg'
-      : '/Vector.svg')
-  )
-}, [editableUser.gender, editableUser.image_path]) // 加入相依性
-
-  useEffect(() => {
-    const user_id = auth?.userData?.user_id
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:3005/api/dashboard/${user_id}`
-        )
-
-        if (response.data.status === 'success') {
-          // userData原本是鉤子拿的 在axios之後覆蓋掉了，變成userData是從資料庫拿的
-          const userData = response.data.data.user
-          setEditableUser({
-            name: userData.name || '',
-            gender: userData.gender || '',
-            // password: userData.password || ' ',
-            birthdate: userData.birthdate || '',
-            phone: userData.phone || '',
-            country: userData.country || '',
-            city: userData.city || '',
-            district: userData.district || '',
-            road_name: userData.road_name || '',
-            detailed_address: userData.detailed_address || '',
-            image_path: userData.image_path || '',
-            remarks: userData.remarks || '',
-            valid: userData.valid ?? 1,
-            email: userData.email || '',
-          })
-
-          // 如果國家是台灣，啟用地址選擇
-          if (userData.country === '台灣') {
-            setIsDistrictDisabled(false)
-
-            // 如果有城市數據，設置區域列表
-            const selectedCity = taiwanData.find(
-              (city) => city.CityName === userData.city
-            )
-            if (selectedCity) {
-              setDistricts(selectedCity.AreaList)
-
-              // 如果有區域數據，設置路名列表
-              const selectedArea = selectedCity.AreaList.find(
-                (area) => area.AreaName === userData.district
-              )
-              if (selectedArea && selectedArea.RoadList) {
-                setRoads(selectedArea.RoadList)
-                setIsRoadDisabled(false)
-              }
-            }
-          }
-
-          if (userData.image_path) {
-            setProfilePic(userData.image_path)
-          }
-        }
-      } catch (error) {
-        console.error('無法獲取資料:', error)
-        Swal.fire('錯誤', '獲取用戶資料失敗', 'error')
-      }
-    }
-    if (auth.userData?.user_id) {
-      fetchData()
-    } else {
-      console.error('user_id 不存在')
-    }
-  }, [user_id])
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
-    console.log('輸入值型別:', typeof value) // 檢查型別
-    console.log('輸入值:', value) // 檢查值
+
     setEditableUser((prev) => ({
       ...prev,
       [name]: value,
     }))
 
-      // 當性別欄位改變時，且使用者沒有上傳過圖片時才更新預設頭貼
-      // 變更下拉式選單沒有改變預設圖片可能是因為原本就有存圖了
-      if (name === 'gender' && !editableUser.image_path) {
-        let defaultProfilePic;
-        switch (value) {
-          case 'female':
-            defaultProfilePic = '/signup_login/undraw_profile_1.svg';
-            break;
-          case 'male':
-            defaultProfilePic = '/signup_login/undraw_profile_2.svg';
-            break;
-          default:
-            defaultProfilePic = '/Vector.svg';
-        }
-        setProfilePic(defaultProfilePic);
-        setSelectedImg(defaultProfilePic);      
-    };
-     // 當性別欄位改變時，同時更新 auth 中的 userData
-  if (name === 'gender') {
-    setAuth((prev) => ({
-      ...prev,
-      userData: {
-        ...prev.userData,
-        gender: value
-      }
-    }))
-  }
+    if (name === 'gender' && !editableUser.image_path) {
+      const defaultProfilePic =
+        value === 'female'
+          ? '/signup_login/undraw_profile_1.svg'
+          : value === 'male'
+          ? '/signup_login/undraw_profile_2.svg'
+          : '/Vector.svg'
+
+      setProfilePic(defaultProfilePic)
+      setSelectedImg(defaultProfilePic)
+
+      setAuth((prev) => ({
+        ...prev,
+        userData: {
+          ...prev.userData,
+          gender: value,
+        },
+      }))
+    }
   }
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0]
-    // 類似陣列特性的物件
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        Swal.fire('錯誤', '檔案不能超過5MB', 'error')
-        return
-      }
+    const file = e.target.files?.[0]
+    if (!file) return
 
-      if (!file.type.startsWith('image/')) {
-        // 這是檢查 MIME type，所有圖片文件的 MIME type 都是以 "image/" 開頭的
-        Swal.fire('錯誤', '請上傳圖片檔案', 'error')
-        return
-      }
-
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setSelectedImg(reader.result)
-        setProfilePic(reader.result)
-        // 將 base64 圖片數據存儲到 editableUser 的 image_path 中
-        setEditableUser((prev) => ({
-          ...prev,
-          image_path: reader.result,
-        }))
-      }
-      reader.readAsDataURL(file)
+    if (file.size > 5 * 1024 * 1024) {
+      Swal.fire('錯誤', '檔案不能超過5MB', 'error')
+      return
     }
+
+    if (!file.type.startsWith('image/')) {
+      Swal.fire('錯誤', '請上傳圖片檔案', 'error')
+      return
+    }
+
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      const result = reader.result
+      setSelectedImg(result)
+      setProfilePic(result)
+      setEditableUser((prev) => ({
+        ...prev,
+        image_path: result,
+      }))
+    }
+    reader.readAsDataURL(file)
   }
-  // 更新使用者資料
+
   const handleSubmit = async (e) => {
     e.preventDefault()
 
@@ -307,18 +289,14 @@ useEffect(() => {
         Swal.fire('錯誤', '請填寫名稱', 'error')
         return
       }
-      const dataToSubmit = {
-        ...editableUser,
-        // email: auth?.userData?.email || editableUser.email,
-        // 確保有 email, email已經改成純顯示了所以之前的editableUser裡面的email應該要刪掉
-      }
-      delete dataToSubmit.password // 移除 password 欄位
-      delete dataToSubmit.currentPassword // 移除 currentPassword 欄位
-      delete dataToSubmit.newPassword // 移除 newPassword 欄位
+
+      const dataToSubmit = { ...editableUser }
+      delete dataToSubmit.password
+      delete dataToSubmit.currentPassword
+      delete dataToSubmit.newPassword
 
       const response = await axios.put(
         `http://localhost:3005/api/dashboard/${user_id}`,
-        // editableUser
         dataToSubmit
       )
 
@@ -326,16 +304,12 @@ useEffect(() => {
         Swal.fire('成功', '用戶資料更新成功', 'success')
         setAuth((prev) => ({
           ...prev,
-          userData: { 
+          userData: {
             ...prev.userData,
             ...dataToSubmit,
-            user_id 
-          }
+            user_id,
+          },
         }))
-      
-      // 替換以上這段
-  
-        // 改變的結果是輸入的狀態的物件
       }
     } catch (error) {
       console.error('更新失敗:', error)
@@ -346,12 +320,10 @@ useEffect(() => {
       )
     }
   }
-// 在 userInfoEdit.js 中
 
   const handleDeactivate = async () => {
-    // const {logout} = useAuth()
     try {
-      const isConfirmed = await Swal.fire({
+      const { isConfirmed } = await Swal.fire({
         title: '確定要停用帳號嗎？',
         text: '停用後請聯繫客服以重新啟用帳號',
         icon: 'warning',
@@ -362,10 +334,8 @@ useEffect(() => {
         cancelButtonText: '取消',
       })
 
-      if (!isConfirmed.isConfirmed) {
-        return
-      }
-      //s停用button跟更新button用的是同一個路由所以停用
+      if (!isConfirmed) return
+
       const response = await axios.put(
         `http://localhost:3005/api/dashboard/${user_id}`,
         {
@@ -375,17 +345,17 @@ useEffect(() => {
       )
 
       if (response.data.status === 'success') {
-        Swal.fire({
+        await Swal.fire({
           title: '帳號已停用',
           icon: 'success',
           confirmButtonColor: '#805AF5',
         })
-        // 可選：重新導向到登出頁面或首頁
+
         try {
           await logout()
           window.location.href = '/'
-        } catch (logoutError) {
-          console.error('登出錯誤:', logoutError)
+        } catch (error) {
+          console.error('登出錯誤:', error)
           window.location.href = '/'
         }
       }
@@ -418,18 +388,19 @@ useEffect(() => {
       )
 
       if (response.data.status === 'success') {
-        setUploadStatus('頭像更新成功！') //有文字算true,沒有算none?
-        //除非想防風報攻擊才需要寫得很認真@@
+        setUploadStatus('頭像更新成功！')
         setAuth((prev) => ({
           ...prev,
           userData: {
             ...prev.userData,
-            image_path: selectedImg
-          }
-        }));
-        const headerResponse = await axios.post('http://localhost:3005/api/header', {
-          user_id: user_id
-        });
+            image_path: selectedImg,
+          },
+        }))
+
+        await axios.post('http://localhost:3005/api/header', {
+          user_id: user_id,
+        })
+
         Swal.fire('成功', '頭像更新成功', 'success')
       }
     } catch (error) {
@@ -757,10 +728,12 @@ useEffect(() => {
                           src={profilePic}
                           alt="Profile"
                           className="rounded-circle img-fluid mb-3"
-                          style={{ width: '220px', height: '220px', 
+                          style={{
+                            width: '220px',
+                            height: '220px',
                             // margin:'0 auto',
-                            //  position:'relative', 
-                            }}
+                            //  position:'relative',
+                          }}
                         />
                         <div className="mb-3">
                           <label

@@ -1,5 +1,5 @@
 import express from 'express'
-import { checkAuth } from '../routes/auth.js'
+import { checkAuth } from '../middlewares/authenticate.js'
 import db from '../configs/db.js'
 const router = express.Router()
 

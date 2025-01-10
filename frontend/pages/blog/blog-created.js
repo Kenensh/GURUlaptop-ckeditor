@@ -219,10 +219,11 @@ export default function Blogcreated(props) {
             </div>
             <div className="col-10 w-100">
               <Myeditor
-                name="content"
+                name="blog_content"
+                value={blog_content}
                 onChange={(data) => setContent(data)}
                 editorLoaded={editorLoaded}
-                value={blog_content}
+                userId={user_id} // 添加這行
               />
             </div>
           </div>

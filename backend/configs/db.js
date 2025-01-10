@@ -1,75 +1,120 @@
+// configs/db.js
+import pkg from 'pg'
 import { Sequelize } from 'sequelize'
+import UserModel from '../models/user.js'
 
-// 讀取.env檔用
-import 'dotenv/config.js'
+const { Pool } = pkg
 
-import applyModels from '#db-helpers/sequelize/models-setup.js'
+// 資料庫配置
+const DB_CONFIG = {
+  database: 'project_db_qbv8',
+  user: 'project_db_qbv8_user',
+  password: 'jtzyHNUWEo1n9Mxp4tvshZ54kH7QBuas',
+  host: 'dpg-ctjcfrtsvqrc7387r9og-a.singapore-postgres.render.com',
+  connectionString:
+    'postgresql://project_db_qbv8_user:jtzyHNUWEo1n9Mxp4tvshZ54kH7QBuas@dpg-ctjcfrtsvqrc7387r9og-a.singapore-postgres.render.com/project_db_qbv8',
+}
 
-// 資料庫連結資訊
+// 建立 Sequelize 實例
 const sequelize = new Sequelize(
-  process.env.DB_DATABASE,
-  process.env.DB_USERNAME,
-  process.env.DB_PASSWORD,
+  DB_CONFIG.database,
+  DB_CONFIG.user,
+  DB_CONFIG.password,
   {
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    dialect: 'mysql',
+    host: DB_CONFIG.host,
+    dialect: 'postgres',
     logging: false,
-    timezone: '+08:00',
-    define: {
-      freezeTableName: true,
-      charset: 'utf8',
-      collate: 'utf8_general_ci',
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
     },
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 30000,
+      idle: 10000,
+    },
+    timezone: '+08:00', // 設定時區
   }
 )
-// for postgresql test
-// const sequelize = new Sequelize(
-//   process.env.PG_DB_DATABASE,
-//   process.env.PG_DB_USERNAME,
-//   process.env.PG_DB_PASSWORD,
-//   {
-//     host: process.env.PG_DB_HOST,
-//     port: process.env.PG_DB_PORT,
-//     dialect: 'postgres',
-//     logging: false,
-//     define: {
-//       freezeTableName: true,
-//       charset: 'utf8',
-//       collate: 'utf8_general_ci',
-//     },
-//   }
-// )
 
-// 啟動時測試連線
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log('INFO - 資料庫已連線 Database connected.'.bgGreen)
-  })
-  .catch((error) => {
-    console.log(
-      'ERROR - 無法連線至資料庫 Unable to connect to the database.'.bgRed
-    )
-    console.error(error)
-  })
+// 建立 Pool 實例
+const pool = new Pool({
+  connectionString: DB_CONFIG.connectionString,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+  max: 20, // 最大連線數
+  idleTimeoutMillis: 30000, // 閒置超時
+  connectionTimeoutMillis: 2000, // 連線超時
+})
 
-// 載入models中的各檔案
-await applyModels(sequelize)
+// 監聽 Pool 事件
+pool.on('connect', () => {
+  console.log('Pool client connected')
+})
 
-// 同步化模型與資料庫結構
-// 注意，這只會更改資料庫中的表，而不會更改JS端的模型
-// 需要更動資料表的範例資料(seeds)，請使用`npm run seed`指令
-// sync 的值有以下三種
-// { alter: true } 檢查資料庫中資料表的當前狀態(它有哪些列,它們的資料類型等),然後在表中進行必要的更改，使其與模型匹配.
-// { force: true } 將建立資料表,如果表已經存在,則將其首先刪除
-// {} 如果表不存在,則建立該表(如果已經存在,則不執行任何操作)
-await sequelize.sync({})
+pool.on('error', (err) => {
+  console.error('Pool error:', err)
+})
 
-console.log(
-  'INFO - 所有模型已載入完成(如果表不存在建立該表) All models were synchronized successfully.'
-    .bgGreen
-)
+// 初始化模型
+const User = UserModel(sequelize)
+sequelize.models.User = User
 
-// 輸出模組
-export default sequelize
+// 資料庫連線測試
+const testConnection = async () => {
+  try {
+    // 測試 Sequelize 連線
+    await sequelize.authenticate()
+    console.log('Sequelize connection successful')
+
+    // 測試 Pool 連線
+    const client = await pool.connect()
+    client.release()
+    console.log('Pool connection successful')
+
+    return true
+  } catch (error) {
+    console.error('Database connection error:', error)
+    return false
+  }
+}
+
+// 清理資源函數
+const cleanup = async () => {
+  try {
+    console.log('Closing database connections...')
+    await Promise.all([pool.end(), sequelize.close()])
+    console.log('Database connections closed successfully')
+  } catch (error) {
+    console.error('Error during cleanup:', error)
+    process.exit(1)
+  }
+}
+
+// 程式結束處理
+process.on('SIGINT', async () => {
+  console.log('Received SIGINT. Cleaning up...')
+  await cleanup()
+  process.exit(0)
+})
+
+process.on('SIGTERM', async () => {
+  console.log('Received SIGTERM. Cleaning up...')
+  await cleanup()
+  process.exit(0)
+})
+
+// 未捕獲的 Promise 異常處理
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason)
+})
+
+// 執行連線測試
+testConnection()
+
+// 匯出需要的模組
+export { pool, sequelize as default, User, testConnection, cleanup }

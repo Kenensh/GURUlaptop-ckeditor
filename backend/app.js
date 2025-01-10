@@ -3,7 +3,7 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import createError from 'http-errors'
 import express from 'express'
-import db from '##/configs/mysql.js'
+import db from './configs/db.js' // 確保這裡引入的是新的 PostgreSQL 配置
 import logger from 'morgan'
 import path from 'path'
 import session from 'express-session'
@@ -83,12 +83,11 @@ app.use('/api/coupon-user', couponUserRouter)
 
 async function testConnection() {
   try {
-    const connection = await db.getConnection()
+    await db.query('SELECT NOW()') // PostgreSQL 的測試查詢
     console.log('Database connection successful')
-    connection.release()
   } catch (error) {
     console.error('Database connection failed:', error)
-    process.exit(1) // 如果連線失敗就終止程式
+    process.exit(1)
   }
 }
 

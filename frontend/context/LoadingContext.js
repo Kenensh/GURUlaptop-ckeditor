@@ -1,36 +1,52 @@
-// context/LoadingContext.js
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import LoadingAnimation from '@/components/LoadingAnimation/LoadingAnimation';
+import React, { createContext, useContext, useState, useEffect } from 'react'
 
-const LoadingContext = createContext();
+const LoadingContext = createContext()
 
-export const LoadingProviderAnimation = ({ children, close = 3, CustomLoader }) => {
-  const [isLoading, setIsLoading] = useState(true);
-  
+export const LoadingProviderAnimation = ({
+  children,
+  close = 3,
+  CustomLoader,
+  initialState = true,
+}) => {
+  const [isLoading, setIsLoading] = useState(initialState)
+
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, close * 1000);
-    
-    return () => clearTimeout(timer);
-  }, [close]);
+    if (initialState) {
+      const timer = setTimeout(() => {
+        setIsLoading(false)
+      }, close * 1000)
 
-  const showLoading = () => setIsLoading(true);
-  const hideLoading = () => setIsLoading(false);
+      return () => clearTimeout(timer)
+    }
+  }, [close, initialState])
+
+  const showLoading = () => setIsLoading(true)
+  const hideLoading = () => setIsLoading(false)
+
+  // 加入除錯日誌
+  useEffect(() => {
+    console.log('Loading state changed:', isLoading)
+  }, [isLoading])
 
   return (
-    <LoadingContext.Provider value={{ isLoading, showLoading, hideLoading }}>
+    <LoadingContext.Provider
+      value={{
+        isLoading,
+        showLoading,
+        hideLoading,
+        setIsLoading,
+      }}
+    >
       {children}
       {isLoading && CustomLoader && <CustomLoader />}
     </LoadingContext.Provider>
-  );
-};
+  )
+}
 
-// 加回 useLoading hook
 export const useLoading = () => {
-  const context = useContext(LoadingContext);
+  const context = useContext(LoadingContext)
   if (!context) {
-    throw new Error('useLoading must be used within a LoadingProvider');
+    throw new Error('useLoading must be used within a LoadingProvider')
   }
-  return context;
-};
+  return context
+}

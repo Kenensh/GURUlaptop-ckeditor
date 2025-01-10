@@ -1,36 +1,64 @@
+// middlewares/authenticate.js
 import jsonwebtoken from 'jsonwebtoken'
-
-// 存取`.env`設定檔案使用
 import 'dotenv/config.js'
 
-// 獲得加密用字串
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET
 
-// 中介軟體middleware，用於檢查授權(authenticate)
-export default function authenticate(req, res, next) {
-  // const token = req.headers['authorization']
-  const token = req.cookies.accessToken
-  // console.log(token)
+function authenticate(req, res, next) {
+  try {
+    // 檢查 token 來源
+    const token =
+      req.cookies.accessToken || req.headers.authorization?.split(' ')[1]
 
-  // if no token
-  if (!token) {
-    return res.json({
-      status: 'error',
-      message: '授權失敗，沒有存取令牌',
-    })
-  }
-
-  // verify的callback會帶有decoded payload(解密後的有效資料)，就是user的資料
-  jsonwebtoken.verify(token, accessTokenSecret, (err, user) => {
-    if (err) {
-      return res.json({
+    if (!token) {
+      console.log('No token provided')
+      return res.status(401).json({
         status: 'error',
-        message: '不合法的存取令牌',
+        message: '請先登入',
       })
     }
 
-    // 將user資料加到req中
-    req.user = user
-    next()
-  })
+    try {
+      const decoded = jsonwebtoken.verify(token, accessTokenSecret)
+
+      if (!decoded.user_id) {
+        console.error('Token missing user_id')
+        return res.status(401).json({
+          status: 'error',
+          message: '無效的認證資訊',
+        })
+      }
+
+      req.user = {
+        user_id: decoded.user_id,
+        email: decoded.email,
+        level: decoded.level,
+      }
+
+      console.log('User authenticated:', req.user.user_id)
+      next()
+    } catch (jwtError) {
+      if (jwtError.name === 'TokenExpiredError') {
+        return res.status(401).json({
+          status: 'error',
+          message: '登入已過期，請重新登入',
+        })
+      }
+
+      console.error('JWT verification failed:', jwtError)
+      return res.status(401).json({
+        status: 'error',
+        message: '認證失敗，請重新登入',
+      })
+    }
+  } catch (error) {
+    console.error('Authentication error:', error)
+    return res.status(500).json({
+      status: 'error',
+      message: '系統錯誤',
+    })
+  }
 }
+
+// 匯出兩個版本
+export { authenticate as default, authenticate as checkAuth }

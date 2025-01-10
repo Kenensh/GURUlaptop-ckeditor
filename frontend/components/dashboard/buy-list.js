@@ -1,22 +1,24 @@
 import React, { useState, useEffect } from 'react'
-import { useAuth } from '@/hooks/use-auth'
+import { useAuth } from '@/hooks/use-auth.js'
 import Accordion from 'react-bootstrap/Accordion'
 import BuyItemCard from './buy-item-card'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 
-export default function BuyList(order) {
+export default function BuyList({ order = {} }) {
   const [orderDetail, setOrderDetail] = useState([])
   const [alreadyPay, setAlreadyPay] = useState(false)
   const [coupon_code, setCouponCode] = useState('')
-  const order_id = order.order.order_id
-  const order_date = order.order.create_time
-  const coupon_id = order.order.coupon_id
-  const receiver = order.order.receiver
-  const phone = order.order.phone
-  const address = order.order.address
-  const payment_method = order.order.payment_method
+
+  // 使用可選鏈運算符
+  const order_id = order?.order?.order_id
+  const order_date = order?.order?.create_time
+  const coupon_id = order?.order?.coupon_id
+  const receiver = order?.order?.receiver
+  const phone = order?.order?.phone
+  const address = order?.order?.address
+  const payment_method = order?.order?.payment_method
 
   const getOrderDetail = async () => {
     const res = await fetch(

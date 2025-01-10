@@ -9,23 +9,41 @@ class MyUploadAdapter {
   async upload() {
     try {
       const file = await this.loader.file
+
+      // 檢查檔案格式
+      const allowedTypes = [
+        'image/jpeg',
+        'image/png',
+        'image/gif',
+        'image/webp',
+      ]
+      if (!allowedTypes.includes(file.type)) {
+        throw new Error('只允許上傳 JPG, PNG, GIF, WebP 格式的圖片')
+      }
+
       const formData = new FormData()
-      formData.append('articleImage', file)
+      formData.append('upload', file)  // 改為 'upload'
 
       const response = await fetch(
-        'http://localhost:3005/api/blog/upload-image',
+        'http://localhost:3005/api/blog/upload-blog-image',  // 新的上傳路徑
         {
           method: 'POST',
           body: formData,
         }
       )
 
-      if (!response.ok) {
-        throw new Error('Upload failed')
-      }
-
+      console.log('Response status:', response.status)
+      
       const data = await response.json()
-      return { default: `http://localhost:3005${data.url}` }
+
+      // 根據新的回應格式處理
+      if (data.uploaded) {
+        return {
+          default: `http://localhost:3005${data.url}`
+        }
+      } else {
+        throw new Error(data.error?.message || '上傳失敗')
+      }
     } catch (error) {
       console.error('Upload error:', error)
       throw error
@@ -34,12 +52,6 @@ class MyUploadAdapter {
 
   abort() {
     // Abort upload implementation
-  }
-}
-
-function MyCustomUploadAdapterPlugin(editor) {
-  editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
-    return new MyUploadAdapter(loader)
   }
 }
 
@@ -55,7 +67,15 @@ const Myeditor = ({ onChange, editorLoaded, name, value }) => {
   }, [])
 
   const editorConfig = {
-    extraPlugins: [MyCustomUploadAdapterPlugin],
+    extraPlugins: [
+      function (editor) {
+        editor.plugins.get('FileRepository').createUploadAdapter = function (
+          loader
+        ) {
+          return new MyUploadAdapter(loader)
+        }
+      },
+    ],
     toolbar: [
       'heading',
       '|',
@@ -93,11 +113,6 @@ const Myeditor = ({ onChange, editorLoaded, name, value }) => {
           onChange={(event, editor) => {
             const data = editor.getData()
             onChange(data)
-          }}
-          onError={(error, { willEditorRestart }) => {
-            if (willEditorRestart) {
-              console.error('編輯器將重新啟動:', error)
-            }
           }}
         />
       ) : (

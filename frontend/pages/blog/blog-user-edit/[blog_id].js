@@ -18,148 +18,126 @@ export default function BlogUserEdit() {
   const router = useRouter()
   const { blog_id } = router.query
   const { auth } = useAuth()
-  const { userData } = auth
-
+  const { isAuth, userData } = auth
   const [editorLoaded, setEditorLoaded] = useState(false)
 
-  useEffect(() => {
-    setEditorLoaded(true)
-  }, [])
+  // 單獨的狀態管理，跟 blog-created.js 保持一致
+  const [blog_type, setType] = useState('')
+  const [blog_title, setTitle] = useState('')
+  const [blog_content, setContent] = useState('')
+  const [blog_brand, setBrand] = useState('')
+  const [blog_brand_model, setBrandModel] = useState('')
+  const [blog_keyword, setKeyword] = useState('')
+  const [blog_valid_value, setValidvalue] = useState('1')
+  const [blog_image, setImage] = useState(null)
+  const [originalImage, setOriginalImage] = useState(null)
 
-  useEffect(() => {
-    if (blog_id) {
-      // 先檢查用戶身份
-      if (!auth.isAuth) {
-        console.log('用戶未登入')
-        router.push('/dashboard')
-        return
-      }
-
-      if (!userData) {
-        console.log('無用戶數據')
-        router.push('/dashboard')
-        return
-      }
-
-      // 獲取文章數據並驗證
-      fetch(`http://localhost:3005/api/blog/blog-edit/${blog_id}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-        .then((r) => r.json())
-        .then((data) => {
-          console.log('從後端收到的資料:', data)
-
-          // 驗證文章作者是否為當前用戶
-          const blogUserId = String(data.user_id)
-          const currentUserId = String(userData.user_id)
-
-          if (blogUserId !== currentUserId) {
-            console.log('用戶ID不匹配')
-            router.push('/dashboard')
-            return
-          }
-
-          // 驗證通過，設置表單數據
-          setFormData({
-            ...data,
-            originalImage: data.blog_image,
-            blog_image: data.blog_image,
-          })
-        })
-        .catch((error) => {
-          console.log('錯誤:', error)
-          router.push('/dashboard')
-        })
-    }
-  }, [blog_id, userData, auth.isAuth, router])
-
-  const [formData, setFormData] = useState({
-    blog_type: '',
-    blog_title: '',
-    blog_content: '',
-    blog_brand: '',
-    blog_brand_model: '',
-    blog_keyword: '',
-    blog_image: null,
-    originalImage: null,
-    blog_valid_value: '1',
-  })
-
+  // 品牌選項
   const brands = [
     ['ROG', 'DELL', 'Acer', 'Raser'],
     ['GIGABYTE', 'MSI', 'HP', 'ASUS'],
   ]
 
   useEffect(() => {
+    setEditorLoaded(true)
+  }, [])
+
+  // 獲取現有部落格資料
+  useEffect(() => {
     if (blog_id) {
-      fetch(`http://localhost:3005/api/blog/blog-edit/${blog_id}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+      fetch(`http://localhost:3005/api/blog/blog-user-detail/${blog_id}`)
         .then((r) => r.json())
         .then((data) => {
-          console.log('從後端收到的資料:', data)
-          setFormData({
-            ...data,
-            originalImage: data.blog_image,
-            blog_image: data.blog_image,
+          if (data.status === 'success') {
+            setType(data.data.blog_type || '')
+            setTitle(data.data.blog_title || '')
+            setContent(data.data.blog_content || '')
+            setBrand(data.data.blog_brand || '')
+            setBrandModel(data.data.blog_brand_model || '')
+            setKeyword(data.data.blog_keyword || '')
+            setValidvalue(data.data.blog_valid_value || '1')
+            setOriginalImage(data.data.blog_image)
+          }
+        })
+        .catch((error) => {
+          console.error('獲取部落格資料錯誤:', error)
+          MySwal.fire({
+            icon: 'error',
+            title: '獲取部落格資料失敗',
+            showConfirmButton: false,
+            timer: 1500,
           })
         })
-        .catch((error) => console.log('錯誤:', error))
     }
   }, [blog_id])
 
-  const handleChange = (name, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }))
-  }
-
+  // 表單提交處理
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+    if (!blog_content.trim()) {
+      MySwal.fire({
+        icon: 'warning',
+        title: '請輸入內文',
+        showConfirmButton: false,
+        timer: 1500,
+      })
+      return
+    }
+
+    const formData = new FormData()
+    formData.append('user_id', userData.user_id)
+    formData.append('blog_type', blog_type)
+    formData.append('blog_title', blog_title)
+    formData.append('blog_content', blog_content)
+    formData.append('blog_brand', blog_brand)
+    formData.append('blog_brand_model', blog_brand_model)
+    formData.append('blog_keyword', blog_keyword)
+    formData.append('blog_valid_value', blog_valid_value)
+
+    if (blog_image) {
+      formData.append('blog_image', blog_image)
+    }
+    if (originalImage) {
+      formData.append('originalImage', originalImage)
+    }
+
     try {
-      const formDataToSend = new FormData()
-
-      formDataToSend.append('user_id', userData.user_id)
-      formDataToSend.append('blog_type', formData.blog_type)
-      formDataToSend.append('blog_title', formData.blog_title)
-      formDataToSend.append('blog_content', formData.blog_content)
-      formDataToSend.append('blog_brand', formData.blog_brand)
-      formDataToSend.append('blog_brand_model', formData.blog_brand_model)
-      formDataToSend.append('blog_keyword', formData.blog_keyword)
-
-      // 處理圖片
-      if (formData.blog_image instanceof File) {
-        formDataToSend.append('blog_image', formData.blog_image)
-      } else {
-        formDataToSend.append('originalImage', formData.originalImage)
-      }
-
       const response = await fetch(
         `http://localhost:3005/api/blog/blog-edit/${blog_id}`,
         {
           method: 'PUT',
-          body: formDataToSend,
+          body: formData,
         }
       )
+      console.log('API回應:', response.status)
+
+      const result = await response.json()
 
       if (response.ok) {
-        // window.alert('編輯成功！') // 加入這行
         MySwal.fire({
-          title: '編輯成功！',
           icon: 'success',
-          confirmButtonText: '確定',
+          title: '部落格修改成功',
+          showConfirmButton: false,
+          timer: 1500,
         })
-        router.push('/blog/blog-edit-success') // 改用這個路徑
+        router.push('/blog')
+      } else {
+        MySwal.fire({
+          icon: 'error',
+          title: '部落格修改失敗',
+          showConfirmButton: false,
+          timer: 1500,
+        })
       }
     } catch (error) {
       console.error('錯誤:', error)
+      MySwal.fire({
+        icon: 'error',
+        title: '部落格修改失敗',
+        showConfirmButton: false,
+        timer: 1500,
+      })
     }
   }
 
@@ -181,7 +159,6 @@ export default function BlogUserEdit() {
       </div>
 
       <div className="container-lg container-fluid d-flex h-auto flex-column gap-5 mt-5 col-lg-5 col-md-8 col-12">
-        {/* 圖片上傳區塊 */}
         <div className="">
           <div className="BlogEditSmallTitle text-nowrap">
             <p>
@@ -194,17 +171,15 @@ export default function BlogUserEdit() {
         </div>
 
         <div
-          className="BlogImgUploadDiv d-flex align-items-center justify-content-center"
+          className="BlogImgUploadDiv"
           onClick={() => document.getElementById('imageInput').click()}
         >
-          {formData.blog_image || formData.originalImage ? (
+          {blog_image || originalImage ? (
             <img
               src={
-                formData.blog_image instanceof File
-                  ? URL.createObjectURL(formData.blog_image)
-                  : `http://localhost:3005${
-                      formData.originalImage || formData.blog_image
-                    }`
+                blog_image instanceof File
+                  ? URL.createObjectURL(blog_image)
+                  : `http://localhost:3005${originalImage}`
               }
               alt="預覽圖片"
               className="object-fit-cover w-100 h-100"
@@ -217,7 +192,7 @@ export default function BlogUserEdit() {
           )}
           <input
             type="file"
-            onChange={(e) => handleChange('blog_image', e.target.files[0])}
+            onChange={(e) => setImage(e.target.files[0])}
             style={{ display: 'none' }}
             id="imageInput"
           />
@@ -238,8 +213,8 @@ export default function BlogUserEdit() {
                 className="blog-form-control blog-form-control-lg"
                 type="text"
                 placeholder="標題"
-                value={formData.blog_title || ''}
-                onChange={(e) => handleChange('blog_title', e.target.value)}
+                value={blog_title}
+                onChange={(e) => setTitle(e.target.value)}
               />
             </div>
           </div>
@@ -256,9 +231,9 @@ export default function BlogUserEdit() {
             <div className="col-10">
               <EditMyeditor
                 name="content"
-                onChange={(data) => handleChange('blog_content', data)}
+                onChange={(data) => setContent(data)}
                 editorLoaded={editorLoaded}
-                value={formData.blog_content}
+                value={blog_content}
               />
             </div>
           </div>
@@ -284,11 +259,11 @@ export default function BlogUserEdit() {
                     <div
                       key={brand}
                       className={`BlogEditBrandSelected shadow d-flex justify-content-center align-items-center ${
-                        brand === formData.blog_brand
+                        brand === blog_brand
                           ? 'BlogEditBrandSelectedActive'
                           : ''
                       }`}
-                      onClick={() => handleChange('blog_brand', brand)}
+                      onClick={() => setBrand(brand)}
                     >
                       <p className="m-0">{brand}</p>
                     </div>
@@ -312,10 +287,8 @@ export default function BlogUserEdit() {
                 className="blog-form-control blog-form-control-lg"
                 type="text"
                 placeholder="型號"
-                value={formData.blog_brand_model || ''}
-                onChange={(e) =>
-                  handleChange('blog_brand_model', e.target.value)
-                }
+                value={blog_brand_model}
+                onChange={(e) => setBrandModel(e.target.value)}
               />
             </div>
           </div>
@@ -335,11 +308,9 @@ export default function BlogUserEdit() {
                 <div
                   key={v}
                   className={`BlogEditBrandSelected shadow d-flex justify-content-center align-items-center ${
-                    v === formData.blog_type
-                      ? 'BlogEditBrandSelectedActive'
-                      : ''
+                    v === blog_type ? 'BlogEditBrandSelectedActive' : ''
                   }`}
-                  onClick={() => handleChange('blog_type', v)}
+                  onClick={() => setType(v)}
                 >
                   <p>{v}</p>
                 </div>
@@ -361,8 +332,8 @@ export default function BlogUserEdit() {
                 className="blog-form-control blog-form-control-lg"
                 type="text"
                 placeholder="輸入一組你喜歡的關鍵字！"
-                value={formData.blog_keyword || ''}
-                onChange={(e) => handleChange('blog_keyword', e.target.value)}
+                value={blog_keyword}
+                onChange={(e) => setKeyword(e.target.value)}
               />
             </div>
           </div>
@@ -375,19 +346,17 @@ export default function BlogUserEdit() {
               className="BlogEditButtonDelete shadow "
               type="button"
               onClick={async () => {
-                // 顯示確認對話框並等待用戶響應
                 const result = await MySwal.fire({
                   icon: 'warning',
                   title: '確定要刪除部落格嗎？',
                   text: '刪除後將無法復原！',
-                  showCancelButton: true, // 顯示取消按鈕
+                  showCancelButton: true,
                   confirmButtonText: '確定刪除',
                   cancelButtonText: '取消',
-                  confirmButtonColor: '#d33', // 確認按鈕的顏色
-                  cancelButtonColor: '#3085d6', // 取消按鈕的顏色
+                  confirmButtonColor: '#d33',
+                  cancelButtonColor: '#3085d6',
                 })
 
-                // 如果用戶點擊確認
                 if (result.isConfirmed) {
                   try {
                     const res = await fetch(
@@ -398,7 +367,6 @@ export default function BlogUserEdit() {
                     )
 
                     if (res.ok) {
-                      // 刪除成功後顯示成功訊息
                       await MySwal.fire({
                         icon: 'success',
                         title: '刪除成功！',
@@ -409,7 +377,6 @@ export default function BlogUserEdit() {
                       router.push('/blog/blog-delete-success')
                     }
                   } catch (error) {
-                    // 發生錯誤時顯示錯誤訊息
                     console.error('刪除失敗:', error)
                     MySwal.fire({
                       icon: 'error',
@@ -430,4 +397,5 @@ export default function BlogUserEdit() {
     </>
   )
 }
+
 BlogUserEdit.getLayout = (page) => page

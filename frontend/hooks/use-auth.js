@@ -1,35 +1,11 @@
 import React, { useState, useContext, createContext, useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { checkAuth, getFavs } from '@/services/user'
-import Swal from 'sweetalert2'
+import { checkAuth } from '@/services/user'
 
 const AuthContext = createContext(null)
+const MAX_LOGIN_ATTEMPTS = 3 // 設定最大登入嘗試次數
+const HOME_ROUTE = '/' // 設定首頁路由
 
-// 註: 如果使用google登入會多幾個欄位(iat, exp是由jwt token來的)
-// 上面資料由express來(除了password之外)
-//   {
-//     "id": 1,
-//     "name": "哈利",
-//     "username": "herry",
-//     "email": "herry@test.com",
-//     "birth_date": "1980-07-13",
-//     "sex": "男",
-//     "phone": "0906102808",
-//     "postcode": "330",
-//     "address": "桃園市桃園區劉南路377號18樓",
-//     "google_uid": null,
-//     "line_uid": null,
-//     "photo_url": null,
-//     "line_access_token": null,
-//     "created_at": "2023-11-01T14:12:59.000Z",
-//     "updated_at": "2023-11-01T14:12:59.000Z",
-//     "iat": 1698852277,
-//     "exp": 1698938677
-// }
-
-// 初始化會員狀態(登出時也要用)
-// 只需要必要的資料即可，沒有要多個頁面或元件用的資料不需要加在這裡
-// !!注意JWT存取令牌中只有id, username, google_uid, line_uid在登入時可以得到
 export const initUserData = {
   user_id: 0,
   name: '',
@@ -47,74 +23,75 @@ export const initUserData = {
   remarks: '',
   level: 0,
 }
-// 可以視為webtoken要押的資料
-// 承接登入以後用的
+
 export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({
     isAuth: false,
     userData: initUserData,
   })
-
-  // 我的最愛清單使用
-  // 變數 函式後面的函式 更改前面變數的內容
-  const [favorites, setFavorites] = useState([])
-
-  // 得到我的最愛
-  // const handleGetFavorites = async () => {
-  //   const res = await getFavs()
-  //   //console.log(res.data)
-  //   if (res.data.status === 'success') {
-  //     setFavorites(res.data.data.favorites)
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   if (auth.isAuth) {
-  //     // 成功登入後要執行一次向伺服器取得我的最愛清單
-  //     handleGetFavorites()
-  //   } else {
-  //     // 登出時要設回空陣列
-  //     setFavorites([])
-  //   }
-  // }, [auth])
+  const [loginAttempts, setLoginAttempts] = useState(0)
 
   const router = useRouter()
-
-  // 登入頁路由
   const loginRoute = '/member/login'
-  // 隱私頁面路由，未登入時會，檢查後跳轉至登入頁
-  const protectedRoutes = ['/dashboard', '/coupon/coupon-user']
+  // 修改需要保護的路由列表
+  const protectedRoutes = [
+    '/dashboard',
+    '/coupon/coupon-user',
+    '/member/profile',
+    // 其他需要登入的路由
+  ]
+
+  // 登入函數修改
   const login = async (email, password) => {
     try {
-      const response = await fetch('api/login', {
+      if (loginAttempts >= MAX_LOGIN_ATTEMPTS) {
+        console.log(`已達到最大登入嘗試次數(${MAX_LOGIN_ATTEMPTS}次)`)
+        router.replace(HOME_ROUTE)
+        return {
+          status: 'error',
+          message: '登入嘗試次數過多，請稍後再試',
+        }
+      }
+
+      const response = await fetch('http://localhost:3005/api/login', {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ email, password }),
-        // JSON.stringify是物件變JSON字串方式傳輸
       })
+
       const result = await response.json()
+
       if (result.status === 'success') {
+        console.log('登入成功')
+        setLoginAttempts(0) // 重置嘗試次數
         setAuth({
           isAuth: true,
-          user_id: result.data.user_id,
-          name: result.data.name,
-          phone: result.data.phone,
-          created_at: result.data.created_at,
-          gender: result.data.gender,
-          country: result.data.country,
-          city: result.data.city,
-          district: result.data.district,
-          road_name: result.data.road_name,
-          detailed_address: result.data.detailed_address,
-          birthdate: result.data.birthdate,
-          remarks: result.data.remarks,
-          level: result.data.level,
+          userData: { ...initUserData, ...result.data.user },
         })
+        return { status: 'success', message: '登入成功' }
       }
-      console.log(response.json())
+
+      // 登入失敗處理
+      const newAttempts = loginAttempts + 1
+      console.log(`登入失敗！第 ${newAttempts} 次嘗試`)
+      setLoginAttempts(newAttempts)
+
+      if (newAttempts >= MAX_LOGIN_ATTEMPTS) {
+        console.log('登入失敗次數過多，即將返回首頁')
+        setTimeout(() => router.replace(HOME_ROUTE), 1500)
+      }
+
+      return {
+        status: 'error',
+        message: `登入失敗 (第 ${newAttempts}/${MAX_LOGIN_ATTEMPTS} 次嘗試)`,
+      }
     } catch (error) {
-      console.error('登入失敗：', error)
+      console.error('登入錯誤:', error)
+      return { status: 'error', message: '系統錯誤' }
     }
   }
+
   const logout = async () => {
     try {
       const response = await fetch('http://localhost:3005/api/auth/logout', {
@@ -125,70 +102,62 @@ export const AuthProvider = ({ children }) => {
         },
       })
 
-      if (!response.ok) {
-        throw new Error('登出失敗')
-      }
       const result = await response.json()
 
       if (result.status === 'success') {
-        // 清除本地的 auth 狀態
-        await Promise.all([
-          // 立即導航到登入頁
-          router.push('/member/login'),
-          // 清除狀態
-          new Promise((resolve) => {
-            setAuth({
-              isAuth: false,
-              userData: initUserData, // 使用完整的 initUserData
-            })
-            resolve()
-          }),
-        ])
-       
+        setAuth({
+          isAuth: false,
+          userData: initUserData,
+        })
+        // 登出時重置登入嘗試次數
+        setLoginAttempts(0)
+        console.log('登出成功！重置登入嘗試次數')
+        await router.replace(loginRoute)
+        return { status: 'success', message: '登出成功' }
+      }
+      return { status: 'error', message: '登出失敗' }
+    } catch (error) {
+      console.error('登出過程發生錯誤:', error)
+      return { status: 'error', message: '登出系統發生錯誤' }
+    }
+  }
+
+  // 修改認證檢查函數
+  const handleCheckAuth = async () => {
+    // 不在受保護路由，不需要檢查
+    if (!protectedRoutes.includes(router.pathname)) {
+      return
+    }
+
+    try {
+      const res = await checkAuth()
+      console.log('驗證狀態檢查:', res)
+
+      if (res?.data?.status === 'success' && res?.data?.data?.user) {
+        setAuth({
+          isAuth: true,
+          userData: { ...initUserData, ...res.data.data.user },
+        })
+      } else if (protectedRoutes.includes(router.pathname)) {
+        console.log('需要登入才能訪問此頁面')
+        router.replace(loginRoute)
       }
     } catch (error) {
-      console.error('登出錯誤:', error)
-      // 處理錯誤
-    }
-  }
-  // 檢查會員認証用
-  // 每次重新到網站中，或重新整理，都會執行這個函式，用於向伺服器查詢取回原本登入會員的資料
-  const handleCheckAuth = async () => {
-    const res = await checkAuth()
-
-    // 伺服器api成功的回應為 { status:'success', data:{ user } }
-    if (res.data.status === 'success') {
-      // 只需要initUserData的定義屬性值
-      const dbUser = res.data.data.user
-      const userData = { ...initUserData }
-
-      for (const key in userData) {
-        if (Object.hasOwn(dbUser, key)) {
-          userData[key] = dbUser[key] || ''
-        }
-      }
-      // 設到全域狀態中
-      setAuth({ isAuth: true, userData })
-    } else {
-      console.warn(res.data)
-
-      // 在這裡實作隱私頁面路由的跳轉
+      console.error('驗證檢查錯誤:', error)
       if (protectedRoutes.includes(router.pathname)) {
-        router.push(loginRoute)
+        router.replace(loginRoute)
       }
     }
   }
 
-  // didMount(初次渲染)後，向伺服器要求檢查會員是否登入中
   useEffect(() => {
-    if (router.isReady && !auth.isAuth) {
+    console.log('認證狀態變更:', auth)
+  }, [auth])
+
+  useEffect(() => {
+    if (router.isReady) {
       handleCheckAuth()
     }
-
-    // 下面加入router.pathname，是為了要在向伺服器檢查後，
-    // 如果有比對到是隱私路由，就執行跳轉到登入頁面工作
-    // 注意有可能會造成向伺服器要求多次，此為簡單的實作範例
-    // eslint-disable-next-line
   }, [router.isReady, router.pathname])
 
   return (
@@ -198,8 +167,8 @@ export const AuthProvider = ({ children }) => {
         login,
         logout,
         setAuth,
-        favorites,
-        setFavorites,
+        loginAttempts,
+        maxAttempts: MAX_LOGIN_ATTEMPTS,
       }}
     >
       {children}
@@ -207,4 +176,10 @@ export const AuthProvider = ({ children }) => {
   )
 }
 
-export const useAuth = () => useContext(AuthContext)
+export const useAuth = () => {
+  const context = useContext(AuthContext)
+  if (!context) {
+    throw new Error('useAuth 必須在 AuthProvider 內使用')
+  }
+  return context
+}

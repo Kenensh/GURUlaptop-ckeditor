@@ -2,54 +2,131 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useAuth } from '@/hooks/use-auth'
 
-// 改為接收props的組件
 export default function BlogUserOverview({ specificUserId = null }) {
   const { auth } = useAuth()
   const { isAuth, userData } = auth
   const [blogData, setBlogData] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
-    if (!isAuth) return
+    const fetchBlogData = async () => {
+      console.log('開始獲取部落格數據，狀態:', {
+        isAuth,
+        userData,
+        specificUserId,
+      })
 
-    // 使用 specificUserId（如果有提供），否則使用當前登入用戶的 ID
-    const targetUserId = specificUserId || userData?.user_id
+      if (!isAuth) {
+        console.log('用戶未登入')
+        setIsLoading(false)
+        return
+      }
 
-    if (targetUserId) {
-      fetch(`http://localhost:3005/api/blog/blog_user_overview/${targetUserId}`)
-        .then((response) => response.json())
-        .then((data) => {
-          console.log('API回傳的資料:', data)
-          const dataArray = Array.isArray(data) ? data : [data]
-          setBlogData(dataArray)
-        })
-        .catch((error) => {
-          console.error('錯誤:', error)
-        })
+      const targetUserId = specificUserId || userData?.user_id
+      console.log('目標用戶ID:', targetUserId)
+
+      if (!targetUserId) {
+        console.log('無有效用戶ID')
+        setIsLoading(false)
+        return
+      }
+
+      try {
+        const response = await fetch(
+          `http://localhost:3005/api/blog/blog_user_overview/${targetUserId}`
+        )
+        console.log('API回應狀態:', response.status)
+
+        const data = await response.json()
+        console.log('API回應數據:', data)
+
+        if (!response.ok) {
+          throw new Error(data.message || '資料載入失敗')
+        }
+
+        if (data.status === 'success' && Array.isArray(data.data)) {
+          setBlogData(data.data)
+        } else {
+          setBlogData([])
+        }
+      } catch (err) {
+        console.error('獲取數據錯誤:', err)
+        setError(err.message)
+      } finally {
+        setIsLoading(false)
+      }
     }
+
+    fetchBlogData()
   }, [isAuth, userData, specificUserId])
 
-  if (!isAuth) {
-    return null
+  // 處理內容和圖片的函數
+  const processContent = (content) => {
+    if (!content) {
+      console.log('內容為空')
+      return ''
+    }
+    const processedContent = content
+      .replace(/<[^>]+>/g, '')
+      .trim()
+      .substring(0, 100)
+    console.log('處理後的內容長度:', processedContent.length)
+    return processedContent + (content.length > 100 ? '...' : '')
   }
 
-  if (!blogData || blogData.length === 0) {
-    return (
-      <div className="d-flex justify-content-center align-items-center">
-        <p>尚無發文紀錄</p>
-      </div>
-    )
-  }
-  console.log(blogData)
+  // 處理圖片 URL 的函數
+  const getImageUrl = (imagePath) => {
+    console.log('處理圖片路徑:', imagePath)
+    const defaultImage =
+      'https://th.bing.com/th/id/OIP.V5ThX7OGGxexxzFbYvHtBwHaFJ?rs=1&pid=ImgDetMain'
 
-  let hasData = false
+    if (!imagePath) {
+      console.log('使用預設圖片')
+      return defaultImage
+    }
 
-  if (
-    blogData &&
-    blogData?.length > 0 &&
-    blogData[0]?.message !== '找不到該文章'
-  ) {
-    hasData = true
+    const finalUrl = imagePath.startsWith('http')
+      ? imagePath
+      : `http://localhost:3005${imagePath}`
+    console.log('最終圖片URL:', finalUrl)
+    return finalUrl
   }
+
+  // 格式化日期
+  const formatDate = (dateString) => {
+    console.log('格式化日期:', dateString)
+    if (!dateString) return ''
+
+    try {
+      const date = new Date(dateString)
+      const formattedDate = new Intl.DateTimeFormat('zh-TW', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+      }).format(date)
+      console.log('格式化後的日期:', formattedDate)
+      return formattedDate
+    } catch (err) {
+      console.error('日期格式化錯誤:', err)
+      return dateString
+    }
+  }
+
+  // 檢查是否有部落格資料
+  const hasData = blogData && blogData.length > 0
+  console.log('數據狀態:', {
+    hasData,
+    blogDataLength: blogData.length,
+    isLoading,
+    error,
+  })
+
+  if (!isAuth) return null
+  if (isLoading) return <div className="text-center">載入中...</div>
+  if (error) return <div className="text-center text-danger">{error}</div>
 
   return !hasData ? (
     <div className="container text-center mt-5">
@@ -83,7 +160,7 @@ export default function BlogUserOverview({ specificUserId = null }) {
                   <h7 className="card-text mb-4 BlogUserOverviewCardContent">
                     <div
                       dangerouslySetInnerHTML={{
-                        __html: blog.blog_content.replace(/<img\s+[^>]*>/g, ''),
+                        __html: processContent(blog.blog_content),
                       }}
                     />
                   </h7>

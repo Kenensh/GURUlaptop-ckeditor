@@ -1,24 +1,22 @@
 import express from 'express'
-import db from '../configs/mysql.js'
-import { checkAuth } from './auth.js'
+import db from '../configs/db.js'
+import { checkAuth } from '../middlewares/authenticate.js'
 
 const router = express.Router()
 
 // 獲取所有唯一的遊戲類型
 router.get('/filters/types', async (req, res) => {
   try {
-    const query = `
+    const types = await db.query(`
       SELECT DISTINCT event_type 
       FROM event_type 
-      WHERE valid = 1 
-      ORDER BY event_type ASC
-    `
-    const [types] = await db.query(query)
+      WHERE valid = true 
+      ORDER BY event_type ASC`)
 
     res.json({
       code: 200,
       message: 'success',
-      data: types.map((type) => type.event_type),
+      data: types.rows.map((type) => type.event_type),
     })
   } catch (error) {
     console.error('Error fetching game types:', error)
@@ -33,18 +31,16 @@ router.get('/filters/types', async (req, res) => {
 // 獲取所有唯一的平台
 router.get('/filters/platforms', async (req, res) => {
   try {
-    const query = `
+    const platforms = await db.query(`
       SELECT DISTINCT event_platform 
       FROM event_type 
-      WHERE valid = 1 
-      ORDER BY event_platform ASC
-    `
-    const [platforms] = await db.query(query)
+      WHERE valid = true 
+      ORDER BY event_platform ASC`)
 
     res.json({
       code: 200,
       message: 'success',
-      data: platforms.map((platform) => platform.event_platform),
+      data: platforms.rows.map((platform) => platform.event_platform),
     })
   } catch (error) {
     console.error('Error fetching platforms:', error)
@@ -70,6 +66,11 @@ router.get('/', async (req, res) => {
     } = req.query
     const offset = (page - 1) * pageSize
 
+    let paramCount = 1
+    const queryParams = []
+    const countParams = []
+    const conditions = []
+
     // 基礎查詢
     let query = `
       SELECT 
@@ -77,7 +78,7 @@ router.get('/', async (req, res) => {
         (SELECT COUNT(*) 
          FROM event_registration er 
          WHERE er.event_id = et.event_id 
-         AND er.registration_status = "active"
+         AND er.registration_status = 'active'
         ) as current_participants,
         CASE 
           WHEN NOW() < et.apply_start_time THEN '即將開始報名'
@@ -86,47 +87,44 @@ router.get('/', async (req, res) => {
           ELSE '已結束'
         END as event_status
       FROM event_type et
-      WHERE et.valid = 1
+      WHERE et.valid = true
     `
 
     let countQuery = `
       SELECT COUNT(*) as total 
       FROM event_type et
-      WHERE et.valid = 1
+      WHERE et.valid = true
     `
-
-    const queryParams = []
-    const countParams = []
-
-    // 條件陣列 - 用於收集所有篩選條件
-    const conditions = []
 
     // 遊戲類型篩選
     if (type && type !== '全部遊戲' && type !== '全部遊戲') {
-      conditions.push('et.event_type = ?')
+      conditions.push(`et.event_type = $${paramCount}`)
       queryParams.push(type)
       countParams.push(type)
+      paramCount++
     }
 
     // 平台篩選
     if (platform && platform !== '平台') {
-      // 處理 Mobile/PC 格式
       if (platform === 'Mobile') {
         conditions.push(
-          '(et.event_platform LIKE ? OR et.event_platform LIKE ?)'
+          `(et.event_platform ILIKE $${paramCount} OR et.event_platform ILIKE $${paramCount + 1})`
         )
         queryParams.push('Mobile%', '%Mobile%')
         countParams.push('Mobile%', '%Mobile%')
+        paramCount += 2
       } else if (platform === 'PC') {
         conditions.push(
-          '(et.event_platform LIKE ? OR et.event_platform LIKE ?)'
+          `(et.event_platform ILIKE $${paramCount} OR et.event_platform ILIKE $${paramCount + 1})`
         )
         queryParams.push('PC%', '%PC%')
         countParams.push('PC%', '%PC%')
+        paramCount += 2
       } else {
-        conditions.push('et.event_platform = ?')
+        conditions.push(`et.event_platform = $${paramCount}`)
         queryParams.push(platform)
         countParams.push(platform)
+        paramCount++
       }
     }
 
@@ -140,25 +138,81 @@ router.get('/', async (req, res) => {
       }
 
       if (dbTeamType) {
-        conditions.push('et.individual_or_team = ?')
+        conditions.push(`et.individual_or_team = $${paramCount}`)
         queryParams.push(dbTeamType)
         countParams.push(dbTeamType)
+        paramCount++
       }
     }
+    router.get('/user/registered', checkAuth, async (req, res) => {
+      try {
+        const userId = req.user.user_id
+
+        const query = `
+          SELECT 
+            et.*,
+            er.registration_status,
+            er.registration_time,
+            CASE 
+              WHEN NOW() < et.apply_start_time THEN '即將開始報名'
+              WHEN NOW() BETWEEN et.apply_start_time AND et.apply_end_time THEN '報名中'
+              WHEN NOW() BETWEEN et.apply_end_time AND et.event_end_time THEN '進行中'
+              ELSE '已結束'
+            END as event_status
+          FROM event_type et
+          JOIN event_registration er ON et.event_id = er.event_id
+          WHERE er.user_id = $1 
+          AND er.registration_status = 'active'
+          AND et.valid = true
+          ORDER BY er.registration_time DESC
+        `
+
+        const result = await db.query(query, [userId])
+
+        res.json({
+          code: 200,
+          message: 'success',
+          data: {
+            events: result.rows.map((event) => ({
+              id: event.event_id,
+              name: event.event_name,
+              type: event.event_type,
+              platform: event.event_platform,
+              content: event.event_content,
+              teamType: event.individual_or_team,
+              picture: event.event_picture,
+              applyStartTime: event.apply_start_time,
+              applyEndTime: event.apply_end_time,
+              eventStartTime: event.event_start_time,
+              eventEndTime: event.event_end_time,
+              status: event.event_status,
+              registrationTime: event.registration_time,
+            })),
+          },
+        })
+      } catch (error) {
+        console.error('獲取用戶活動失敗:', error)
+        res.status(500).json({
+          code: 500,
+          message: '獲取用戶活動失敗',
+          error: error.message,
+        })
+      }
+    })
 
     // 關鍵字搜尋
     if (keyword && keyword.trim()) {
       conditions.push(`(
-        LOWER(et.event_name) LIKE LOWER(?) OR
-        LOWER(et.event_type) LIKE LOWER(?) OR
-        LOWER(et.event_platform) LIKE LOWER(?) OR
-        LOWER(et.event_content) LIKE LOWER(?)
+        et.event_name ILIKE $${paramCount} OR
+        et.event_type ILIKE $${paramCount + 1} OR
+        et.event_platform ILIKE $${paramCount + 2} OR
+        et.event_content ILIKE $${paramCount + 3}
       )`)
-      const searchTerm = `%${keyword.trim()}%`
+      const searchTerm = `%${keyword.toLowerCase().trim()}%` // 確保轉換為小寫
       queryParams.push(searchTerm, searchTerm, searchTerm, searchTerm)
       countParams.push(searchTerm, searchTerm, searchTerm, searchTerm)
+      paramCount += 4
     }
-
     // 狀態篩選
     if (status) {
       const statusCondition = {
@@ -181,20 +235,17 @@ router.get('/', async (req, res) => {
     }
 
     // 添加排序和分頁
-    query += ` ORDER BY et.created_at DESC LIMIT ? OFFSET ?`
+    query += ` ORDER BY et.created_at DESC LIMIT $${paramCount} OFFSET $${paramCount + 1}`
     queryParams.push(parseInt(pageSize), offset)
 
-    // 執行查詢
-    console.log('Executing query:', query, queryParams)
-
-    const [events] = await db.query(query, queryParams)
-    const [totalRows] = await db.query(countQuery, countParams)
+    const events = await db.query(query, queryParams)
+    const totalRows = await db.query(countQuery, countParams)
 
     res.json({
       code: 200,
       message: 'success',
       data: {
-        events: events.map((event) => ({
+        events: events.rows.map((event) => ({
           id: event.event_id,
           name: event.event_name,
           type: event.event_type,
@@ -213,7 +264,7 @@ router.get('/', async (req, res) => {
           status: event.event_status,
           createdAt: event.created_at,
         })),
-        total: totalRows[0].total,
+        total: parseInt(totalRows.rows[0].total),
         currentPage: parseInt(page),
         pageSize: parseInt(pageSize),
       },
@@ -227,12 +278,13 @@ router.get('/', async (req, res) => {
     })
   }
 })
+
 // 獲取單一活動詳情
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params
-
-    const query = `
+    const result = await db.query(
+      `
       SELECT 
         et.*,
         (SELECT COUNT(*) 
@@ -247,20 +299,18 @@ router.get('/:id', async (req, res) => {
           ELSE '已結束'
         END as event_status
       FROM event_type et
-      WHERE et.event_id = ? AND et.valid = 1
-    `
+      WHERE et.event_id = $1 AND et.valid = true`,
+      [id]
+    )
 
-    const [results] = await db.query(query, [id])
-
-    if (results.length === 0) {
+    if (result.rows.length === 0) {
       return res.status(404).json({
         code: 404,
         message: '活動不存在',
       })
     }
 
-    const event = results[0]
-
+    const event = result.rows[0]
     res.json({
       code: 200,
       message: 'success',
@@ -294,597 +344,163 @@ router.get('/:id', async (req, res) => {
   }
 })
 
-// 獲取即將開始報名的活動
-router.get('/upcoming', async (req, res) => {
+// 註冊相關路由（個人和團隊）
+router.post('/:eventId/register/:type', checkAuth, async (req, res) => {
+  const client = await db.connect()
   try {
-    const { limit = 3 } = req.query
+    const { eventId, type } = req.params
+    const userId = req.user.user_id
+    const { participantInfo, teamName, captainInfo, teamMembers } = req.body
+    const isTeam = type === 'team'
 
-    const query = `
-      SELECT 
-        et.*,
-        (SELECT COUNT(*) 
-         FROM event_registration er 
-         WHERE er.event_id = et.event_id 
-         AND er.registration_status = "active"
-        ) as current_participants
-      FROM event_type et
-      WHERE et.valid = 1
-      AND NOW() < et.apply_start_time
-      ORDER BY et.apply_start_time ASC
-      LIMIT ?
-    `
+    // 驗證必要資料
+    if (isTeam && (!teamName || !captainInfo || !teamMembers)) {
+      return res.status(400).json({
+        code: 400,
+        message: '缺少必要的報名資訊',
+      })
+    }
 
-    const [events] = await db.query(query, [parseInt(limit)])
+    await client.query('BEGIN')
+
+    // 檢查活動是否存在
+    const eventResult = await client.query(
+      'SELECT * FROM event_type WHERE event_id = $1 AND valid = true',
+      [eventId]
+    )
+
+    if (eventResult.rows.length === 0) {
+      throw new Error('活動不存在')
+    }
+
+    const event = eventResult.rows[0]
+    const now = new Date()
+    const applyStartTime = new Date(event.apply_start_time)
+    const applyEndTime = new Date(event.apply_end_time)
+
+    // 各種檢查
+    if (now < applyStartTime) throw new Error('報名未開始')
+    if (now > applyEndTime) throw new Error('報名已結束')
+
+    // 檢查報名狀態
+    const registered = await client.query(
+      'SELECT 1 FROM event_registration WHERE event_id = $1 AND user_id = $2 AND registration_status = $3',
+      [eventId, userId, 'active']
+    )
+
+    if (registered.rows.length > 0) {
+      throw new Error('您已報名此活動')
+    }
+
+    // 新增報名資訊
+    const regResult = await client.query(
+      `INSERT INTO event_registration 
+       (event_id, user_id, participant_info, registration_status, registration_time)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING *`,
+      [
+        eventId,
+        userId,
+        JSON.stringify(
+          isTeam ? { teamName, captainInfo, teamMembers } : participantInfo
+        ),
+        'active',
+        new Date(),
+      ]
+    )
+
+    // 更新參與人數
+    await client.query(
+      `UPDATE event_type
+       SET current_participants = (
+         SELECT COUNT(*) FROM event_registration 
+         WHERE event_id = $1 AND registration_status = 'active'
+       )
+       WHERE event_id = $1`,
+      [eventId]
+    )
+
+    await client.query('COMMIT')
 
     res.json({
       code: 200,
-      message: 'success',
-      data: events.map((event) => ({
-        id: event.event_id,
-        name: event.event_name,
-        type: event.event_type,
-        platform: event.event_platform,
-        teamType: event.individual_or_team,
-        picture: event.event_picture,
-        applyStartTime: event.apply_start_time,
-        applyEndTime: event.apply_end_time,
-        eventStartTime: event.event_start_time,
-        maxPeople: event.maximum_people,
-        currentParticipants: parseInt(event.current_participants) || 0,
-      })),
-    })
-  } catch (error) {
-    console.error('Error fetching upcoming events:', error)
-    res.status(500).json({
-      code: 500,
-      message: '獲取即將開始報名活動失敗',
-      error: error.message,
-    })
-  }
-})
-
-// 獲取使用者報名的活動
-router.get('/user/registered', checkAuth, async (req, res) => {
-  try {
-    const query = `
-      SELECT 
-        et.*,
-        (SELECT COUNT(*) 
-         FROM event_registration er 
-         WHERE er.event_id = et.event_id 
-         AND er.registration_status = 'active'
-        ) as current_participants,
-        er.registration_time,
-        er.registration_status,
-        CASE 
-          WHEN NOW() < et.apply_start_time THEN '即將開始報名'
-          WHEN NOW() BETWEEN et.apply_start_time AND et.apply_end_time THEN '報名中'
-          WHEN NOW() BETWEEN et.apply_end_time AND et.event_end_time THEN '進行中'
-          ELSE '已結束'
-        END as event_status
-      FROM event_registration er
-      JOIN event_type et ON er.event_id = et.event_id
-      WHERE er.user_id = ? AND er.registration_status = 'active'
-      ORDER BY er.registration_time DESC
-    `
-
-    const [events] = await db.query(query, [req.user.user_id])
-
-    res.json({
-      code: 200,
-      message: 'success',
+      message: '報名成功',
       data: {
-        events: events.map((event) => ({
-          id: event.event_id,
-          name: event.event_name,
-          type: event.event_type,
-          platform: event.event_platform,
-          content: event.event_content,
-          rule: event.event_rule,
-          award: event.event_award,
-          teamType: event.individual_or_team,
-          picture: event.event_picture,
-          applyStartTime: event.apply_start_time,
-          applyEndTime: event.apply_end_time,
-          eventStartTime: event.event_start_time,
-          eventEndTime: event.event_end_time,
-          maxPeople: event.maximum_people,
-          currentParticipants: parseInt(event.current_participants) || 0,
-          status: event.event_status,
-          registrationTime: event.registration_time,
-          registrationStatus: event.registration_status,
-        })),
+        registrationId: regResult.rows[0].id,
       },
     })
   } catch (error) {
-    console.error('Error fetching user events:', error)
-    res.status(500).json({
-      code: 500,
-      message: '獲取活動列表失敗',
-      error: error.message,
-    })
-  }
-})
-
-// 個人報名
-router.post('/:eventId/register/individual', checkAuth, async (req, res) => {
-  let connection
-  try {
-    const { eventId } = req.params
-    const userId = req.user.user_id
-    const { participantInfo } = req.body
-
-    // 驗證必要資料
-    if (
-      !participantInfo ||
-      !participantInfo.name ||
-      !participantInfo.gameId ||
-      !participantInfo.phone ||
-      !participantInfo.email
-    ) {
-      return res.status(400).json({
-        code: 400,
-        message: '缺少必要的報名資訊',
-      })
-    }
-
-    connection = await db.getConnection()
-    await connection.beginTransaction()
-
-    // 檢查活動是否存在且為個人賽
-    const [eventDetails] = await connection.query(
-      'SELECT individual_or_team, maximum_people, apply_start_time, apply_end_time FROM event_type WHERE event_id = ? AND valid = 1',
-      [eventId]
-    )
-
-    if (eventDetails.length === 0) {
-      throw new Error('活動不存在')
-    }
-
-    if (eventDetails[0].individual_or_team !== '個人') {
-      throw new Error('此活動不是個人賽')
-    }
-
-    // 檢查是否在報名期間
-    const now = new Date()
-    const applyStartTime = new Date(eventDetails[0].apply_start_time)
-    const applyEndTime = new Date(eventDetails[0].apply_end_time)
-
-    if (now < applyStartTime) {
-      throw new Error('報名未開始')
-    }
-
-    if (now > applyEndTime) {
-      throw new Error('報名已結束')
-    }
-
-    // 檢查是否已報名
-    const [registrations] = await connection.query(
-      'SELECT * FROM event_registration WHERE event_id = ? AND user_id = ? AND registration_status = "active"',
-      [eventId, userId]
-    )
-
-    if (registrations.length > 0) {
-      throw new Error('您已報名此活動')
-    }
-
-    // 檢查活動是否已額滿
-    const [currentParticipants] = await connection.query(
-      'SELECT COUNT(*) as count FROM event_registration WHERE event_id = ? AND registration_status = "active"',
-      [eventId]
-    )
-
-    if (currentParticipants[0].count >= eventDetails[0].maximum_people) {
-      throw new Error('活動已額滿')
-    }
-
-    // 儲存報名資訊
-    const registrationData = {
-      event_id: eventId,
-      user_id: userId,
-      participant_info: JSON.stringify(participantInfo),
-      registration_time: new Date(),
-      registration_status: 'active',
-    }
-
-    await connection.query(
-      'INSERT INTO event_registration SET ?',
-      registrationData
-    )
-
-    // 更新活動的當前參與人數
-    await connection.query(
-      'UPDATE event_type SET current_participants = (SELECT COUNT(*) FROM event_registration WHERE event_id = ? AND registration_status = "active") WHERE event_id = ?',
-      [eventId, eventId]
-    )
-
-    await connection.commit()
-
-    res.json({
-      code: 200,
-      message: '報名成功',
-    })
-  } catch (error) {
-    if (connection) {
-      await connection.rollback()
-    }
-    console.error('個人報名失敗:', error)
+    await client.query('ROLLBACK')
+    console.error('報名失敗:', error)
     res.status(500).json({
       code: 500,
       message: error.message || '報名失敗',
     })
   } finally {
-    if (connection) {
-      connection.release()
-    }
-  }
-})
-
-// 團體報名（修改後的版本）
-router.post('/:eventId/register/team', checkAuth, async (req, res) => {
-  let connection
-  try {
-    const { eventId } = req.params
-    const userId = req.user.user_id
-    const { teamName, captainInfo, teamMembers } = req.body
-
-    // 驗證必要資料
-    if (!teamName || !captainInfo || !teamMembers) {
-      return res.status(400).json({
-        code: 400,
-        message: '缺少必要的報名資訊',
-      })
-    }
-
-    connection = await db.getConnection()
-    await connection.beginTransaction()
-
-    // 檢查活動是否存在且為團體賽
-    const [eventDetails] = await connection.query(
-      'SELECT * FROM event_type WHERE event_id = ? AND valid = 1',
-      [eventId]
-    )
-
-    if (eventDetails.length === 0) {
-      throw new Error('活動不存在')
-    }
-
-    // 記錄活動類型以便除錯
-    console.log('活動類型檢查:', {
-      活動ID: eventId,
-      活動類型: eventDetails[0].individual_or_team,
-    })
-
-    // 修改後的判斷邏輯，同時接受 '團體' 和 '團隊'
-    if (!['團體', '團隊'].includes(eventDetails[0].individual_or_team)) {
-      throw new Error('此活動不是團體賽')
-    }
-
-    // 檢查是否在報名期間
-    const now = new Date()
-    const applyStartTime = new Date(eventDetails[0].apply_start_time)
-    const applyEndTime = new Date(eventDetails[0].apply_end_time)
-
-    if (now < applyStartTime) {
-      throw new Error('報名未開始')
-    }
-
-    if (now > applyEndTime) {
-      throw new Error('報名已結束')
-    }
-
-    // 檢查是否已報名
-    const [registrations] = await connection.query(
-      'SELECT * FROM event_registration WHERE event_id = ? AND user_id = ? AND registration_status = "active"',
-      [eventId, userId]
-    )
-
-    if (registrations.length > 0) {
-      throw new Error('您已報名此活動')
-    }
-
-    // 檢查活動是否已額滿
-    const [currentParticipants] = await connection.query(
-      'SELECT COUNT(*) as count FROM event_registration WHERE event_id = ? AND registration_status = "active"',
-      [eventId]
-    )
-
-    if (currentParticipants[0].count >= eventDetails[0].maximum_people) {
-      throw new Error('活動已額滿')
-    }
-
-    // 儲存報名資訊
-    const registrationData = {
-      event_id: eventId,
-      user_id: userId,
-      participant_info: JSON.stringify({
-        teamName,
-        captainInfo,
-        teamMembers,
-      }),
-      registration_time: new Date(),
-      registration_status: 'active',
-    }
-
-    await connection.query(
-      'INSERT INTO event_registration SET ?',
-      registrationData
-    )
-
-    // 更新活動的當前參與人數
-    await connection.query(
-      'UPDATE event_type SET current_participants = (SELECT COUNT(*) FROM event_registration WHERE event_id = ? AND registration_status = "active") WHERE event_id = ?',
-      [eventId, eventId]
-    )
-
-    await connection.commit()
-
-    res.json({
-      code: 200,
-      message: '報名成功',
-    })
-  } catch (error) {
-    if (connection) {
-      await connection.rollback()
-    }
-    console.error('團體報名失敗:', {
-      error: error.message,
-      eventId: req.params.eventId,
-      stack: error.stack,
-    })
-    res.status(500).json({
-      code: 500,
-      message: error.message || '報名失敗',
-    })
-  } finally {
-    if (connection) {
-      connection.release()
-    }
+    client.release()
   }
 })
 
 // 取消報名
 router.delete('/:eventId/registration', checkAuth, async (req, res) => {
-  let connection
+  const client = await db.connect()
   try {
     const { eventId } = req.params
     const userId = req.user.user_id
 
-    connection = await db.getConnection()
-    await connection.beginTransaction()
+    await client.query('BEGIN')
 
-    // 檢查活動是否存在
-    const [eventDetails] = await connection.query(
-      'SELECT * FROM event_type WHERE event_id = ? AND valid = 1',
+    const eventResult = await client.query(
+      'SELECT * FROM event_type WHERE event_id = $1 AND valid = true',
       [eventId]
     )
 
-    if (eventDetails.length === 0) {
+    if (eventResult.rows.length === 0) {
       throw new Error('活動不存在')
     }
 
-    // 檢查是否已報名
-    const [registrations] = await connection.query(
-      'SELECT * FROM event_registration WHERE event_id = ? AND user_id = ? AND registration_status = "active"',
-      [eventId, userId]
-    )
-
-    if (registrations.length === 0) {
-      throw new Error('您尚未報名此活動')
-    }
-
-    // 檢查是否可以取消報名（活動開始前都可以取消）
+    const event = eventResult.rows[0]
     const now = new Date()
-    const eventStartTime = new Date(eventDetails[0].event_start_time)
+    const eventStartTime = new Date(event.event_start_time)
 
     if (now >= eventStartTime) {
       throw new Error('活動已開始，無法取消報名')
     }
 
-    // 更新報名狀態
-    await connection.query(
-      'UPDATE event_registration SET registration_status = "cancelled" WHERE event_id = ? AND user_id = ?',
-      [eventId, userId]
+    const updateResult = await client.query(
+      'UPDATE event_registration SET registration_status = $1 WHERE event_id = $2 AND user_id = $3 RETURNING *',
+      ['cancelled', eventId, userId]
     )
 
-    // 更新活動的當前參與人數
-    await connection.query(
-      'UPDATE event_type SET current_participants = (SELECT COUNT(*) FROM event_registration WHERE event_id = ? AND registration_status = "active") WHERE event_id = ?',
-      [eventId, eventId]
+    if (updateResult.rows.length === 0) {
+      throw new Error('您尚未報名此活動')
+    }
+
+    await client.query(
+      `UPDATE event_type 
+       SET current_participants = (
+         SELECT COUNT(*) FROM event_registration 
+         WHERE event_id = $1 AND registration_status = 'active'
+       )
+       WHERE event_id = $1`,
+      [eventId]
     )
 
-    await connection.commit()
+    await client.query('COMMIT')
 
     res.json({
       code: 200,
       message: '取消報名成功',
     })
   } catch (error) {
-    if (connection) {
-      await connection.rollback()
-    }
+    await client.query('ROLLBACK')
     console.error('取消報名失敗:', error)
     res.status(500).json({
       code: 500,
       message: error.message || '取消報名失敗',
     })
   } finally {
-    if (connection) {
-      connection.release()
-    }
-  }
-})
-
-// 檢查報名狀態
-router.get('/:eventId/check-registration', checkAuth, async (req, res) => {
-  try {
-    const { eventId } = req.params
-    const userId = req.user.user_id
-
-    const [registrations] = await db.query(
-      `SELECT er.*, 
-                et.individual_or_team,
-                et.event_name,
-                er.participant_info
-         FROM event_registration er
-         JOIN event_type et ON er.event_id = et.event_id
-         WHERE er.event_id = ? AND er.user_id = ? AND er.registration_status = "active"`,
-      [eventId, userId]
-    )
-
-    if (registrations.length === 0) {
-      return res.json({
-        code: 200,
-        message: 'success',
-        data: {
-          isRegistered: false,
-        },
-      })
-    }
-
-    const registration = registrations[0]
-    const participantInfo = JSON.parse(registration.participant_info || '{}')
-
-    const registrationInfo = {
-      isRegistered: true,
-      eventName: registration.event_name,
-      registrationType: registration.individual_or_team,
-      registrationTime: registration.registration_time,
-      registrationStatus: registration.registration_status,
-      participantInfo: participantInfo,
-    }
-
-    res.json({
-      code: 200,
-      message: 'success',
-      data: registrationInfo,
-    })
-  } catch (error) {
-    console.error('檢查報名狀態失敗:', error)
-    res.status(500).json({
-      code: 500,
-      message: '檢查報名狀態失敗',
-      error: error.message,
-    })
-  }
-})
-
-// 獲取活動報名列表（管理員用）
-router.get('/:eventId/registrations', checkAuth, async (req, res) => {
-  try {
-    const { eventId } = req.params
-    const { page = 1, pageSize = 10 } = req.query
-    const offset = (page - 1) * pageSize
-
-    // 檢查用戶權限
-    if (req.user.level < 1) {
-      return res.status(403).json({
-        code: 403,
-        message: '沒有權限查看此資訊',
-      })
-    }
-
-    // 獲取活動報名列表
-    const [registrations] = await db.query(
-      `SELECT 
-          er.*,
-          et.individual_or_team,
-          u.name as user_name,
-          u.email as user_email
-        FROM event_registration er
-        JOIN event_type et ON er.event_id = et.event_id
-        JOIN users u ON er.user_id = u.user_id
-        WHERE er.event_id = ? AND er.registration_status = "active"
-        ORDER BY er.registration_time DESC
-        LIMIT ? OFFSET ?`,
-      [eventId, parseInt(pageSize), offset]
-    )
-
-    // 獲取總報名數
-    const [totalCount] = await db.query(
-      'SELECT COUNT(*) as total FROM event_registration WHERE event_id = ? AND registration_status = "active"',
-      [eventId]
-    )
-
-    const formattedRegistrations = registrations.map((reg) => ({
-      id: reg.id,
-      userId: reg.user_id,
-      userName: reg.user_name,
-      userEmail: reg.user_email,
-      registrationType: reg.individual_or_team,
-      registrationTime: reg.registration_time,
-      participantInfo: JSON.parse(reg.participant_info || '{}'),
-    }))
-
-    res.json({
-      code: 200,
-      message: 'success',
-      data: {
-        registrations: formattedRegistrations,
-        total: totalCount[0].total,
-        currentPage: parseInt(page),
-        pageSize: parseInt(pageSize),
-      },
-    })
-  } catch (error) {
-    console.error('獲取報名列表失敗:', error)
-    res.status(500).json({
-      code: 500,
-      message: '獲取報名列表失敗',
-      error: error.message,
-    })
-  }
-})
-
-// 獲取所有唯一的遊戲類型
-router.get('/filters/types', async (req, res) => {
-  try {
-    const query = `
-      SELECT DISTINCT event_type 
-      FROM event_type 
-      WHERE valid = 1 
-      ORDER BY event_type ASC
-    `
-    const [types] = await db.query(query)
-
-    res.json({
-      code: 200,
-      message: 'success',
-      data: types.map((type) => type.event_type),
-    })
-  } catch (error) {
-    console.error('Error fetching game types:', error)
-    res.status(500).json({
-      code: 500,
-      message: '獲取遊戲類型失敗',
-      error: error.message,
-    })
-  }
-})
-
-// 獲取所有唯一的平台
-router.get('/filters/platforms', async (req, res) => {
-  try {
-    const query = `
-      SELECT DISTINCT event_platform 
-      FROM event_type 
-      WHERE valid = 1 
-      ORDER BY event_platform ASC
-    `
-    const [platforms] = await db.query(query)
-
-    res.json({
-      code: 200,
-      message: 'success',
-      data: platforms.map((platform) => platform.event_platform),
-    })
-  } catch (error) {
-    console.error('Error fetching platforms:', error)
-    res.status(500).json({
-      code: 500,
-      message: '獲取平台列表失敗',
-      error: error.message,
-    })
+    client.release()
   }
 })
 

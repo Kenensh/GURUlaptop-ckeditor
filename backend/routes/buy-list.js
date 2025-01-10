@@ -1,100 +1,78 @@
 import express from 'express'
 const router = express.Router()
-
-import db from '##/configs/mysql.js'
-
+import { pool as db } from '../configs/db.js'
 import multer from 'multer'
 const upload = multer()
 
-/* GET home page. */
-router.get('/:user_id', upload.none(), async (req, res, next) => {
-  const user_id = req.params.user_id
-  const status = req.params.status
-  // 檢查user_id是否存在
-  if (!user_id) {
-    return res.json({ status: 'error', message: '請先登入' })
-  }
-
-  const [user] = await db.query('SELECT * FROM users WHERE user_id = ?', [
-    user_id,
-  ])
-  if ([user].length === 0) {
-    return res.json({ status: 'error', message: '使用者不存在' })
-  }
-
+router.get('/:user_id', upload.none(), async (req, res) => {
   try {
-    const [data] = await db.query(
-      'SELECT * FROM order_list WHERE user_id = ?',
+    const { user_id } = req.params
+
+    if (!user_id) {
+      return res.status(400).json({ status: 'error', message: '請先登入' })
+    }
+
+    const userResult = await db.query(
+      'SELECT user_id FROM users WHERE user_id = $1',
       [user_id]
     )
 
-    if (data.length == 0) {
+    if (userResult.rows.length === 0) {
+      return res.status(404).json({ status: 'error', message: '使用者不存在' })
+    }
+
+    const orderResult = await db.query(
+      'SELECT * FROM order_list WHERE user_id = $1',
+      [user_id]
+    )
+
+    if (orderResult.rows.length === 0) {
       return res.json({ status: 'success', message: '無訂單資料' })
     }
-    return res.json({ status: 'success', data, clause: status })
 
-    // if (status == 'all-orders') {
-    //   const [data] = await db.query(
-    //     'SELECT * FROM order_list WHERE user_id = ?',
-    //     [user_id]
-    //   )
-
-    //   if (data.length == 0) {
-    //     return res.json({ status: 'success', message: '無訂單資料' })
-    //   }
-    //   return res.json({ status: 'success', data, clause: status })
-    // }
-
-    // if (status == 'processing') {
-    //   const [data] = await db.query(
-    //     'SELECT * FROM order_list WHERE user_id = ? AND already_pay = 0',
-    //     [user_id]
-    //   )
-
-    //   if (data.length == 0) {
-    //     return res.json({ status: 'success', message: '無訂單資料' })
-    //   }
-    //   return res.json({ status: 'success', data, clause: status })
-    // }
-
-    // if (status == 'completed') {
-    //   const [data] = await db.query(
-    //     'SELECT * FROM order_list WHERE user_id = ? AND already_pay = 1',
-    //     [user_id]
-    //   )
-
-    //   if (data.length == 0) {
-    //     return res.json({ status: 'success', message: '無訂單資料' })
-    //   }
-    //   return res.json({ status: 'success', data, clause: status })
-    // }
+    return res.json({
+      status: 'success',
+      data: orderResult.rows,
+    })
   } catch (error) {
-    res.status(500).json({
+    console.error('Get orders error:', error)
+    return res.status(500).json({
       status: 'error',
-      message: '伺服器錯誤',
+      message: '系統錯誤',
     })
   }
 })
 
-router.get('/detail/:order_id', upload.none(), async (req, res, next) => {
-  const order_id = req.params.order_id
-  // 檢查user_id是否存在
-
+router.get('/detail/:order_id', upload.none(), async (req, res) => {
   try {
-    const [result] = await db.query(
-      'SELECT order_detail.*, product.product_name, product.list_price, product_img.product_img_path FROM order_detail JOIN product ON order_detail.product_id = product.product_id JOIN product_img ON product.product_id = product_img.img_product_id WHERE order_id = ?',
+    const { order_id } = req.params
+
+    const result = await db.query(
+      `SELECT 
+       od.*,
+       p.product_name,
+       p.list_price,
+       pi.product_img_path
+     FROM order_detail od
+     JOIN product p ON od.product_id = p.product_id
+     JOIN product_img pi ON p.product_id = pi.img_product_id
+     WHERE od.order_id = $1`,
       [order_id]
     )
 
-    if (result.length == 0) {
+    if (result.rows.length === 0) {
       return res.json({ status: 'success', message: '無訂單資料' })
     }
 
-    res.json({ status: 'success', data: result })
+    return res.json({
+      status: 'success',
+      data: result.rows,
+    })
   } catch (error) {
-    res.status(500).json({
+    console.error('Get order detail error:', error)
+    return res.status(500).json({
       status: 'error',
-      message: '伺服器錯誤',
+      message: '系統錯誤',
     })
   }
 })

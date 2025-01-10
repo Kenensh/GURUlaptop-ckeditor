@@ -1,5 +1,5 @@
 import WebSocket from 'ws'
-import db from '../configs/mysql.js'
+import { pool } from '../configs/db.js'
 import ChatRoom from '../models/ChatRoom.js'
 
 class WebSocketService {
@@ -42,10 +42,11 @@ class WebSocketService {
 
           // 處理新的群組申請
           if (data.type === 'newGroupRequest') {
-            const [[userData]] = await db.execute(
-              'SELECT name, image_path FROM users WHERE user_id = ?',
+            const result = await pool.query(
+              'SELECT name, image_path FROM users WHERE user_id = $1',
               [data.fromUser]
             )
+            const userData = result.rows[0]
 
             data = {
               ...data,

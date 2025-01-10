@@ -1,12 +1,12 @@
 import ChatRoom from '../models/ChatRoom.js'
 import { chatService } from '../services/chatService.js'
-import db from '../configs/mysql.js'
+import { pool } from '../configs/db.js'
 
 export const chatController = {
   // 群組申請相關方法
   getPendingRequests: async (userId) => {
     try {
-      const [requests] = await db.execute(
+      const result = await pool.query(
         `SELECT 
           gr.*,
           u.name as sender_name,
@@ -16,15 +16,15 @@ export const chatController = {
           g.chat_room_id
         FROM group_requests gr
         JOIN users u ON gr.sender_id = u.user_id
-        JOIN \`group\` g ON gr.group_id = g.group_id
-        WHERE g.creator_id = ? AND gr.status = 'pending'
+        JOIN "group" g ON gr.group_id = g.group_id
+        WHERE g.creator_id = $1 AND gr.status = 'pending'
         ORDER BY gr.created_at DESC`,
         [userId]
       )
 
       return {
         status: 'success',
-        data: requests,
+        data: result.rows,
       }
     } catch (error) {
       console.error('獲取待處理申請錯誤:', error)
@@ -33,45 +33,46 @@ export const chatController = {
   },
 
   handleGroupRequest: async (userId, requestData) => {
-    const connection = await db.getConnection()
+    const client = await pool.connect()
     try {
-      await connection.beginTransaction()
+      await client.query('BEGIN')
 
       const { requestId, status } = requestData
 
       // 獲取申請詳情與申請者資訊
-      const [[request]] = await connection.execute(
+      const requestResult = await client.query(
         `SELECT gr.*, g.chat_room_id, g.group_name, 
                 u.name as sender_name, u.image_path as sender_image, g.creator_id
          FROM group_requests gr
-         JOIN \`group\` g ON gr.group_id = g.group_id
+         JOIN "group" g ON gr.group_id = g.group_id
          JOIN users u ON gr.sender_id = u.user_id
-         WHERE gr.id = ?`,
+         WHERE gr.id = $1`,
         [requestId]
       )
 
-      if (!request) {
+      if (requestResult.rows.length === 0) {
         throw new Error('找不到該申請')
       }
 
+      const request = requestResult.rows[0]
       if (request.creator_id !== userId) {
         throw new Error('沒有權限處理此申請')
       }
 
-      await connection.execute(
-        'UPDATE group_requests SET status = ?, updated_at = NOW() WHERE id = ?',
+      await client.query(
+        'UPDATE group_requests SET status = $1, updated_at = NOW() WHERE id = $2',
         [status, requestId]
       )
 
       if (status === 'accepted') {
-        await connection.execute(
-          'INSERT INTO group_members (group_id, member_id, status) VALUES (?, ?, "accepted")',
-          [request.group_id, request.sender_id]
+        await client.query(
+          'INSERT INTO group_members (group_id, member_id, status) VALUES ($1, $2, $3)',
+          [request.group_id, request.sender_id, 'accepted']
         )
 
         if (request.chat_room_id) {
-          await connection.execute(
-            'INSERT INTO chat_room_members (room_id, user_id) VALUES (?, ?)',
+          await client.query(
+            'INSERT INTO chat_room_members (room_id, user_id) VALUES ($1, $2)',
             [request.chat_room_id, request.sender_id]
           )
 
@@ -81,22 +82,22 @@ export const chatController = {
             content: `使用者 ${request.sender_name} 已加入群組`,
           })
 
-          await connection.execute(
-            'INSERT INTO chat_messages (room_id, sender_id, message, is_system) VALUES (?, ?, ?, 1)',
+          await client.query(
+            'INSERT INTO chat_messages (room_id, sender_id, message, is_system) VALUES ($1, $2, $3, true)',
             [request.chat_room_id, userId, systemMessage]
           )
 
           // 更新成員數量
-          const [[memberCount]] = await connection.execute(
-            'SELECT COUNT(*) as count FROM group_members WHERE group_id = ? AND status = "accepted"',
-            [request.group_id]
+          const memberCountResult = await client.query(
+            'SELECT COUNT(*) as count FROM group_members WHERE group_id = $1 AND status = $2',
+            [request.group_id, 'accepted']
           )
 
           // 廣播群組更新
           chatService.broadcastToRoom(request.chat_room_id, {
             type: 'groupUpdate',
             groupId: request.group_id,
-            memberCount: memberCount.count,
+            memberCount: parseInt(memberCountResult.rows[0].count),
             senderName: request.sender_name,
             senderImage: request.sender_image,
             status: status,
@@ -105,7 +106,7 @@ export const chatController = {
         }
       }
 
-      await connection.commit()
+      await client.query('COMMIT')
       return {
         status: 'success',
         message: `申請已${status === 'accepted' ? '接受' : '拒絕'}`,
@@ -115,11 +116,11 @@ export const chatController = {
         },
       }
     } catch (error) {
-      await connection.rollback()
+      await client.query('ROLLBACK')
       console.error('處理群組申請錯誤:', error)
       throw error
     } finally {
-      connection.release()
+      client.release()
     }
   },
 
@@ -193,9 +194,9 @@ export const chatController = {
   },
 
   sendMessage: async (senderId, roomId, message) => {
-    const connection = await db.getConnection()
+    const client = await pool.connect()
     try {
-      await connection.beginTransaction()
+      await client.query('BEGIN')
 
       const isMember = await ChatRoom.isMember(roomId, senderId)
       if (!isMember) {
@@ -208,7 +209,7 @@ export const chatController = {
         message,
       })
 
-      const [[messageData]] = await connection.execute(
+      const messageDataResult = await client.query(
         `
         SELECT 
           cm.*,
@@ -216,12 +217,14 @@ export const chatController = {
           u.image_path as sender_image
         FROM chat_messages cm
         JOIN users u ON cm.sender_id = u.user_id
-        WHERE cm.id = ?
+        WHERE cm.id = $1
       `,
         [messageId]
       )
 
-      await connection.commit()
+      const messageData = messageDataResult.rows[0]
+
+      await client.query('COMMIT')
 
       await chatService.broadcastToRoom(roomId, {
         type: 'message',
@@ -240,11 +243,11 @@ export const chatController = {
         data: { messageId },
       }
     } catch (error) {
-      await connection.rollback()
+      await client.query('ROLLBACK')
       console.error('發送訊息錯誤:', error)
       throw error
     } finally {
-      connection.release()
+      client.release()
     }
   },
 
@@ -261,7 +264,7 @@ export const chatController = {
     }
   },
 
-  // === WebSocket 相關方法 ===
+  // WebSocket 相關方法保持不變...
   registerWebSocket: async (ws, userId) => {
     try {
       chatService.addConnection(userId, ws)

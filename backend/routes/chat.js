@@ -1,102 +1,90 @@
 import express from 'express'
 import { chatController } from '../controllers/chatController.js'
 import { chatService } from '../services/chatService.js'
-import { checkAuth } from './auth.js'
-import db from '../configs/mysql.js'
+import { checkAuth } from '../middlewares/authenticate.js'
+import db from '../configs/db.js'
 
 const router = express.Router()
-
-// 套用身份驗證中間件
 router.use(checkAuth)
 
-// === 聊天室成員管理 ===
 router.post('/rooms/:roomId/leave', async (req, res) => {
-  const connection = await db.getConnection()
+  const client = await db.connect()
   try {
-    await connection.beginTransaction()
-
+    await client.query('BEGIN')
     const { roomId } = req.params
     const userId = req.user.user_id
 
-    // 獲取群組資訊
-    const [[groupInfo]] = await connection.execute(
-      'SELECT group_id FROM `group` WHERE chat_room_id = ?',
+    const groupInfo = await client.query(
+      'SELECT group_id FROM "group" WHERE chat_room_id = $1',
       [roomId]
     )
 
-    if (!groupInfo) {
+    if (groupInfo.rows.length === 0) {
       throw new Error('找不到該群組')
     }
 
-    // 從聊天室成員中移除
-    await connection.execute(
-      'DELETE FROM chat_room_members WHERE room_id = ? AND user_id = ?',
+    await client.query(
+      'DELETE FROM chat_room_members WHERE room_id = $1 AND user_id = $2',
       [roomId, userId]
     )
 
-    // 從群組成員中移除
-    await connection.execute(
-      'DELETE FROM group_members WHERE group_id = ? AND member_id = ?',
-      [groupInfo.group_id, userId]
+    await client.query(
+      'DELETE FROM group_members WHERE group_id = $1 AND member_id = $2',
+      [groupInfo.rows[0].group_id, userId]
     )
 
-    // 新增系統消息記錄離開事件
-    const [[userData]] = await connection.execute(
-      'SELECT name FROM users WHERE user_id = ?',
+    const userData = await client.query(
+      'SELECT name FROM users WHERE user_id = $1',
       [userId]
     )
 
     const systemMessage = JSON.stringify({
       type: 'system',
-      content: `使用者 ${userData.name || '未知用戶'} 已離開群組`,
+      content: `使用者 ${userData.rows[0].name || '未知用戶'} 已離開群組`,
     })
 
-    await connection.execute(
-      'INSERT INTO chat_messages (room_id, sender_id, message, is_system) VALUES (?, ?, ?, 1)',
+    await client.query(
+      'INSERT INTO chat_messages (room_id, sender_id, message, is_system) VALUES ($1, $2, $3, true)',
       [roomId, 0, systemMessage]
     )
 
-    await connection.commit()
-
-    // 更新在線成員數量
-    const [[memberCount]] = await connection.execute(
-      'SELECT COUNT(*) as count FROM group_members WHERE group_id = ? AND status = "accepted"',
-      [groupInfo.group_id]
+    const memberCount = await client.query(
+      'SELECT COUNT(*) as count FROM group_members WHERE group_id = $1 AND status = $2',
+      [groupInfo.rows[0].group_id, 'accepted']
     )
 
-    // 廣播更新消息
+    await client.query('COMMIT')
+
     chatService.broadcastToRoom(roomId, {
       type: 'memberLeft',
       userId: userId,
-      userName: userData.name || '未知用戶',
-      groupId: groupInfo.group_id,
-      memberCount: memberCount.count,
+      userName: userData.rows[0].name || '未知用戶',
+      groupId: groupInfo.rows[0].group_id,
+      memberCount: memberCount.rows[0].count,
       timestamp: new Date().toISOString(),
     })
 
     res.json({
       status: 'success',
       message: '已成功離開聊天室',
-      data: { memberCount: memberCount.count },
+      data: { memberCount: memberCount.rows[0].count },
     })
   } catch (error) {
-    await connection.rollback()
+    await client.query('ROLLBACK')
     console.error('離開聊天室失敗:', error)
     res.status(500).json({
       status: 'error',
       message: error.message || '離開聊天室失敗',
     })
   } finally {
-    connection.release()
+    client.release()
   }
 })
 
-// === 訊息相關路由 ===
 router.get('/rooms/:roomId/messages', async (req, res) => {
   try {
     const { roomId } = req.params
     const userId = req.user.user_id
-
     const result = await chatController.getMessages(roomId, userId)
     res.json(result)
   } catch (error) {
@@ -113,7 +101,6 @@ router.post('/rooms/:roomId/messages', async (req, res) => {
     const { roomId } = req.params
     const { message } = req.body
     const userId = req.user.user_id
-
     const result = await chatController.sendMessage(userId, roomId, message)
     res.json(result)
   } catch (error) {
@@ -125,7 +112,6 @@ router.post('/rooms/:roomId/messages', async (req, res) => {
   }
 })
 
-// === 申請相關路由 ===
 router.get('/requests/pending', async (req, res) => {
   try {
     const userId = req.user.user_id
@@ -154,7 +140,6 @@ router.get('/requests/history', async (req, res) => {
   }
 })
 
-// 處理群組申請
 router.patch('/requests/:requestId', async (req, res) => {
   try {
     const userId = req.user.user_id
@@ -190,25 +175,23 @@ router.patch('/requests/:requestId', async (req, res) => {
   }
 })
 
-// === 使用者相關路由 ===
 router.get('/users', async (req, res) => {
-  let connection
+  const client = await db.connect()
   try {
-    connection = await db.getConnection()
-    const [users] = await connection.execute(
+    const users = await client.query(
       `SELECT 
-          user_id,
-          name,
-          email,
-          image_path,
-          created_at
-        FROM users 
-        WHERE valid = 1`
+       user_id,
+       name,
+       email,
+       image_path,
+       created_at
+     FROM users 
+     WHERE valid = true`
     )
 
     res.json({
       status: 'success',
-      data: users.map((user) => ({
+      data: users.rows.map((user) => ({
         user_id: user.user_id,
         name: user.name,
         email: user.email,
@@ -223,11 +206,10 @@ router.get('/users', async (req, res) => {
       message: '獲取使用者列表失敗',
     })
   } finally {
-    if (connection) connection.release()
+    client.release()
   }
 })
 
-// === 群組相關路由 ===
 router.get('/user/groups', async (req, res) => {
   try {
     const userId = req.user.user_id
@@ -249,7 +231,6 @@ router.get('/user/groups', async (req, res) => {
   }
 })
 
-// === 錯誤處理中間件 ===
 router.use((error, req, res, next) => {
   console.error('Chat API Error:', error)
   res.status(500).json({

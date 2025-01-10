@@ -1,6 +1,6 @@
 import express from 'express'
 import authenticate from '#middlewares/authenticate.js'
-import db from '##/configs/mysql.js'
+import { pool } from '##/configs/db.js'
 import multer from 'multer'
 import jsonwebtoken from 'jsonwebtoken'
 import { compareHash } from '#db-helpers/password-hash.js'
@@ -12,37 +12,43 @@ const router = express.Router()
 /* GET home page. */
 router.post('/', upload.none(), async (req, res, next) => {
   try {
-    // console.log(req.body)
     const { email, password } = req.body
 
-    const [row] = await db.query(
-      'SELECT * FROM users WHERE email = ? AND valid = 1',
+    const result = await pool.query(
+      'SELECT * FROM users WHERE email = $1 AND valid = true',
       [email]
     )
-    const user = row[0]
-    // 這邊實際上是帳號錯誤
-    if (row.length === 0) {
+
+    // 查無此用戶
+    if (result.rows.length === 0) {
       return res.json({
         status: 'error',
         message: '帳號或密碼錯誤。或已停用本帳號，請聯繫客服',
       })
     }
-    if (user.valid !== 1) {
+
+    const user = result.rows[0]
+
+    // 檢查帳號是否被停用
+    if (!user.valid) {
       return res.json({
         status: 'error',
         message: '此帳號已被停用',
       })
     }
-    // compareHash比對輸入與資料庫中的密碼~
+
+    // compareHash比對輸入與資料庫中的密碼
     const passwordMatch = await compareHash(password, user.password)
-    //  這邊實際上是密碼錯誤
+
+    // 密碼錯誤
     if (!passwordMatch) {
       return res.json({
         status: 'error',
         message: '帳號或密碼錯誤',
       })
     }
-    // 之後想改這邊邏輯，因為帳號密碼應該只能有比對出一組，如果email一樣不予註冊才對。
+
+    // 產生 JWT token
     const token = jsonwebtoken.sign(
       {
         user_id: user.user_id,
@@ -83,7 +89,6 @@ router.post('/logout', authenticate, (req, res) => {
 
 router.post('/status', checkToken, (req, res) => {
   const user = req.decoded
-  // console.log('user', user)
   if (user) {
     const token = jsonwebtoken.sign(
       {
@@ -107,8 +112,6 @@ router.post('/status', checkToken, (req, res) => {
   }
 })
 
-export default router
-
 function checkToken(req, res, next) {
   const token = req.get('Authorization')
 
@@ -130,6 +133,4 @@ function checkToken(req, res, next) {
   }
 }
 
-// 用 POST 來處理 logout 行為是因為 RESTful API 的設計原則建議將「變更狀態」或「造成副作用」的操作用 POST、PUT、DELETE 等方法，而 GET 是用來取得資源、不應該改變伺服器的狀態。
-
-// 在 logout 的情況下，清除 cookies 是一個修改伺服器狀態的操作，符合 POST 的使用原則。雖然從使用者角度來看只是按了一個按鈕，但背後的動作其實涉及狀態變更。
+export default router

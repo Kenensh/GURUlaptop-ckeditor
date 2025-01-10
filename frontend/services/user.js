@@ -5,7 +5,21 @@ import useSWR from 'swr'
  * 檢查會員狀態使用
  */
 export const checkAuth = async () => {
-  return await axiosInstance.get('http://localhost:3005/api/auth/check')
+  try {
+    const response = await axiosInstance.get('/api/auth/check', {
+      withCredentials: true,
+    })
+    console.log('驗證檢查回應:', response)
+    return response
+  } catch (error) {
+    console.error('驗證檢查錯誤:', error)
+    return {
+      data: {
+        status: 'error',
+        message: error.response?.data?.message || '驗證檢查失敗',
+      },
+    }
+  }
 }
 /**
  * Google Login(Firebase)登入用，providerData為登入後得到的資料
