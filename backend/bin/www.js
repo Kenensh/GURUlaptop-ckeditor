@@ -30,7 +30,9 @@ var server = http.createServer(app)
  */
 initializeWebSocket(server)
 
-server.listen(port)
+// 修改這裡，添加 host
+const host = process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost'
+server.listen(port, host)
 server.on('error', onError)
 server.on('listening', onListening)
 
@@ -88,5 +90,7 @@ function onListening() {
   var addr = server.address()
   var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port
   debug('Listening on ' + bind)
-  console.log(`伺服器啟動成功 http://localhost:${port}`)
+  // 修改這裡，使用實際的 host
+  const displayHost = process.env.NODE_ENV === 'production' ? host : 'localhost'
+  console.log(`伺服器啟動成功 http://${displayHost}:${port}`)
 }
