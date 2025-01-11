@@ -3,7 +3,7 @@ import React from 'react'
 import Link from 'next/link'
 import { FaPenFancy } from 'react-icons/fa'
 import { Nav, Tab } from 'react-bootstrap'
-import CardExample from '@/components/bootstrap/cards'
+import Card from 'react-bootstrap/Card'
 import Coupon from '@/components/coupon'
 import UserProfile from '@/components/dashboard/userInfoEdit'
 import Paginationcomponent from '@/components/paginationcomponent/paginationcomponent'
@@ -99,7 +99,11 @@ export default function CouponPageJquery() {
               <Tab.Pane eventKey="shopping">
                 <div>
                   <h4>購買清單</h4>
-                  <CardExample />
+                  <Card>
+                    <Card.Body>
+                      <Card.Title>購買清單內容</Card.Title>
+                    </Card.Body>
+                  </Card>
                 </div>
               </Tab.Pane>
 

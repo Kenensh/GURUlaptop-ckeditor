@@ -1,4 +1,4 @@
-const path = require('path') // 添加這行在最上方
+const path = require('path')
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -26,7 +26,12 @@ const nextConfig = {
   },
   // webpack 配置
   webpack: (config) => {
-    config.resolve.alias['@components'] = path.join(__dirname, 'components')
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': path.join(__dirname),
+      '@components': path.join(__dirname, 'components'),
+      '@pages': path.join(__dirname, 'pages'),
+    }
     return config
   },
   // redirects 配置
@@ -39,12 +44,6 @@ const nextConfig = {
       },
     ]
   },
-  // 添加 swc 配置
-  swcMinify: false,
-  // eslint 配置（如果還有問題可以啟用）
-  // eslint: {
-  //   ignoreDuringBuilds: true,
-  // },
 }
 
 module.exports = nextConfig
