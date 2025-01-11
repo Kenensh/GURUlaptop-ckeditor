@@ -1,3 +1,5 @@
+const path = require('path') // 添加這行在最上方
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
@@ -22,12 +24,12 @@ const nextConfig = {
     ],
     unoptimized: true,
   },
-  // 添加 webpack 配置
+  // webpack 配置
   webpack: (config) => {
     config.resolve.alias['@components'] = path.join(__dirname, 'components')
     return config
   },
-  // 添加 redirects
+  // redirects 配置
   async redirects() {
     return [
       {
@@ -37,6 +39,12 @@ const nextConfig = {
       },
     ]
   },
+  // 添加 swc 配置
+  swcMinify: false,
+  // eslint 配置（如果還有問題可以啟用）
+  // eslint: {
+  //   ignoreDuringBuilds: true,
+  // },
 }
 
 module.exports = nextConfig
