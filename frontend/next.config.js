@@ -26,17 +26,9 @@ const nextConfig = {
   },
   // webpack 配置
   webpack: (config) => {
-    config.resolve = {
-      ...config.resolve,
-      alias: {
-        ...config.resolve.alias,
-        '@': path.join(__dirname, './'),
-        '@components': path.join(__dirname, './components'),
-        '@pages': path.join(__dirname, './pages'),
-        '@styles': path.join(__dirname, './styles'),
-        '@public': path.join(__dirname, './public'),
-        '@article': path.join(__dirname, './components/article'),
-      },
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': path.resolve(__dirname), // 使用 path.resolve 而不是 path.join
     }
     return config
   },
