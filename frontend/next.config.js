@@ -22,20 +22,12 @@ const nextConfig = {
     ],
     unoptimized: true,
   },
-  // output: 'export', // don't use with `next start` or api route
-  // distDir: 'dist',
-  // avoid cors with proxy
-  // async rewrites() {
-  //   return [
-  //     {
-  //       source: '/api/:path*',
-  //       destination: 'http://localhost:3005/:path*', // Proxy to Backend
-  //     },
-  //   ]
-  // },
-}
-
-module.exports = {
+  // 添加 webpack 配置
+  webpack: (config) => {
+    config.resolve.alias['@components'] = path.join(__dirname, 'components')
+    return config
+  },
+  // 添加 redirects
   async redirects() {
     return [
       {

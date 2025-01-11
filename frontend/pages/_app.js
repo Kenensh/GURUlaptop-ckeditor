@@ -1,5 +1,8 @@
 import { useEffect } from 'react'
 
+//render 用
+import 'bootstrap/dist/css/bootstrap.min.css'
+
 // 樣式
 import '@/styles/globals.scss'
 import '@/styles/product.scss'
