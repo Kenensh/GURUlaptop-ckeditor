@@ -26,11 +26,17 @@ const nextConfig = {
   },
   // webpack 配置
   webpack: (config) => {
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@': path.join(__dirname),
-      '@components': path.join(__dirname, 'components'),
-      '@pages': path.join(__dirname, 'pages'),
+    config.resolve = {
+      ...config.resolve,
+      alias: {
+        ...config.resolve.alias,
+        '@': path.join(__dirname, './'),
+        '@components': path.join(__dirname, './components'),
+        '@pages': path.join(__dirname, './pages'),
+        '@styles': path.join(__dirname, './styles'),
+        '@public': path.join(__dirname, './public'),
+        '@article': path.join(__dirname, './components/article'),
+      },
     }
     return config
   },
