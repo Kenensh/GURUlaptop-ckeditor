@@ -3,6 +3,7 @@ const path = require('path')
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
+  // images 設定正確，處理外部圖片
   images: {
     remotePatterns: [
       {
@@ -24,27 +25,19 @@ const nextConfig = {
     ],
     unoptimized: true,
   },
-  // 解決 ESLint 和 TypeScript 問題
+  // 處理建構時的檢查
   eslint: {
     ignoreDuringBuilds: true,
   },
   typescript: {
     ignoreBuildErrors: true,
   },
-  // webpack 配置
+  // webpack 配置簡單明確，只設定一個主要的別名
   webpack: (config) => {
-    config.resolve = {
-      ...config.resolve,
-      alias: {
-        '@': path.resolve(__dirname),
-        // 特別處理 article 相關的路徑
-        '@components/article': path.resolve(__dirname, './components/article'),
-        '@components': path.resolve(__dirname, './components'),
-      },
-    }
+    config.resolve.alias['@'] = path.resolve(__dirname)
     return config
   },
-  // redirects 配置
+  // redirects 配置保持不變
   async redirects() {
     return [
       {
