@@ -24,15 +24,13 @@ export default function SwrList() {
 
   // 頁面載入時+目前頁數改變時，取得商品資料
   useEffect(() => {
-    // 捲動到最上層
-    useEffect(() => {
-      if (!isClient) return  // 加入檢查
-      
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: 'smooth',
-      })
+    if (!isClient) return
+
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    })
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageNow]) // 頁面載入時+目前頁數改變時
