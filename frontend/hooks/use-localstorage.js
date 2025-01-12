@@ -1,19 +1,19 @@
 import { useState } from 'react'
 
+const isClient = typeof window !== 'undefined'
+
 export default function useLocalStorage(key, initialValue) {
   // State to store our value
   // Pass initial state function to useState so logic is only executed once
   const [storedValue, setStoredValue] = useState(() => {
-    if (typeof window === 'undefined') {
+    if (!isClient) {
       return initialValue
     }
     try {
-      // Get from local storage by key
-      const item = window.localStorage.getItem(key)
-      // Parse stored json or if none return initialValue
+      // 直接使用 localStorage
+      const item = localStorage.getItem(key)
       return item ? JSON.parse(item) : initialValue
     } catch (error) {
-      // If error also return initialValue
       console.log(error)
       return initialValue
     }
@@ -28,8 +28,8 @@ export default function useLocalStorage(key, initialValue) {
       // Save state
       setStoredValue(valueToStore)
       // Save to local storage
-      if (typeof window !== 'undefined') {
-        window.localStorage.setItem(key, JSON.stringify(valueToStore))
+      if (isClient) {
+        localStorage.setItem(key, JSON.stringify(valueToStore))
       }
     } catch (error) {
       // A more advanced implementation would handle the error case

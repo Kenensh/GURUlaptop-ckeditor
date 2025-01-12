@@ -8,6 +8,8 @@ import BackToTop2 from '@/components/BackToTop/BackToTop2'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 
+const isClient = typeof window !== 'undefined'
+
 export default function List() {
   // 利用網址列的參數來過濾產品
   const router = useRouter()
@@ -23,21 +25,25 @@ export default function List() {
 
   // 監聽網址變化並更新查詢內容
   useEffect(() => {
-    const page = location?.page ? parseInt(location.page) : 1
-    const category = location?.category
-    const categoryValue = location?.category_value
-    const price = location?.price
-    const search = location?.search
-    // 從網址列更新價格範圍
-    setPriceMin(price ? Number(price.split('-')[0]) : 5000)
-    setPriceMax(price ? Number(price.split('-')[1]) : 200000)
-    fetchProducts({
-      page,
-      category,
-      categoryValue,
-      price,
-      search,
-    })
+    if (isClient) {
+      // 加入檢查
+      const page = location?.page ? parseInt(location.page) : 1
+      const category = location?.category
+      const categoryValue = location?.category_value
+      const price = location?.price
+      const search = location?.search
+
+      setPriceMin(price ? Number(price.split('-')[0]) : 5000)
+      setPriceMax(price ? Number(price.split('-')[1]) : 200000)
+
+      fetchProducts({
+        page,
+        category,
+        categoryValue,
+        price,
+        search,
+      })
+    }
   }, [location])
 
   // 從後端撈取資料

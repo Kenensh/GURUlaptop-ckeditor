@@ -3,6 +3,8 @@ import SwrPage from '@/components/product-test/swr-page'
 import { useProduct } from '@/services/product'
 import BS5Pagination from '@/components/common/bs5-pagination'
 
+const isClient = typeof window !== 'undefined'
+
 export default function SwrList() {
   const [pageNow, setPageNow] = useState(1)
   const [perPage, setPerPage] = useState(9)
@@ -23,13 +25,14 @@ export default function SwrList() {
   // 頁面載入時+目前頁數改變時，取得商品資料
   useEffect(() => {
     // 捲動到最上層
-    if (typeof window !== 'undefined') {
+    useEffect(() => {
+      if (!isClient) return  // 加入檢查
+      
       window.scrollTo({
         top: 0,
         left: 0,
         behavior: 'smooth',
       })
-    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageNow]) // 頁面載入時+目前頁數改變時

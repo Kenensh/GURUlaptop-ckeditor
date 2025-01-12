@@ -3,6 +3,8 @@ import { getProducts } from '@/services/product'
 import BS5Pagination from '@/components/common/bs5-pagination'
 import ProductCard from '@/components/product/product-card'
 
+const isClient = typeof window !== 'undefined'
+
 export default function List() {
   const [pageNow, setPageNow] = useState(1) // 目前頁數
   const [perPage, setPerPage] = useState(9) // 每頁幾筆
@@ -28,9 +30,10 @@ export default function List() {
 
   // 取得商品資料
   const handleGetProducts = async () => {
+    if (!isClient) return // 加入檢查
+
     const res = await getProducts(searchCriteria, pageNow, perPage)
 
-    // console.log(res.data)
     if (res.data.status === 'success') {
       setTotal(res.data.data.total)
       setPageCount(res.data.data.pageCount)

@@ -12,6 +12,8 @@ import BackToTop2 from '@/components/BackToTop/BackToTop2'
 import Head from 'next/head'
 export default function Detail() {
   // 從網址列的參數取得商品ID，並透過ID取得商品資料
+
+  const isClient = typeof window !== 'undefined'
   const router = useRouter()
   const { pid } = router.query
   const [data, setData] = useState(null)
@@ -29,8 +31,8 @@ export default function Detail() {
   // 初始化
   const init = async () => {
     try {
-      // 確保只在瀏覽器端執行 localStorage 的操作
-      if (typeof window !== 'undefined') {
+      if (isClient) {
+        // 改用 isClient
         const response = await fetch(
           `http://localhost:3005/api/favorites/${userData.user_id}/${pid}`
         )
@@ -40,7 +42,7 @@ export default function Detail() {
           setIsChecked(true)
         }
 
-        // 只有在瀏覽器端才能訪問 localStorage
+        // 直接使用 localStorage
         const compareProduct = localStorage
           .getItem('compareProduct')
           ?.split(',')
@@ -209,7 +211,9 @@ export default function Detail() {
         }
       }
     } else {
-      window.location.href = 'http://localhost:3000/member/login'
+      if (isClient) {
+        router.push('/member/login')
+      }
     }
   }
 
@@ -245,27 +249,24 @@ export default function Detail() {
   //比較按鈕的狀態
   const [isCompared, setIsCompared] = useState(false)
   const toggleCompare = () => {
-    const productID = String(pid) // 確保 product_id 是字串格式
+    if (!isClient) return // 加入檢查
 
-    // 取得目前的比較清單或初始化為空陣列
+    const productID = String(pid)
     let compareProduct = localStorage.getItem('compareProduct')
       ? localStorage.getItem('compareProduct').split(',')
       : []
 
     if (isCompared) {
-      // 從比較清單中移除產品 ID
       compareProduct = compareProduct.filter((id) => id !== productID)
       localStorage.setItem('compareProduct', compareProduct.join(','))
       handleShowMessage('取消比較！', 'success')
       setIsCompared(false)
     } else {
-      // 檢查比較清單是否已滿
       if (compareProduct.length >= 2) {
         handleShowMessage('比較清單已滿！', 'error')
         return
       }
 
-      // 添加產品 ID 到比較清單
       compareProduct.push(productID)
       localStorage.setItem('compareProduct', compareProduct.join(','))
       handleShowMessage('加入比較！', 'success')

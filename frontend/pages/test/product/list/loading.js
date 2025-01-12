@@ -4,6 +4,8 @@ import BS5Pagination from '@/components/common/bs5-pagination'
 import { delay } from '@/hooks/use-loader'
 import ProductCardLoading from '@/components/product-test/product-card-loading'
 
+const isClient = typeof window !== 'undefined'
+
 export default function ListLoading() {
   const [pageNow, setPageNow] = useState(1) // 目前頁數
   const [perPage, setPerPage] = useState(9) // 每頁幾筆
@@ -32,9 +34,9 @@ export default function ListLoading() {
 
   // 取得商品資料
   const handleGetProducts = async () => {
-    const res = await getProducts(searchCriteria, pageNow, perPage)
+    if (!isClient) return // 加入檢查
 
-    // console.log(res.data)
+    const res = await getProducts(searchCriteria, pageNow, perPage)
     if (res.data.status === 'success') {
       setTotal(res.data.data.total)
       setPageCount(res.data.data.pageCount)
@@ -49,21 +51,20 @@ export default function ListLoading() {
 
   // 頁面載入時+目前頁數改變時，取得商品資料
   useEffect(() => {
-    // 捲動到最上層
-    if (typeof window !== 'undefined') {
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: 'smooth',
-      })
-    }
+    if (!isClient) return // 加入檢查
+
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    })
 
     // 開啟載入動畫
     if (!loading) setLoading(true)
 
-    handleGetProducts() // 取得商品資料
-      .then(delay(1500)) // 延遲1.5秒
-      .then(() => setLoading(false)) // 關閉載入動畫
+    handleGetProducts()
+      .then(delay(1500))
+      .then(() => setLoading(false))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageNow]) // 頁面載入時+目前頁數改變時

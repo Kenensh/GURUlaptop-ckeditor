@@ -1,14 +1,16 @@
 import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 
-// 只作導向到 product/list
+const isClient = typeof window !== 'undefined'
+
 export default function ProductIndex() {
   const router = useRouter()
 
-  // 確認window(瀏覽器)開始運作
-  if (typeof window !== 'undefined') {
-    router.push('/product/list')
-  }
+  useEffect(() => {
+    if (isClient) {
+      router.push('/product/list')
+    }
+  }, [])
 
-  return <>
-  </>
+  return <></>
 }

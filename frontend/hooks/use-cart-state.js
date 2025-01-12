@@ -18,6 +18,8 @@ import {
 } from './cart-reducer-state'
 import useLocalStorage from './use-localstorage'
 
+const isClient = typeof window !== 'undefined'
+
 const CartContext = createContext(null)
 
 // cartItem = {
@@ -42,14 +44,11 @@ export const CartProvider = ({
   // localStorage中只儲存 items。如果localStorage有此鍵中的值，則套入使用作為初始items。
   let items = initialCartItems
 
-  if (!items.length) {
+  // 修改這部分的檢查
+  if (!items.length && isClient) {
     try {
-      // 修正nextjs中window is undefined的問題
-      if (typeof window !== 'undefined') {
-        const item = window.localStorage.getItem(localStorageKey)
-        // 剖析存儲的json，如果沒有則返回初始值
-        items = item ? JSON.parse(item) : []
-      }
+      const item = localStorage.getItem(localStorageKey)
+      items = item ? JSON.parse(item) : []
     } catch (error) {
       items = []
       console.log(error)
@@ -133,7 +132,7 @@ export const CartProvider = ({
     <CartContext.Provider
       value={{
         cart: cartState,
-        items: cartState.items, //items與cartState.items差了一個subtoal屬性
+        items: cartState.items,
         addItem,
         removeItem,
         updateItem,
