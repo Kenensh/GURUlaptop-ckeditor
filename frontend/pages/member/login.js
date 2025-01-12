@@ -13,7 +13,9 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai' // 記得�
 import { useLoader } from '@/hooks/use-loader'
 import Head from 'next/head'
 import GlitchText from '@/components/dashboard/glitch-text/glitch-text'
-import GlowingText from '@/components/dashboard/glowing-text/glowing-text';
+import GlowingText from '@/components/dashboard/glowing-text/glowing-text'
+
+const isClient = typeof window !== 'undefined'
 
 export default function LogIn(props) {
   const [showpassword, setShowpassword] = useState(false)
@@ -28,7 +30,9 @@ export default function LogIn(props) {
   const handleSubmit = async (e) => {
     e.preventDefault()
     const formData = new FormData(e.target)
-    showLoader() // 開始載入時顯示
+    if (isClient) {
+      showLoader() // 只在客戶端執行
+    }
 
     try {
       const response = await fetch(`http://localhost:3005/api/login`, {
@@ -62,7 +66,9 @@ export default function LogIn(props) {
         confirmButtonColor: '#3085d6',
       })
     } finally {
-      hideLoader() // 不管成功失敗都要關閉 loader
+      if (isClient) {
+        hideLoader() // 只在客戶端執行
+      }
     }
   }
 
@@ -84,19 +90,31 @@ export default function LogIn(props) {
           <div
             className={`row ${styles['content-row']} d-flex justify-content-center align-items-center `}
           >
-            <div className={`${styles.left} col d-flex flex-column justify-content-start col-sm-12 col-md-11 col-lg-6  `}>
+            <div
+              className={`${styles.left} col d-flex flex-column justify-content-start col-sm-12 col-md-11 col-lg-6  `}
+            >
               {/* <h4 className={`text-white text-md-start`}>
                 {renderJumpingText('Welcome to', 'welcome-text')}
                 {renderJumpingText('Log in', 'welcome-text')}
               </h4> */}
-      
+
               {/* <h3 className={`text-white ${styles['guru-laptop']} text-start! text-md-start`}> */}
-                {/* {renderJumpingText('to LaptopGuru', 'company-name')} */}
+              {/* {renderJumpingText('to LaptopGuru', 'company-name')} */}
               {/* </h3> */}
               {/* <GlitchText>Log in</GlitchText> */}
-              <i><GlowingText text="Log in to"className={`text-white text-md-start text-lg-start`} /></i>
-              <i><GlowingText text="GuruLaptop" className={`text-white text-center text-lg-start text-md-start ${styles.glowingText}`}/></i>
-              </div>
+              <i>
+                <GlowingText
+                  text="Log in to"
+                  className={`text-white text-md-start text-lg-start`}
+                />
+              </i>
+              <i>
+                <GlowingText
+                  text="GuruLaptop"
+                  className={`text-white text-center text-lg-start text-md-start ${styles.glowingText}`}
+                />
+              </i>
+            </div>
             <div className={`${styles.right} col-sm-12 col-md-11 col-lg-5 `}>
               <div className={`${styles.tabs} d-flex justify-content-between`}>
                 <Link
@@ -165,7 +183,7 @@ export default function LogIn(props) {
                         className="btn btn-primary position-absolute end-0 top-50  border-0 ${styles[eye-icon]}"
                         onClick={() => setShowpassword(!showpassword)}
                         style={{
-                          background: 'none', 
+                          background: 'none',
                           // 使用 !important 強制覆蓋
                           transform: 'translateY(calc(50% - 20px))',
                           right: '10px',
@@ -210,7 +228,10 @@ export default function LogIn(props) {
 
                     <div className="center-of-bottom-group d-flex flex-wrap justify-content-around">
                       <div className="row">
-                        <Link className={`text-white text-decoration-none ${styles.hover}`} href="./forget-password">
+                        <Link
+                          className={`text-white text-decoration-none ${styles.hover}`}
+                          href="./forget-password"
+                        >
                           忘記密碼
                         </Link>
                       </div>
