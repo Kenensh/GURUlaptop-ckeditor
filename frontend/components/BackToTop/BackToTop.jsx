@@ -1,76 +1,60 @@
 import { useEffect, useState } from 'react'
 import styles from '@/styles/BackToTop.module.css'
 
+const isClient = typeof window !== 'undefined'
+
 const BackToTop = () => {
   const [isVisible, setIsVisible] = useState(false)
 
+  // 處理滾動監聽
   useEffect(() => {
+    if (!isClient) return
+
     const handleScroll = () => {
-      if (window.scrollY > 300) {
-        setIsVisible(true)
-      } else {
-        setIsVisible(false)
-      }
+      // 獲取滾動容器
+      const mainBody = document.querySelector('.main-body')
+      if (!mainBody) return
+
+      // 使用容器的 scrollTop 而不是 window.scrollY
+      const scrollTop = mainBody.scrollTop || 0
+      setIsVisible(scrollTop > 300)
     }
 
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
+    // 找到正確的滾動容器並添加監聽器
+    const mainBody = document.querySelector('.main-body')
+    if (mainBody) {
+      mainBody.addEventListener('scroll', handleScroll)
+
+      // 清理函數
+      return () => {
+        mainBody.removeEventListener('scroll', handleScroll)
+      }
+    }
   }, [])
 
-  const buttonStyle = {
-    position: 'fixed',
-    bottom: '30px',
-    right: '30px',
-    width: '50px',
-    height: '50px',
-    backgroundColor: '#8B00FF',
-    color: 'white',
-    border: 'none',
-    borderRadius: '100px',
-    fontSize: '24px',
-    cursor: 'pointer',
-    transition: 'all 0.3s ease',
-    zIndex: 1000,
-    background: 'rgba(255, 255, 255, 0.52)',
-    boxShadow: '0px 0px 20px 2px #6854C7',
-    backdropFilter: 'blur(5px)',
-    display: isVisible ? 'block' : 'none',
-  }
-
+  // 處理滾動到頂部
   const scrollToTop = () => {
-    // window.scrollTo({
-    //   top: 0,
-    //   behavior: 'smooth'
-    // });
-    document.querySelector('.main-body').scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    })
+    if (!isClient) return
+
+    const mainBody = document.querySelector('.main-body')
+    if (mainBody) {
+      mainBody.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      })
+    }
   }
 
-  //   return (
-  //     <button
-  //       style={buttonStyle}
-  //       onClick={scrollToTop}
-  //       onMouseEnter={e => {
-  //         e.target.style.backgroundColor = '#6900c7';
-  //         e.target.style.transform = 'translateY(-3px)';
-  //         e.target.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
-  //       }}
-  //       onMouseLeave={e => {
-  //         e.target.style.backgroundColor = '#8B00FF';
-  //         e.target.style.transform = 'translateY(0)';
-  //         e.target.style.boxShadow = '0px 0px 20px 2px #6854C7';
-  //       }}
-  //     >
-  //       ↑
-  //     </button>
-  //   );
+  // 只在客戶端渲染按鈕
+  if (!isClient) {
+    return null
+  }
 
   return (
     <button
       onClick={scrollToTop}
       className={`${styles.backToTop} ${isVisible ? styles.show : ''}`}
+      aria-label="回到頂部"
     >
       ↑
     </button>

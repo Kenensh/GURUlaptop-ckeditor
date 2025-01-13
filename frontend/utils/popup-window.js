@@ -1,78 +1,85 @@
-// 開新視窗並置中於瀏覽器中央的函式，facebook use it
-// https://stackoverflow.com/questions/4068373/center-a-popup-window-on-screen
+const isClient = typeof window !== 'undefined'
+
+// 檢測移動設備
+const isMobile = () => {
+  if (!isClient) return false
+
+  const userAgent = navigator.userAgent
+  return (
+    /\b(iPhone|iP[ao]d)/.test(userAgent) ||
+    /\b(iP[ao]d)/.test(userAgent) ||
+    /Android/i.test(userAgent) ||
+    /Mobile/i.test(userAgent)
+  )
+}
+
+// 取得螢幕資訊的安全函數
+const getScreenInfo = () => {
+  if (!isClient)
+    return { screenX: 0, screenY: 0, outerWidth: 0, outerHeight: 0 }
+
+  const screenX = window.screenX ?? window.screenLeft ?? 0
+  const screenY = window.screenY ?? window.screenTop ?? 0
+  const outerWidth =
+    window.outerWidth ?? document.documentElement.clientWidth ?? 0
+  const outerHeight =
+    (window.outerHeight ?? document.documentElement.clientHeight ?? 0) - 22
+
+  return { screenX, screenY, outerWidth, outerHeight }
+}
+
+// 主要的彈窗函數
 export function popupCenter(url, title, w, h) {
-  var userAgent = navigator.userAgent,
-    mobile = function () {
-      return (
-        /\b(iPhone|iP[ao]d)/.test(userAgent) ||
-        /\b(iP[ao]d)/.test(userAgent) ||
-        /Android/i.test(userAgent) ||
-        /Mobile/i.test(userAgent)
-      )
-    },
-    screenX =
-      typeof window.screenX != 'undefined' ? window.screenX : window.screenLeft,
-    screenY =
-      typeof window.screenY != 'undefined' ? window.screenY : window.screenTop,
-    outerWidth =
-      typeof window.outerWidth != 'undefined'
-        ? window.outerWidth
-        : document.documentElement.clientWidth,
-    outerHeight =
-      typeof window.outerHeight != 'undefined'
-        ? window.outerHeight
-        : document.documentElement.clientHeight - 22,
-    targetWidth = mobile() ? null : w,
-    targetHeight = mobile() ? null : h,
-    V = screenX < 0 ? window.screen.width + screenX : screenX,
-    left = parseInt(V + (outerWidth - targetWidth) / 2, 10),
-    right = parseInt(screenY + (outerHeight - targetHeight) / 2.5, 10),
-    features = []
-  if (targetWidth !== null) {
-    features.push('width=' + targetWidth)
-  }
-  if (targetHeight !== null) {
-    features.push('height=' + targetHeight)
-  }
-  features.push('left=' + left)
-  features.push('top=' + right)
+  if (!isClient) return null
+
+  const { screenX, screenY, outerWidth, outerHeight } = getScreenInfo()
+  const mobile = isMobile()
+
+  const targetWidth = mobile ? null : w
+  const targetHeight = mobile ? null : h
+  const V = screenX < 0 ? window.screen.width + screenX : screenX
+  const left = parseInt(V + (outerWidth - targetWidth) / 2, 10)
+  const right = parseInt(screenY + (outerHeight - targetHeight) / 2.5, 10)
+
+  const features = []
+  if (targetWidth !== null) features.push(`width=${targetWidth}`)
+  if (targetHeight !== null) features.push(`height=${targetHeight}`)
+  features.push(`left=${left}`)
+  features.push(`top=${right}`)
   features.push('scrollbars=1')
 
-  var newWindow = window.open(url, title, features.join(','))
-
-  if (window.focus) {
-    newWindow.focus()
+  try {
+    const newWindow = window.open(url, title, features.join(','))
+    if (window.focus && newWindow) {
+      newWindow.focus()
+    }
+    return newWindow
+  } catch (error) {
+    console.error('彈窗開啟失敗:', error)
+    return null
   }
-
-  return newWindow
 }
 
-// 自訂事件用
-export function subscribe(eventName, listener) {
-  document.addEventListener(eventName, listener)
+// 事件處理相關函數
+const createSafeEventHandler = (action) => (eventName, listener) => {
+  if (!isClient) return
+  try {
+    document[action](eventName, listener)
+  } catch (error) {
+    console.error(`事件${action}失敗:`, error)
+  }
 }
 
-// 自訂事件用
-export function unsubscribe(eventName, listener) {
-  document.removeEventListener(eventName, listener)
-}
+export const subscribe = createSafeEventHandler('addEventListener')
+export const unsubscribe = createSafeEventHandler('removeEventListener')
 
-// 自訂事件用
 export function publish(eventName, data) {
-  const event = new CustomEvent(eventName, { detail: data })
-  document.dispatchEvent(event)
-}
+  if (!isClient) return
 
-// call and close popwindow
-// default is window
-// export function closeWindow(windowRef = window) {
-//   windowRef.opener = null
-//   windowRef.open('', '_self')
-//   windowRef.close()
-//   //top.close()
-//   setTimeout(window.close, 5000)
-//   windowRef.history.go(-1)
-//   document.body.hide()
-//   window.open('', '_parent', '')
-//   window.close()
-// }
+  try {
+    const event = new CustomEvent(eventName, { detail: data })
+    document.dispatchEvent(event)
+  } catch (error) {
+    console.error('事件發布失敗:', error)
+  }
+}

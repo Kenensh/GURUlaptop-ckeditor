@@ -12,6 +12,8 @@ export default function Header() {
   const { isAuth, userData } = auth
   const [user_id, setUserId] = useState('')
   const router = useRouter()
+  const [bodyPadding, setBodyPadding] = useState('75px')
+
   const getDefaultImage = (gender) => {
     switch (gender) {
       case 'male':
@@ -76,11 +78,15 @@ export default function Header() {
     }
   }
 
+  // 處理 resize 和移動設備檢查
   useEffect(() => {
     if (!isClient) return
+
     const checkIfMobile = () => {
-      setIsMobile(window.innerWidth <= 768)
-      if (window.innerWidth > 768) {
+      const isMobileView = window.innerWidth <= 768
+      setIsMobile(isMobileView)
+      setBodyPadding(isMobileView ? '60px' : '75px')
+      if (!isMobileView) {
         setIsMenuOpen(false)
       }
     }
@@ -90,44 +96,51 @@ export default function Header() {
     return () => window.removeEventListener('resize', checkIfMobile)
   }, [])
 
+  // 處理 user_id 和頭像相關
   useEffect(() => {
+    if (!isClient || !user_id) return
 
-    if (!isClient) return
-    if (user_id) {
-      fetch(`http://localhost:3005/api/header`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          user_id: user_id,
-        }),
+    fetch(`http://localhost:3005/api/header`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user_id: user_id,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setImagePath(data?.image_path || getDefaultImage(data?.gender))
       })
-        .then((res) => res.json())
-        .then((data) => {
-          // 使用相同的 getDefaultImage 函數
-          setImagePath(data?.image_path || getDefaultImage(data?.gender))
-        })
-    }
-
-    document.body.style.paddingTop = '75px'
-    return () => {
-      document.body.style.paddingTop = '0px'
-    }
+      .catch((error) => {
+        console.error('Failed to fetch user data:', error)
+      })
   }, [user_id, auth?.userData?.gender, auth?.userData?.image_path])
 
+  // 處理 body padding
   useEffect(() => {
     if (!isClient) return
-    if (userData && userData.user_id) {
+
+    const body = document.querySelector('body')
+    if (body) {
+      body.style.paddingTop = bodyPadding
+      return () => {
+        body.style.paddingTop = '0px'
+      }
+    }
+  }, [bodyPadding])
+
+  // 處理用戶數據
+  useEffect(() => {
+    if (!isClient) return
+
+    if (userData?.user_id) {
       setUserId(userData.user_id)
     } else {
       setUserId(null)
     }
-    document.body.style.paddingTop = isMobile ? '60px' : '75px'
-    return () => {
-      document.body.style.paddingTop = '0px'
-    }
-  }, [userData, isMobile])
+  }, [userData])
 
   const navItems = [
     { name: '首頁', path: '/' },
@@ -137,6 +150,18 @@ export default function Header() {
     { name: '揪團', path: '/group' },
     { name: '部落格', path: '/blog' },
   ]
+
+  // 將頭像渲染邏輯抽出來作為獨立組件
+  const UserAvatar = () => {
+    return (
+      <img
+        src={
+          auth?.userData?.image_path || getDefaultImage(auth?.userData?.gender)
+        }
+        alt="User"
+      />
+    )
+  }
 
   return (
     <header className="tech-nav">
@@ -180,17 +205,7 @@ export default function Header() {
                   <div className="mobile-icons">
                     <Link href="/dashboard" className="icon-wrapper">
                       <div className="user-avatar">
-                        <img
-                          src={
-                            auth?.userData?.image_path ||
-                            (auth?.userData?.gender === 'male'
-                              ? '/signup_login/undraw_profile_2.svg'
-                              : auth?.userData?.gender === 'female'
-                              ? '/signup_login/undraw_profile_1.svg'
-                              : '/Vector.svg')
-                          }
-                          alt="user-avatar"
-                        />
+                        <UserAvatar />
                       </div>
                     </Link>
                     <Link href="/chatroom" className="icon-wrapper">
@@ -239,13 +254,7 @@ export default function Header() {
               <div className="auth-section">
                 <Link href="/dashboard">
                   <div className="user-avatar">
-                    <img
-                      src={
-                        auth?.userData?.image_path ||
-                        getDefaultImage(auth?.userData?.gender)
-                      }
-                      alt="User"
-                    />
+                    <UserAvatar />
                   </div>
                 </Link>
                 <Link href="/chatroom" className="icon-wrapper">
