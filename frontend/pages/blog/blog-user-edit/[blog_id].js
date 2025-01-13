@@ -10,6 +10,7 @@ import Link from 'next/link'
 import { IoArrowBackCircleOutline } from 'react-icons/io5'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+const isClient = typeof window !== 'undefined'
 const MySwal = withReactContent(Swal)
 import Head from 'next/head'
 import EditMyeditor from '@/components/blog/blogedit/EditMyeditor'
@@ -61,12 +62,14 @@ export default function BlogUserEdit() {
         })
         .catch((error) => {
           console.error('獲取部落格資料錯誤:', error)
-          MySwal.fire({
-            icon: 'error',
-            title: '獲取部落格資料失敗',
-            showConfirmButton: false,
-            timer: 1500,
-          })
+          if (isClient) {
+            MySwal.fire({
+              icon: 'error',
+              title: '獲取部落格資料失敗',
+              showConfirmButton: false,
+              timer: 1500,
+            })
+          }
         })
     }
   }, [blog_id])
@@ -75,7 +78,7 @@ export default function BlogUserEdit() {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    if (!blog_content.trim()) {
+    if (!blog_content.trim() && isClient) {
       MySwal.fire({
         icon: 'warning',
         title: '請輸入內文',
@@ -114,7 +117,7 @@ export default function BlogUserEdit() {
 
       const result = await response.json()
 
-      if (response.ok) {
+      if (response.ok && isClient) {
         MySwal.fire({
           icon: 'success',
           title: '部落格修改成功',
@@ -122,7 +125,7 @@ export default function BlogUserEdit() {
           timer: 1500,
         })
         router.push('/blog')
-      } else {
+      } else if (isClient) {
         MySwal.fire({
           icon: 'error',
           title: '部落格修改失敗',
@@ -132,12 +135,14 @@ export default function BlogUserEdit() {
       }
     } catch (error) {
       console.error('錯誤:', error)
-      MySwal.fire({
-        icon: 'error',
-        title: '部落格修改失敗',
-        showConfirmButton: false,
-        timer: 1500,
-      })
+      if (isClient) {
+        MySwal.fire({
+          icon: 'error',
+          title: '部落格修改失敗',
+          showConfirmButton: false,
+          timer: 1500,
+        })
+      }
     }
   }
 

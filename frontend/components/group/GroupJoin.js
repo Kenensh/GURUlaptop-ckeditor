@@ -5,6 +5,8 @@ import { useAuth } from '@/hooks/use-auth'
 import websocketService from '../../services/websocketService'
 import Swal from 'sweetalert2'
 
+const isClient = typeof window !== 'undefined'
+
 const GroupJoin = ({ onClose, groupData }) => {
   const { auth } = useAuth()
   const [formData, setFormData] = useState({
@@ -28,7 +30,7 @@ const GroupJoin = ({ onClose, groupData }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!auth.isAuth) {
+    if (!auth.isAuth && isClient) {
       await Swal.fire({
         icon: 'warning',
         title: '無法申請',
@@ -38,6 +40,8 @@ const GroupJoin = ({ onClose, groupData }) => {
       })
       return
     }
+
+    if (!isClient) return
 
     // 確認提交
     const confirmResult = await Swal.fire({
@@ -82,25 +86,28 @@ const GroupJoin = ({ onClose, groupData }) => {
         gameId: formData.gameId,
         description: formData.description,
       })
-
-      await Swal.fire({
-        icon: 'success',
-        title: '申請已送出！',
-        text: '等待群組管理員審核',
-        showConfirmButton: false,
-        timer: 1500,
-      })
+      if (isClient) {
+        await Swal.fire({
+          icon: 'success',
+          title: '申請已送出！',
+          text: '等待群組管理員審核',
+          showConfirmButton: false,
+          timer: 1500,
+        })
+      }
 
       onClose()
     } catch (err) {
       console.error('Error:', err)
-      await Swal.fire({
-        icon: 'error',
-        title: '送出失敗',
-        text: err.message || '申請發送失敗，請稍後再試',
-        showConfirmButton: false,
-        timer: 2000,
-      })
+      if (isClient) {
+        await Swal.fire({
+          icon: 'error',
+          title: '送出失敗',
+          text: err.message || '申請發送失敗，請稍後再試',
+          showConfirmButton: false,
+          timer: 2000,
+        })
+      }
     } finally {
       setIsSubmitting(false)
     }

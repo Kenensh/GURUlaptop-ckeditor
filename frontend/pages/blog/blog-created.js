@@ -10,6 +10,8 @@ import BlogDetailMainArea from '@/components/blog/bloghomepage/articlehomepage-m
 import NextBreadCrumb from '@/components/common/next-breadcrumb'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+
+const isClient = typeof window !== 'undefined'
 const MySwal = withReactContent(Swal)
 import Head from 'next/head'
 import Myeditor from '@/components/blog/Myeditor'
@@ -59,7 +61,7 @@ export default function Blogcreated(props) {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    if (!blog_content.trim()) {
+    if (!blog_content.trim() && isClient) {
       MySwal.fire({
         icon: 'warning',
         title: '請輸入內文',
@@ -96,17 +98,31 @@ export default function Blogcreated(props) {
       const result = await response.json()
 
       if (response.ok) {
-        MySwal.fire({
-          icon: 'success',
-          title: '部落格新增成功',
-          showConfirmButton: false,
-          timer: 1500,
-        })
+        if (isClient) {
+          MySwal.fire({
+            icon: 'success',
+            title: '部落格新增成功',
+            showConfirmButton: false,
+            timer: 1500,
+          })
+        }
         if (result.blog_id) {
-          // toast.success('部落格新增成功')
           router.push(`/blog`)
         }
       } else {
+        if (isClient) {
+          MySwal.fire({
+            icon: 'error',
+            title: '部落格新增失敗',
+            showConfirmButton: false,
+            timer: 1500,
+          })
+        }
+      }
+    } catch (error) {
+      console.error('錯誤:', error)
+
+      if (isClient) {
         MySwal.fire({
           icon: 'error',
           title: '部落格新增失敗',
@@ -114,15 +130,6 @@ export default function Blogcreated(props) {
           timer: 1500,
         })
       }
-    } catch (error) {
-      console.error('錯誤:', error)
-
-      MySwal.fire({
-        icon: 'error',
-        title: '部落格新增失敗',
-        showConfirmButton: false,
-        timer: 1500,
-      })
     }
   }
 

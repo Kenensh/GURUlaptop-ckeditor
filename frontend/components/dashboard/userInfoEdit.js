@@ -5,6 +5,8 @@ import axios from 'axios'
 import { taiwanData } from '@/data/address/data.js'
 import styles from '@/styles/dashboard.module.scss'
 
+const isClient = typeof window !== 'undefined'
+
 export default function UserProfile() {
   const { auth, setAuth, logout } = useAuth()
   const user_id = auth?.userData?.user_id
@@ -126,8 +128,9 @@ export default function UserProfile() {
         }
       } catch (error) {
         console.error('無法獲取資料:', error)
-        Swal.fire('錯誤', '獲取用戶資料失敗', 'error')
-      }
+        if (isClient) {
+          Swal.fire('錯誤', '獲取用戶資料失敗', 'error')
+        }
     }
 
     fetchData()
@@ -259,12 +262,16 @@ export default function UserProfile() {
     if (!file) return
 
     if (file.size > 5 * 1024 * 1024) {
-      Swal.fire('錯誤', '檔案不能超過5MB', 'error')
+      if (isClient) {
+        Swal.fire('錯誤', '檔案不能超過5MB', 'error')
+      }
       return
     }
 
     if (!file.type.startsWith('image/')) {
-      Swal.fire('錯誤', '請上傳圖片檔案', 'error')
+      if (isClient) {
+        Swal.fire('錯誤', '請上傳圖片檔案', 'error')
+      }
       return
     }
 
@@ -285,7 +292,7 @@ export default function UserProfile() {
     e.preventDefault()
 
     try {
-      if (!editableUser.name) {
+      if (!editableUser.name && isClient) {
         Swal.fire('錯誤', '請填寫名稱', 'error')
         return
       }
@@ -300,7 +307,7 @@ export default function UserProfile() {
         dataToSubmit
       )
 
-      if (response.data.status === 'success') {
+      if (response.data.status === 'success'&& isClient) {
         Swal.fire('成功', '用戶資料更新成功', 'success')
         setAuth((prev) => ({
           ...prev,
@@ -312,16 +319,19 @@ export default function UserProfile() {
         }))
       }
     } catch (error) {
-      console.error('更新失敗:', error)
-      Swal.fire(
-        '錯誤',
-        error.response?.data?.message || '更新失敗，請稍後再試',
-        'error'
-      )
+      console.error('上傳失敗:', error)
+      if (isClient) {
+        Swal.fire(
+          '錯誤',
+          error.response?.data?.message || '上傳失敗，請稍後再試',
+          'error'
+        )
+      }
     }
   }
 
   const handleDeactivate = async () => {
+    if (!isClient) return
     try {
       const { isConfirmed } = await Swal.fire({
         title: '確定要停用帳號嗎？',
@@ -373,7 +383,7 @@ export default function UserProfile() {
   const handleProfilePicSubmit = async (e) => {
     e.preventDefault()
 
-    if (!selectedImg) {
+    if (!selectedImg && isClient) {
       Swal.fire('提示', '請先選擇要上傳的圖片', 'info')
       return
     }
@@ -387,7 +397,7 @@ export default function UserProfile() {
         }
       )
 
-      if (response.data.status === 'success') {
+      if (response.data.status === 'success'&& isClient) {
         setUploadStatus('頭像更新成功！')
         setAuth((prev) => ({
           ...prev,

@@ -5,6 +5,8 @@ import axios from 'axios'
 import Accordion from 'react-bootstrap/Accordion'
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 
+const isClient = typeof window !== 'undefined'
+
 export default function EditPassword(props) {
   const { auth } = useAuth()
 
@@ -40,11 +42,15 @@ export default function EditPassword(props) {
 
     //  檢查必要條件:從勾子抓到登入後的這個user_id
     if (!user_id) {
-      console.error('User ID 不存在')
-      return // Handle this case appropriately
+      if (isClient) {
+        Swal.fire('錯誤', '請輸入密碼', 'error')
+      }
+      return
     }
     if (!editableUser.currentPassword) {
-      Swal.fire('錯誤', '請輸入密碼', 'error')
+      if (isClient) {
+        Swal.fire('錯誤', '請輸入密碼', 'error')
+      }
       return
     }
     // createObjectURL(file) 這個是瀏覽器端還沒有傳送到伺服器用previewURL,setPreviewURL 暫時性的預覽長得很像一個網址可以直接用網址就可以看到那張圖。改成用useEffect主要是因為createObjectURL會占掉記憶體空間，用revokeObjectURL(objectURL)
@@ -67,18 +73,25 @@ export default function EditPassword(props) {
       // 檢查後端回應的 status 是否為 'pwdmatch'
       // 我這邊要先接到後端回傳的回應是否回pwdmatch,似乎我的值沒有成功丟回去，我丟回去axios方法用post,現在到底要不用get or post?
       // 用fetch不能response.data.data
+
+      
       const data = await responsePwdSend.json()
       console.log('回應資料:', data) // 除錯用
       // axios.才要responsePwdSend.data,用fetch只要
       if (data.status === 'pwdmatch') {
-        Swal.fire('成功', '密碼與資料表相符', 'success')
+        if (isClient) {
+          Swal.fire('成功', '密碼與資料表相符', 'success')
+        }
         setShowNewPasswordInput(true)
-        console.log('成功')
-      } else {
-        Swal.fire('錯誤', '密碼輸入錯誤', 'error')
+      }else {
+        if (isClient) {
+          Swal.fire('錯誤', '密碼輸入錯誤', 'error')
+        }
       }
     } catch (error) {
-      Swal.fire('錯誤', '密碼輸入錯誤或伺服器回應錯誤', 'error')
+      if (isClient) {
+        Swal.fire('錯誤', '密碼輸入錯誤或伺服器回應錯誤', 'error')
+      }
     }
   }
   const validatePassword = (password) => {
@@ -99,51 +112,39 @@ export default function EditPassword(props) {
     return ''
   }
 
-  const confirmPwdReset = async () => {
-    try {
-      // 檢查新密碼是否有值
-      if (!editableUser.newPassword1) {
-        newErrors.confirmpassword = '確認密碼為必填'
-      } else if (editableUser.newPassword1 !== editableUser.newPassword2) {
-        newErrors.newPassword = '密碼與確認密碼不相符'
-      }
-      // 驗證密碼格式
-      const validationError = validatePassword(editableUser.newPassword1)
-      if (validationError) {
-        Swal.fire('錯誤', validationError, 'error')
-        return
-      }
-      if (!editableUser.newPassword1) {
-        Swal.fire('錯誤', '請輸入新密碼1', 'error')
-        return
-      }
-      if (!editableUser.newPassword2) {
-        Swal.fire('錯誤', '請輸入新密碼2', 'error')
-        return
-      }
+  try {
+    const validationError = validatePassword(editableUser.newPassword1)
+    if (validationError) {
+      Swal.fire('錯誤', validationError, 'error')
+      return
+    }
+    if (!editableUser.newPassword1) {
+      Swal.fire('錯誤', '請輸入新密碼1', 'error')
+      return
+    }
+    if (!editableUser.newPassword2) {
+      Swal.fire('錯誤', '請輸入新密碼2', 'error')
+      return
+    }
 
-      const user_id = auth?.userData?.user_id
-      const response = await axios.put(
-        `http://localhost:3005/api/dashboard/${user_id}/pwdReset`,
-        {
-          newPassword1: editableUser.newPassword1,
-          newPassword2: editableUser.newPassword2,
-        }
-      )
+    const user_id = auth?.userData?.user_id
+    const response = await axios.put(/* ... */)
 
-      if (response.data.status === 'resetPwd success') {
+    if (response.data.status === 'resetPwd success') {
+      if (isClient) {
         Swal.fire('成功', '密碼更新成功！記得記住新密碼', 'success')
-        // 清空輸入框
-        setEditableUser((prev) => ({
-          ...prev,
-          currentPassword: '',
-          newPassword1: '',
-          newPassword2: '',
-        }))
-        setShowNewPasswordInput(false)
       }
-    } catch (error) {
-      console.error('密碼更新失敗:', error)
+      setEditableUser((prev) => ({
+        ...prev,
+        currentPassword: '',
+        newPassword1: '',
+        newPassword2: '',
+      }))
+      setShowNewPasswordInput(false)
+    }
+  } catch (error) {
+    console.error('密碼更新失敗:', error)
+    if (isClient) {
       Swal.fire(
         '錯誤',
         error.response?.data?.message || '密碼更新失敗',
@@ -151,6 +152,7 @@ export default function EditPassword(props) {
       )
     }
   }
+}
 
   const handleInputChange = (e) => {
     const { name, value } = e.target

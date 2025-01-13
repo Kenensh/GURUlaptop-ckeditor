@@ -6,6 +6,7 @@ import BuyCard from '@/components/cart/buy-card'
 import { useShip711StoreOpener } from '@/hooks/use-ship-711-store'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+const isClient = typeof window !== 'undefined'
 const MySwal = withReactContent(Swal)
 import CouponBtn from '@/components/coupon/coupon-btn'
 import axiosInstance from '@/services/axios-instance'
@@ -81,12 +82,14 @@ export default function CartIndex() {
 
   const handleAddress = (targetAddress) => {
     setAddress(targetAddress)
-    MySwal.fire({
-      icon: 'success',
-      title: '選擇門市成功',
-      showConfirmButton: false,
-      timer: 1500,
-    })
+    if (isClient) {
+      MySwal.fire({
+        icon: 'success',
+        title: '選擇門市成功',
+        showConfirmButton: false,
+        timer: 1500,
+      })
+    }
   }
 
   // 處理7-11選擇
@@ -97,6 +100,7 @@ export default function CartIndex() {
 
   //產生訂單
   const createOrder = async () => {
+    if (!isClient) return
     if (cartdata == null) {
       MySwal.fire({
         icon: 'error',
@@ -194,13 +198,16 @@ export default function CartIndex() {
       setOrder({ order_id: order_id, amount: total })
       setCartdata([])
       setAddress('')
-      localStorage.removeItem('store711')
-      window.location.href = `http://localhost:3005/api/ecpay-test-only/?orderId=${order_id}&amount=${couponDetails.finalPrice}`
+      if (isClient) {
+        localStorage.removeItem('store711')
+        window.location.href = `http://localhost:3005/api/ecpay-test-only/?orderId=${order_id}&amount=${couponDetails.finalPrice}`
+      }
     }
   }
 
   // 生成line pay訂單
   const goLinePay = () => {
+    if (!isClient) return
     MySwal.fire({
       icon: 'info',
       title: '確認要導向至LINE Pay進行付款?',
@@ -210,21 +217,28 @@ export default function CartIndex() {
     }).then((result) => {
       setCartdata([])
       setAddress('')
-      localStorage.removeItem('store711')
-      if (result.isConfirmed) {
-        window.location.href = `http://localhost:3005/api/line-pay/reserve?orderId=${lineOrder.orderId}`
+      if (isClient) {
+        localStorage.removeItem('store711')
+        if (result.isConfirmed) {
+          window.location.href = `http://localhost:3005/api/line-pay/reserve?orderId=${lineOrder.orderId}`
+        }
       }
     })
   }
 
   const createLinePayOrder = async () => {
+    if (!isClient) return
+
+    // ... 所有 MySwal.fire 調用都加入 isClient 檢查
     if (cartdata == null) {
-      MySwal.fire({
-        icon: 'error',
-        title: '購物車是空的',
-        showConfirmButton: false,
-        timer: 1500,
-      })
+      if (isClient) {
+        MySwal.fire({
+          icon: 'error',
+          title: '購物車是空的',
+          showConfirmButton: false,
+          timer: 1500,
+        })
+      }
       return
     }
 
@@ -339,31 +353,34 @@ export default function CartIndex() {
 
     if (res.data.status === 'success') {
       setLineOrder(res.data.data.order)
-      MySwal.fire({
-        icon: 'success',
-        title: '已成功建立訂單',
-        showConfirmButton: false,
-        timer: 1500,
-      })
+      if (isClient) {
+        MySwal.fire({
+          icon: 'success',
+          title: '已成功建立訂單',
+          showConfirmButton: false,
+          timer: 1500,
+        })
+      }
     }
   }
 
   // 確認交易，處理伺服器通知line pay已確認付款，為必要流程
+
   const handleConfirm = async (transactionId) => {
+    if (!isClient) return
+
     const res = await axiosInstance.get(
       `/line-pay/confirm?transactionId=${transactionId}`
     )
 
-    // console.log(res.data)
-
-    if (res.data.status === 'success') {
+    if (res.data.status === 'success' && isClient) {
       MySwal.fire({
         icon: 'success',
         title: '付款成功',
         showConfirmButton: false,
         timer: 1500,
       })
-    } else {
+    } else if (isClient) {
       MySwal.fire({
         icon: 'error',
         title: '付款失敗',

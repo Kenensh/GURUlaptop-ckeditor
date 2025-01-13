@@ -4,6 +4,8 @@ import Accordion from 'react-bootstrap/Accordion'
 import BuyItemCard from './buy-item-card'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+
+const isClient = typeof window !== 'undefined'
 const MySwal = withReactContent(Swal)
 
 export default function BuyList({ order = {} }) {
@@ -44,6 +46,7 @@ export default function BuyList({ order = {} }) {
   }
 
   const goLinePay = () => {
+    if (!isClient) return
     MySwal.fire({
       icon: 'info',
       title: '確認要導向至LINE Pay進行付款?',
@@ -59,6 +62,7 @@ export default function BuyList({ order = {} }) {
   }
 
   const handlePay = async () => {
+    if (!isClient) return
     const check = await MySwal.fire({
       title: '是否確認前往結帳?',
       text: ``,

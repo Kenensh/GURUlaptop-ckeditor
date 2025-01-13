@@ -6,9 +6,10 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { useAuth } from '@/hooks/use-auth'
 import { AiOutlineArrowUp, AiOutlineArrowDown } from 'react-icons/ai'
-import { AiOutlineSearch } from "react-icons/ai";
-import { AiTwotoneDelete } from "react-icons/ai";
+import { AiOutlineSearch } from 'react-icons/ai'
+import { AiTwotoneDelete } from 'react-icons/ai'
 
+const isClient = typeof window !== 'undefined'
 
 const MySwal = withReactContent(Swal)
 
@@ -68,11 +69,13 @@ export default function CouponUser() {
     } catch (err) {
       console.error('錯誤:', err)
       setError(err.message)
-      MySwal.fire({
-        title: '錯誤',
-        text: err.message,
-        icon: 'error',
-      })
+      if (isClient) {
+        MySwal.fire({
+          title: '錯誤',
+          text: err.message,
+          icon: 'error',
+        })
+      }
     } finally {
       setLoading(false)
     }
@@ -92,11 +95,13 @@ export default function CouponUser() {
   // 跳轉到購物車
   const handleCartCoupon = (couponId) => {
     if (!userId) {
-      MySwal.fire({
-        title: '請先登入',
-        text: '需要登入才能使用優惠券',
-        icon: 'warning',
-      })
+      if (isClient) {
+        MySwal.fire({
+          title: '請先登入',
+          text: '需要登入才能使用優惠券',
+          icon: 'warning',
+        })
+      }
       router.push('/member/login')
       return
     }
@@ -188,14 +193,16 @@ export default function CouponUser() {
                 }}
                 className="me-2"
               >
-                <AiOutlineSearch />{/* 搜尋 */}
+                <AiOutlineSearch />
+                {/* 搜尋 */}
               </Button>
               {searchTerm && (
                 <Button
                   variant="outline-secondary"
                   onClick={() => setSearchTerm('')}
                 >
-                  <AiTwotoneDelete />{/* 清除 */}
+                  <AiTwotoneDelete />
+                  {/* 清除 */}
                 </Button>
               )}
             </div>

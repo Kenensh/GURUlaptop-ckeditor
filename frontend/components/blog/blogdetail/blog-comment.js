@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import { useAuth } from '@/hooks/use-auth'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+const isClient = typeof window !== 'undefined'
 const MySwal = withReactContent(Swal)
 
 export default function BlogComment({ blog_id }) {
@@ -93,12 +94,14 @@ export default function BlogComment({ blog_id }) {
       if (response.ok && result.status === 'success') {
         setBlogComment((prevComments) => [...prevComments, result.data])
         setNewComment('')
-        MySwal.fire({
-          icon: 'success',
-          title: '留言新增成功',
-          showConfirmButton: false,
-          timer: 1500,
-        })
+        if (isClient) {
+          MySwal.fire({
+            icon: 'success',
+            title: '留言新增成功',
+            showConfirmButton: false,
+            timer: 1500,
+          })
+        }
       } else {
         throw new Error(result.message || '留言新增失敗')
       }

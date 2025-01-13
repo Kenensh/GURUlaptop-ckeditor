@@ -5,6 +5,8 @@ import Swal from 'sweetalert2'
 import { useRouter } from 'next/router'
 import { MessageCircle, ShoppingCart, Menu } from 'lucide-react'
 
+const isClient = typeof window !== 'undefined'
+
 export default function Header() {
   const { auth, logout } = useAuth()
   const { isAuth, userData } = auth
@@ -29,6 +31,8 @@ export default function Header() {
   const [isMobile, setIsMobile] = useState(false)
 
   const handleLogout = async () => {
+    if (!isClient) return
+
     try {
       const result = await Swal.fire({
         title: '確定要登出嗎？',
@@ -45,30 +49,35 @@ export default function Header() {
 
       await logout()
 
-      await Swal.fire({
-        title: '登出成功',
-        text: '您已成功登出',
-        timer: 1000,
-        icon: 'success',
-        confirmButtonColor: '#805AF5',
-      })
+      if (isClient) {
+        await Swal.fire({
+          title: '登出成功',
+          text: '您已成功登出',
+          timer: 1000,
+          icon: 'success',
+          confirmButtonColor: '#805AF5',
+        })
+      }
 
       setTimeout(() => {
         router.push('/member/login')
       }, 1000)
     } catch (error) {
       console.error('登出失敗:', error)
-      Swal.fire({
-        title: '登出失敗',
-        text: '請稍後再試',
-        timer: 1000,
-        icon: 'error',
-        confirmButtonColor: '#805AF5',
-      })
+      if (isClient) {
+        Swal.fire({
+          title: '登出失敗',
+          text: '請稍後再試',
+          timer: 1000,
+          icon: 'error',
+          confirmButtonColor: '#805AF5',
+        })
+      }
     }
   }
 
   useEffect(() => {
+    if (!isClient) return
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth <= 768)
       if (window.innerWidth > 768) {
@@ -82,6 +91,8 @@ export default function Header() {
   }, [])
 
   useEffect(() => {
+
+    if (!isClient) return
     if (user_id) {
       fetch(`http://localhost:3005/api/header`, {
         method: 'POST',
@@ -97,7 +108,6 @@ export default function Header() {
           // 使用相同的 getDefaultImage 函數
           setImagePath(data?.image_path || getDefaultImage(data?.gender))
         })
-       
     }
 
     document.body.style.paddingTop = '75px'
@@ -107,6 +117,7 @@ export default function Header() {
   }, [user_id, auth?.userData?.gender, auth?.userData?.image_path])
 
   useEffect(() => {
+    if (!isClient) return
     if (userData && userData.user_id) {
       setUserId(userData.user_id)
     } else {

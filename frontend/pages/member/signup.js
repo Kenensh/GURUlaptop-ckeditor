@@ -16,6 +16,8 @@ export default function Signup() {
   // 處理失焦
   // const { renderJumpingText } = useJumpingLetters()
 
+  const isClient = typeof window !== 'undefined'
+
   const validatePassword = (password) => {
     //函式內宣告2個變數
     const rules = {
@@ -113,68 +115,53 @@ export default function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
+    // 加入提交狀態控制
+    const [isSubmitting, setIsSubmitting] = useState(false)
+
     try {
       setSubmitError('')
+      setIsSubmitting(true)
 
       if (!validateForm()) {
-        return
-      }
-      const passwordErrors = validatePassword(user.password)
-      if (passwordErrors.length > 0) {
-        setErrors((prev) => ({
-          ...prev,
-          password: passwordErrors[0],
-        }))
+        setIsSubmitting(false)
         return
       }
 
       const response = await axiosInstance.post('/signup', user)
 
       if (response.data.status === 'success') {
-        setUser({
-          email: '',
-          password: '',
-          phone: '',
-          birthdate: '',
-          gender: '',
-          agree: false,
-        })
+        resetForm()
 
-        setErrors({})
-        setSubmitError('')
-
-        await Swal.fire({
+        await showAlert({
           title: '註冊成功！',
           text: '歡迎加入我們！',
           icon: 'success',
           confirmButtonText: '前往登入',
-          confirmButtonColor: '#3085d6',
         })
 
         router.push('/member/login')
       } else {
-        await Swal.fire({
+        await showAlert({
           title: '註冊失敗',
           text: response.data.message,
           icon: 'error',
-          confirmButtonText: '確定',
-          confirmButtonColor: '#3085d6',
         })
+
         setSubmitError(response.data.message)
       }
     } catch (error) {
       console.error('註冊請求失敗:', error)
       const errorMessage = error.response?.data?.message || '註冊過程中發生錯誤'
 
-      await Swal.fire({
+      await showAlert({
         title: '註冊失敗',
         text: errorMessage,
         icon: 'error',
-        confirmButtonText: '確定',
-        confirmButtonColor: '#3085d6',
       })
 
       setSubmitError(errorMessage)
+    } finally {
+      setIsSubmitting(false)
     }
   }
 

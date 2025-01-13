@@ -8,6 +8,8 @@ import PrivacyPolicy from '@/components/event/PrivacyPolicy'
 import NextBreadCrumb from '@/components/common/next-breadcrumb'
 import Head from 'next/head'
 
+const isClient = typeof window !== 'undefined'
+
 const EventRegistration = () => {
   const router = useRouter()
   const { eventId } = router.query
@@ -47,7 +49,8 @@ const EventRegistration = () => {
         console.log('活動資料:', eventData)
 
         // 檢查活動類型
-        if (eventData.teamType !== '團體') {
+
+        if (eventData.teamType !== '團體' && isClient) {
           await Swal.fire({
             icon: 'warning',
             title: '提示',
@@ -58,13 +61,15 @@ const EventRegistration = () => {
           router.push(`/event/eventDetail/${eventId}`)
         }
       } catch (error) {
-        Swal.fire({
-          icon: 'error',
-          title: '錯誤',
-          text: error.response?.data?.message || '無法載入活動資訊',
-          showConfirmButton: false,
-          timer: 2000,
-        })
+        if (isClient) {
+          Swal.fire({
+            icon: 'error',
+            title: '錯誤',
+            text: error.response?.data?.message || '無法載入活動資訊',
+            showConfirmButton: false,
+            timer: 2000,
+          })
+        }
       } finally {
         setLoading(false)
       }
@@ -196,6 +201,7 @@ const EventRegistration = () => {
 
   // 處理新增隊員
   const handleAddPlayer = async () => {
+    if (!isClient) return
     const maxTeamSize = eventInfo?.maxPeople || 6
     if (visiblePlayers >= maxTeamSize) {
       await Swal.fire({
@@ -221,6 +227,7 @@ const EventRegistration = () => {
 
   // 處理移除隊員
   const handleRemovePlayer = async (playerNumber) => {
+    if (!isClient) return
     if (visiblePlayers <= 1) {
       await Swal.fire({
         icon: 'warning',
@@ -263,7 +270,7 @@ const EventRegistration = () => {
   // 處理表單提交
   const handleSubmit = async (e) => {
     e.preventDefault()
-
+    if (!isClient) return
     if (!(await validateForm())) {
       return
     }

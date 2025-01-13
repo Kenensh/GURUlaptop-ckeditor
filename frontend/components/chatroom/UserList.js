@@ -7,6 +7,8 @@ import websocketService from '@/services/websocketService'
 import { getGroupImage } from '@/utils/imageUtils'
 import Swal from 'sweetalert2'
 
+const isClient = typeof window !== 'undefined'
+
 export default function UserList({
   users,
   rooms,
@@ -181,24 +183,28 @@ export default function UserList({
         fetchInitialData()
 
         // 顯示成功提示
-        await Swal.fire({
-          icon: 'success',
-          title: '處理完成',
-          text: status === 'accepted' ? '已接受申請' : '已拒絕申請',
-          showConfirmButton: false,
-          timer: 1500,
-        })
+        if (isClient) {
+          // 顯示成功提示
+          await Swal.fire({
+            icon: 'success',
+            title: '處理完成',
+            text: status === 'accepted' ? '已接受申請' : '已拒絕申請',
+            showConfirmButton: false,
+            timer: 1500,
+          })
+        }
       }
     } catch (error) {
       console.error('處理申請失敗:', error)
-      await Swal.fire({
-        icon: 'error',
-        title: '處理失敗',
-        text: error.message || '處理申請失敗，請稍後再試',
-        showConfirmButton: false,
-        timer: 2000,
-      })
-    }
+      if (isClient) {
+        await Swal.fire({
+          icon: 'error',
+          title: '處理失敗',
+          text: error.message || '處理申請失敗，請稍後再試',
+          showConfirmButton: false,
+          timer: 2000,
+        })
+      }
   }
 
   return (

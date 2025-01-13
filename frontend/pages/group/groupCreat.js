@@ -6,6 +6,9 @@ import Swal from 'sweetalert2'
 import NextBreadCrumb from '@/components/common/next-breadcrumb'
 import Head from 'next/head'
 
+
+const isClient = typeof window !== 'undefined'
+
 export default function GroupCreat() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -34,7 +37,7 @@ export default function GroupCreat() {
           credentials: 'include',
         })
 
-        if (!response.ok) {
+        if (!response.ok && isClient) {
           await Swal.fire({
             icon: 'warning',
             title: '請先登入',
@@ -46,13 +49,15 @@ export default function GroupCreat() {
         }
       } catch (err) {
         console.error('驗證失敗:', err)
-        await Swal.fire({
-          icon: 'error',
-          title: '驗證失敗',
-          text: '請重新登入',
-          showConfirmButton: false,
-          timer: 1500,
-        })
+        if (isClient) {
+          await Swal.fire({
+            icon: 'error',
+            title: '驗證失敗',
+            text: '請重新登入',
+            showConfirmButton: false,
+            timer: 1500,
+          })
+        }
         router.push('/login')
       }
     }
@@ -69,6 +74,7 @@ export default function GroupCreat() {
   }
 
   const handleImageChange = async (e) => {
+    if (!isClient) return
     const file = e.target.files[0]
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
@@ -97,7 +103,7 @@ export default function GroupCreat() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-
+    if (!isClient) return
     try {
       // 基本驗證
       if (!formData.group_name?.trim()) {
@@ -244,13 +250,14 @@ export default function GroupCreat() {
       const result = await response.json()
 
       if (result.status === 'success') {
-        await Swal.fire({
-          icon: 'success',
-          title: '建立成功！',
-          text: '即將進入揪團列表...',
-          showConfirmButton: false,
-          timer: 1500,
-        })
+        if (isClient) {
+          await Swal.fire({
+            icon: 'success',
+            title: '建立成功！',
+            text: '即將進入揪團列表...',
+            showConfirmButton: false,
+            timer: 1500,
+          })
 
         // 儲存聊天室 ID 並確保它被正確設置
         if (result.data.chat_room_id) {
@@ -289,13 +296,15 @@ export default function GroupCreat() {
       }
     } catch (err) {
       console.error('群組建立錯誤:', err)
-      await Swal.fire({
-        icon: 'error',
-        title: '錯誤',
-        text: err.message || '發生錯誤，請稍後再試',
-        showConfirmButton: false,
-        timer: 2000,
-      })
+      if (isClient) {
+        await Swal.fire({
+          icon: 'error',
+          title: '錯誤',
+          text: err.message || '發生錯誤，請稍後再試',
+          showConfirmButton: false,
+          timer: 2000,
+        })
+      }
     }
   }
 

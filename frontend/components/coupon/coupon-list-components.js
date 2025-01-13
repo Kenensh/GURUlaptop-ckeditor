@@ -5,11 +5,11 @@ import withReactContent from 'sweetalert2-react-content'
 import Coupon from '.'
 import Coupon2 from './index2'
 import { useAuth } from '@/hooks/use-auth'
-import { AiFillExclamationCircle } from "react-icons/ai";
-import { AiOutlineSearch } from "react-icons/ai";
-import { AiTwotoneDelete } from "react-icons/ai";
+import { AiFillExclamationCircle } from 'react-icons/ai'
+import { AiOutlineSearch } from 'react-icons/ai'
+import { AiTwotoneDelete } from 'react-icons/ai'
 
-
+const isClient = typeof window !== 'undefined'
 const MySwal = withReactContent(Swal)
 
 export default function CouponList() {
@@ -50,12 +50,14 @@ export default function CouponList() {
 
   const handleClaimCoupon = async (couponId) => {
     if (!userId) {
-      MySwal.fire({
-        icon: 'warning',
-        title: '請先登入',
-        text: '需要登入才能領取優惠券',
-      })
-      window.location.href = 'http://localhost:3000/member/login'
+      if (isClient) {
+        MySwal.fire({
+          icon: 'warning',
+          title: '請先登入',
+          text: '需要登入才能領取優惠券',
+        })
+        window.location.href = 'http://localhost:3000/member/login'
+      }
       return
     }
 
@@ -96,19 +98,22 @@ export default function CouponList() {
 
       if (addResult.status === 'success') {
         setClaimedCoupons((prev) => new Set([...prev, couponId]))
-
-        MySwal.fire({
-          icon: 'success',
-          title: '領取成功！',
-          text: '優惠券已加入您的帳戶',
-        })
+        if (isClient) {
+          MySwal.fire({
+            icon: 'success',
+            title: '領取成功！',
+            text: '優惠券已加入您的帳戶',
+          })
+        }
         getCouponData()
       } else {
-        MySwal.fire({
-          icon: 'error',
-          title: '領取失敗',
-          text: addResult.message || '請稍後再試',
-        })
+        if (isClient) {
+          MySwal.fire({
+            icon: 'error',
+            title: '領取失敗',
+            text: addResult.message || '請稍後再試',
+          })
+        }
       }
     } catch (error) {
       console.error('領取失敗:', error)
@@ -196,12 +201,14 @@ export default function CouponList() {
 
   const handleClaimAllCoupons = async () => {
     if (!userId) {
-      MySwal.fire({
-        icon: 'warning',
-        title: '請先登入',
-        text: '需要登入才能領取優惠券',
-      })
-      window.location.href = 'http://localhost:3000/member/login'
+      if (isClient) {
+        MySwal.fire({
+          icon: 'warning',
+          title: '請先登入',
+          text: '需要登入才能領取優惠券',
+        })
+        window.location.href = 'http://localhost:3000/member/login'
+      }
       return
     }
 
@@ -211,15 +218,18 @@ export default function CouponList() {
     )
 
     if (unclaimedCoupons.length === 0) {
-      MySwal.fire({
-        icon: 'info',
-        title: '沒有可領取的優惠券',
-        text: '您已領取所有可用優惠券',
-      })
+      if (isClient) {
+        MySwal.fire({
+          icon: 'info',
+          title: '沒有可領取的優惠券',
+          text: '您已領取所有可用優惠券',
+        })
+      }
       return
     }
 
     try {
+      if (!isClient) return
       // 顯示確認對話框
       const result = await MySwal.fire({
         icon: 'question',
@@ -266,13 +276,15 @@ export default function CouponList() {
         await getUserCoupons()
 
         // 顯示結果
-        MySwal.fire({
-          icon: successCount > 0 ? 'success' : 'error',
-          title: '領取完成',
-          text: `成功領取 ${successCount} 張優惠券${
-            failCount > 0 ? `，${failCount} 張領取失敗` : ''
-          }`,
-        })
+        if (isClient) {
+          MySwal.fire({
+            icon: successCount > 0 ? 'success' : 'error',
+            title: '領取完成',
+            text: `成功領取 ${successCount} 張優惠券${
+              failCount > 0 ? `，${failCount} 張領取失敗` : ''
+            }`,
+          })
+        }
       }
     } catch (error) {
       console.error('一鍵領取失敗:', error)
@@ -323,7 +335,8 @@ export default function CouponList() {
                 }}
                 className="me-2"
               >
-                <AiOutlineSearch />{/* 搜尋 */}
+                <AiOutlineSearch />
+                {/* 搜尋 */}
               </Button>
               {(searchTerm || endDateFilter) && (
                 <Button
@@ -333,7 +346,7 @@ export default function CouponList() {
                     setEndDateFilter('')
                   }}
                 >
-                <AiTwotoneDelete />  {/* 清除 */}
+                  <AiTwotoneDelete /> {/* 清除 */}
                 </Button>
               )}
             </div>

@@ -58,13 +58,15 @@ export default function LogIn(props) {
       }
     } catch (error) {
       console.error('無法取得資料:', error)
-      Swal.fire({
-        title: '登入失敗',
-        text: '連接伺服器有問題',
-        icon: 'error',
-        confirmButtonText: '確定',
-        confirmButtonColor: '#3085d6',
-      })
+      if (isClient) {
+        Swal.fire({
+          title: '登入失敗',
+          text: '連接伺服器有問題',
+          icon: 'error',
+          confirmButtonText: '確定',
+          confirmButtonColor: '#3085d6',
+        })
+      }
     } finally {
       if (isClient) {
         hideLoader() // 只在客戶端執行

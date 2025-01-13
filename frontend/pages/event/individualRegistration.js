@@ -7,7 +7,7 @@ import Swal from 'sweetalert2'
 import PrivacyPolicy from '@/components/event/PrivacyPolicy'
 import NextBreadCrumb from '@/components/common/next-breadcrumb'
 import Head from 'next/head'
-
+const isClient = typeof window !== 'undefined'
 const IndividualRegistration = () => {
   const router = useRouter()
   const { eventId } = router.query
@@ -27,6 +27,7 @@ const IndividualRegistration = () => {
 
   // 表單驗證函式
   const validateForm = async () => {
+    if (!isClient) return false
     // 驗證個人資訊
     if (
       !formData.participant.name.trim() ||
@@ -114,6 +115,7 @@ const IndividualRegistration = () => {
   // 處理表單提交
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if (!isClient) return
 
     // 驗證表單
     if (!(await validateForm())) {
@@ -156,13 +158,15 @@ const IndividualRegistration = () => {
       )
 
       if (response.data.code === 200) {
-        await Swal.fire({
-          icon: 'success',
-          title: '報名成功！',
-          text: '即將返回活動詳情頁面...',
-          showConfirmButton: false,
-          timer: 1500,
-        })
+        if (isClient) {
+          await Swal.fire({
+            icon: 'success',
+            title: '報名成功！',
+            text: '即將返回活動詳情頁面...',
+            showConfirmButton: false,
+            timer: 1500,
+          })
+        }
         setTimeout(() => {
           router.push(`/event/eventDetail/${eventId}`)
         }, 1500)
@@ -175,13 +179,15 @@ const IndividualRegistration = () => {
         errorMessage = '網路連線異常，請檢查網路狀態'
       }
 
-      await Swal.fire({
-        icon: 'error',
-        title: '錯誤',
-        text: errorMessage,
-        showConfirmButton: false,
-        timer: 2000,
-      })
+      if (isClient) {
+        await Swal.fire({
+          icon: 'error',
+          title: '錯誤',
+          text: errorMessage,
+          showConfirmButton: false,
+          timer: 2000,
+        })
+      }
       console.error('Registration error:', error)
     } finally {
       setIsSubmitting(false)

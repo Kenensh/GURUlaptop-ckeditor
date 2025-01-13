@@ -10,6 +10,7 @@ import styles from '@/styles/Chat.module.css'
 import { Send, Menu } from 'lucide-react'
 import Swal from 'sweetalert2'
 import Head from 'next/head'
+const isClient = typeof window !== 'undefined'
 
 export default function Chat() {
   const [users, setUsers] = useState([])
@@ -41,7 +42,9 @@ export default function Chat() {
       if (userData.status === 'success' && userData.data.user) {
         const userId = userData.data.user.user_id
         setCurrentUser(userId)
-        websocketService.connect(userId)
+        if (isClient) {
+          websocketService.connect(userId)
+        }
         await fetchInitialData(userId)
       }
     } catch (error) {
@@ -80,11 +83,13 @@ export default function Chat() {
   const handleRoomSelect = async (roomId) => {
     setCurrentRoom(roomId)
     setIsSidebarOpen(false)
-    websocketService.send({
-      type: 'joinRoom',
-      roomID: roomId,
-      fromID: currentUser,
-    })
+    if (isClient) {
+      websocketService.send({
+        type: 'joinRoom',
+        roomID: roomId,
+        fromID: currentUser,
+      })
+    }
   }
 
   const handleLeaveRoom = useCallback(async () => {
@@ -96,13 +101,15 @@ export default function Chat() {
     e.preventDefault()
     if (!message.trim() || !currentRoom) return
 
-    websocketService.send({
-      type: 'message',
-      roomID: currentRoom,
-      fromID: currentUser,
-      message: message.trim(),
-      timestamp: new Date().toISOString(),
-    })
+    if (isClient) {
+      websocketService.send({
+        type: 'message',
+        roomID: currentRoom,
+        fromID: currentUser,
+        message: message.trim(),
+        timestamp: new Date().toISOString(),
+      })
+    }
 
     setMessage('')
   }

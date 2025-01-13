@@ -4,6 +4,7 @@ import styles from './EventManagement.module.css'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 
+const isClient = typeof window !== 'undefined'
 // 創建 axios 實例
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005',
@@ -19,6 +20,7 @@ const EventManagement = () => {
 
   // 統一的錯誤提示函數
   const showError = async (error) => {
+    if (!isClient) return
     const message =
       error.response?.data?.message ||
       (error.response ? '請求失敗' : '無法連接到伺服器')
@@ -56,6 +58,7 @@ const EventManagement = () => {
 
   // 取消報名
   const handleCancelRegistration = async (eventId) => {
+    if (!isClient) return
     const { isConfirmed } = await Swal.fire({
       icon: 'warning',
       title: '確認取消報名',

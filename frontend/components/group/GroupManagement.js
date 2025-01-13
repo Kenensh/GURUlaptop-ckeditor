@@ -3,6 +3,8 @@ import styles from './GroupManagement.module.css'
 import EditGroupModal from './EditGroupModal'
 import Swal from 'sweetalert2'
 
+const isClient = typeof window !== 'undefined'
+
 const GroupManagement = () => {
   const [groups, setGroups] = useState([])
   const [loading, setLoading] = useState(true)
@@ -56,13 +58,15 @@ const GroupManagement = () => {
     } catch (error) {
       console.error('獲取群組失敗:', error)
       setError('獲取群組資料失敗')
-      await Swal.fire({
-        icon: 'error',
-        title: '錯誤',
-        text: '獲取群組資料失敗',
-        timer: 1500,
-        showConfirmButton: false,
-      })
+      if (isClient) {
+        await Swal.fire({
+          icon: 'error',
+          title: '錯誤',
+          text: '獲取群組資料失敗',
+          timer: 1500,
+          showConfirmButton: false,
+        })
+      }
     } finally {
       setLoading(false)
     }
@@ -73,6 +77,7 @@ const GroupManagement = () => {
   }, [])
 
   const handleDeleteGroup = async (groupId) => {
+    if (!isClient) return
     const result = await Swal.fire({
       icon: 'warning',
       title: '確認刪除',
@@ -95,13 +100,15 @@ const GroupManagement = () => {
 
       const data = await response.json()
       if (data.status === 'success') {
-        await Swal.fire({
-          icon: 'success',
-          title: '刪除成功',
-          text: '群組已成功刪除',
-          timer: 1500,
-          showConfirmButton: false,
-        })
+        if (isClient) {
+          await Swal.fire({
+            icon: 'success',
+            title: '刪除成功',
+            text: '群組已成功刪除',
+            timer: 1500,
+            showConfirmButton: false,
+          })
+        }
         fetchUserGroups()
       } else {
         throw new Error(data.message)
@@ -152,26 +159,30 @@ const GroupManagement = () => {
               : group
           )
         )
-        await Swal.fire({
-          icon: 'success',
-          title: '更新成功',
-          text: '群組資訊已成功更新',
-          timer: 1500,
-          showConfirmButton: false,
-        })
+        if (isClient) {
+          await Swal.fire({
+            icon: 'success',
+            title: '更新成功',
+            text: '群組資訊已成功更新',
+            timer: 1500,
+            showConfirmButton: false,
+          })
+        }
         setIsEditModalOpen(false)
       } else {
         throw new Error(result.message || '更新失敗')
       }
     } catch (error) {
       console.error('更新揪團失敗:', error)
-      await Swal.fire({
-        icon: 'error',
-        title: '錯誤',
-        text: error.message || '更新失敗',
-        timer: 1500,
-        showConfirmButton: false,
-      })
+      if (isClient) {
+        await Swal.fire({
+          icon: 'error',
+          title: '錯誤',
+          text: error.message || '更新失敗',
+          timer: 1500,
+          showConfirmButton: false,
+        })
+      }
     }
   }
 

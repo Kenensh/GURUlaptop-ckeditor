@@ -8,6 +8,8 @@ import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 import Link from 'next/link'
 
+const isClient = typeof window !== 'undefined'
+
 export default function BuyCard({ item, onDataChange }) {
   const [price, setPrice] = useState(0)
   useEffect(() => {
@@ -28,8 +30,7 @@ export default function BuyCard({ item, onDataChange }) {
     })
 
     const data = await response.json()
-    const message = data.message
-    if (data.status == 'success') {
+    if (data.status == 'success' && isClient) {
       MySwal.fire({
         icon: 'success',
         title: message,
@@ -53,7 +54,7 @@ export default function BuyCard({ item, onDataChange }) {
 
     const data = await response.json()
     const message = data.message
-    if (data.status == 'success') {
+    if (data.status == 'success' && isClient) {
       MySwal.fire({
         icon: 'success',
         title: message,

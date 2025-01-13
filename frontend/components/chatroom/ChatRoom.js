@@ -6,6 +6,7 @@ import Image from 'next/image'
 import websocketService from '@/services/websocketService'
 import { LogOut } from 'lucide-react'
 import Swal from 'sweetalert2'
+const isClient = typeof window !== 'undefined'
 
 export default function ChatRoom({ currentUser, currentRoom, onLeaveRoom }) {
   const [messages, setMessages] = useState([])
@@ -18,6 +19,7 @@ export default function ChatRoom({ currentUser, currentRoom, onLeaveRoom }) {
   }, [])
 
   const handleLeaveRoom = async () => {
+    if (!isClient) return
     const result = await Swal.fire({
       icon: 'question',
       title: '離開聊天室',
@@ -55,6 +57,7 @@ export default function ChatRoom({ currentUser, currentRoom, onLeaveRoom }) {
         onLeaveRoom && onLeaveRoom()
       } catch (error) {
         console.error('離開聊天室失敗:', error)
+        if (isClient) {
         await Swal.fire({
           icon: 'error',
           title: '操作失敗',

@@ -4,6 +4,8 @@ import ProductCardWhite from '@/components/product/product-card-white'
 import styles from '@/styles/favorities.module.scss'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+
+const isClient = typeof window !== 'undefined'
 const MySwal = withReactContent(Swal)
 
 // 撈取所有收藏清單
@@ -37,6 +39,7 @@ export default function Favorites() {
   }, [userData])
 
   function onSendMessage(message, type) {
+    if (!isClient) return
     if (type === 'success') {
       MySwal.fire({
         icon: 'success',

@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+const isClient = typeof window !== 'undefined'
 const MySwal = withReactContent(Swal)
 import Head from 'next/head'
 
 export default function Checkout(props) {
   useEffect(() => {
+    if (!isClient) return
     const urlParams = new URLSearchParams(window.location.search)
     const order_id = urlParams.get('ID')
     // const amount = urlParams.get('amount')

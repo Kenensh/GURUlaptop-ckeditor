@@ -8,6 +8,8 @@ import { useAuth } from '@/hooks/use-auth'
 import { useDiscount } from '@/hooks/use-coupon-discount'
 import Coupon2 from './index2'
 
+const isClient = typeof window !== 'undefined'
+
 const MySwal = withReactContent(Swal)
 
 export default function CouponBtn({ price, setCouponValue }) {
@@ -66,11 +68,13 @@ export default function CouponBtn({ price, setCouponValue }) {
     } catch (err) {
       console.error('Error:', err)
       setError(err.message)
-      MySwal.fire({
-        title: '錯誤',
-        text: err.message,
-        icon: 'error',
-      })
+      if (isClient) {
+        MySwal.fire({
+          title: '錯誤',
+          text: err.message,
+          icon: 'error',
+        })
+      }
     } finally {
       setLoading(false)
     }
@@ -78,7 +82,7 @@ export default function CouponBtn({ price, setCouponValue }) {
 
   // 更新優惠券狀態
   const updateCouponStatus = async (couponId) => {
-    if (!userId) {
+    if (!userId && isClient) {
       MySwal.fire({
         title: '請先登入',
         text: '需要登入才能使用優惠券',
@@ -113,17 +117,20 @@ export default function CouponBtn({ price, setCouponValue }) {
       }
     } catch (error) {
       console.error('更新優惠券狀態失敗:', error)
-      MySwal.fire({
-        title: '錯誤',
-        text: error.message || '更新優惠券狀態失敗',
-        icon: 'error',
-      })
+      if (isClient) {
+        MySwal.fire({
+          title: '錯誤',
+          text: error.message || '更新優惠券狀態失敗',
+          icon: 'error',
+        })
+      }
       return false
     }
   }
 
   // 處理優惠券選擇
   const handleCouponSelect = async (coupon) => {
+    if (!isClient) return
     try {
       const discountAmount = calculateDiscountAmount(price, coupon)
       const finalPrice = calculateFinalPrice(price, coupon)
@@ -184,7 +191,7 @@ export default function CouponBtn({ price, setCouponValue }) {
 
   // 檢查是否未登入
   const handleClick = () => {
-    if (!userId) {
+    if (!userId && isClient) {
       MySwal.fire({
         title: '請先登入',
         text: '需要登入才能使用優惠券',
