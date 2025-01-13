@@ -154,6 +154,63 @@ export default function EditPassword(props) {
   }
 }
 
+const confirmPwdReset = async () => {
+  try {
+    const validationError = validatePassword(editableUser.newPassword1)
+    if (validationError) {
+      if (isClient) {
+        await Swal.fire('錯誤', validationError, 'error')
+      }
+      return
+    }
+    
+    if (!editableUser.newPassword1) {
+      if (isClient) {
+        await Swal.fire('錯誤', '請輸入新密碼1', 'error')
+      }
+      return
+    }
+    
+    if (!editableUser.newPassword2) {
+      if (isClient) {
+        await Swal.fire('錯誤', '請輸入新密碼2', 'error')
+      }
+      return
+    }
+
+    const user_id = auth?.userData?.user_id
+    const response = await axios.put(
+      `http://localhost:3005/api/dashboard/resetPwd/${user_id}`,
+      {
+        newPassword: editableUser.newPassword1,
+        confirmPassword: editableUser.newPassword2,
+      }
+    )
+
+    if (response.data.status === 'resetPwd success') {
+      if (isClient) {
+        await Swal.fire('成功', '密碼更新成功！記得記住新密碼', 'success')
+      }
+      setEditableUser((prev) => ({
+        ...prev,
+        currentPassword: '',
+        newPassword1: '',
+        newPassword2: '',
+      }))
+      setShowNewPasswordInput(false)
+    }
+  } catch (error) {
+    console.error('密碼更新失敗:', error)
+    if (isClient) {
+      await Swal.fire(
+        '錯誤',
+        error.response?.data?.message || '密碼更新失敗',
+        'error'
+      )
+    }
+  }
+}
+
   const handleInputChange = (e) => {
     const { name, value } = e.target
     console.log('輸入值型別:', typeof value) // 檢查型別

@@ -6,7 +6,6 @@ import Swal from 'sweetalert2'
 import NextBreadCrumb from '@/components/common/next-breadcrumb'
 import Head from 'next/head'
 
-
 const isClient = typeof window !== 'undefined'
 
 export default function GroupCreat() {
@@ -258,6 +257,7 @@ export default function GroupCreat() {
             showConfirmButton: false,
             timer: 1500,
           })
+        }
 
         // 儲存聊天室 ID 並確保它被正確設置
         if (result.data.chat_room_id) {
@@ -272,13 +272,15 @@ export default function GroupCreat() {
           }, 1500)
         } else {
           console.error('No chat room ID received from server')
-          await Swal.fire({
-            icon: 'error',
-            title: '錯誤',
-            text: '無法取得聊天室資訊',
-            showConfirmButton: false,
-            timer: 2000,
-          })
+          if (isClient) {
+            await Swal.fire({
+              icon: 'error',
+              title: '錯誤',
+              text: '無法取得聊天室資訊',
+              showConfirmButton: false,
+              timer: 2000,
+            })
+          }
         }
 
         // 清空表單

@@ -322,3 +322,4 @@ export default function ChatRoom({ currentUser, currentRoom, onLeaveRoom }) {
     </div>
   )
 }
+}

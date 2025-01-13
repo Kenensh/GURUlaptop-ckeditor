@@ -83,25 +83,8 @@ export default function UserProfile() {
 
         if (response.data?.status === 'success' && response.data?.data?.user) {
           const userData = response.data.data.user
+          setEditableUser((prev) => ({ ...prev, ...userData }))
 
-          setEditableUser((prev) => ({
-            ...prev,
-            name: userData?.name || '',
-            gender: userData?.gender || '',
-            birthdate: userData?.birthdate || '',
-            phone: userData?.phone || '',
-            country: userData?.country || '',
-            city: userData?.city || '',
-            district: userData?.district || '',
-            road_name: userData?.road_name || '',
-            detailed_address: userData?.detailed_address || '',
-            image_path: userData?.image_path || '',
-            remarks: userData?.remarks || '',
-            valid: userData?.valid ?? 1,
-            email: userData?.email || '',
-          }))
-
-          // 設置頭像
           if (userData?.image_path) {
             setProfilePic(userData.image_path)
           }
@@ -129,12 +112,13 @@ export default function UserProfile() {
       } catch (error) {
         console.error('無法獲取資料:', error)
         if (isClient) {
-          Swal.fire('錯誤', '獲取用戶資料失敗', 'error')
+          await Swal.fire('錯誤', '獲取用戶資料失敗', 'error')
         }
+      }
     }
 
     fetchData()
-  }, [user_id])
+  }, [user_id]) // 正確的結束大括號
 
   // Profile Picture Update
   useEffect(() => {
@@ -307,7 +291,7 @@ export default function UserProfile() {
         dataToSubmit
       )
 
-      if (response.data.status === 'success'&& isClient) {
+      if (response.data.status === 'success' && isClient) {
         Swal.fire('成功', '用戶資料更新成功', 'success')
         setAuth((prev) => ({
           ...prev,
@@ -397,7 +381,7 @@ export default function UserProfile() {
         }
       )
 
-      if (response.data.status === 'success'&& isClient) {
+      if (response.data.status === 'success' && isClient) {
         setUploadStatus('頭像更新成功！')
         setAuth((prev) => ({
           ...prev,
