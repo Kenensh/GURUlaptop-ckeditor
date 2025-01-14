@@ -1,6 +1,8 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
 import styles from './Dropdown.module.css'
 
+const isClient = typeof window !== 'undefined'
+
 const Dropdown = ({ title, items, onSelect }) => {
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef(null)
@@ -18,6 +20,8 @@ const Dropdown = ({ title, items, onSelect }) => {
 
   // 處理點擊外部關閉下拉選單
   useEffect(() => {
+    if (!isClient) return
+
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsOpen(false)
@@ -25,11 +29,10 @@ const Dropdown = ({ title, items, onSelect }) => {
     }
 
     if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside)
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
+      window.addEventListener('mousedown', handleClickOutside)
+      return () => {
+        window.removeEventListener('mousedown', handleClickOutside)
+      }
     }
   }, [isOpen])
 

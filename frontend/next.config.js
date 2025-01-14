@@ -3,10 +3,6 @@ const path = require('path')
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
-  // 加入錯誤追蹤
-  onError: (err) => {
-    console.error('Next.js Build Error:', err)
-  },
   // images 設定保持不變
   images: {
     remotePatterns: [

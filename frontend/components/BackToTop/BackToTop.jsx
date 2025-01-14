@@ -1,51 +1,44 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import styles from '@/styles/BackToTop.module.css'
 
 const isClient = typeof window !== 'undefined'
 
 const BackToTop = () => {
   const [isVisible, setIsVisible] = useState(false)
+  const mainBodyRef = useRef(null)
 
-  // 處理滾動監聽
   useEffect(() => {
     if (!isClient) return
 
-    const handleScroll = () => {
-      // 獲取滾動容器
-      const mainBody = document.querySelector('.main-body')
-      if (!mainBody) return
+    // 只在組件初始化時查詢一次 DOM
+    mainBodyRef.current = document.querySelector('.main-body')
 
-      // 使用容器的 scrollTop 而不是 window.scrollY
-      const scrollTop = mainBody.scrollTop || 0
+    const handleScroll = () => {
+      if (!mainBodyRef.current) return
+
+      const scrollTop = mainBodyRef.current.scrollTop || 0
       setIsVisible(scrollTop > 300)
     }
 
-    // 找到正確的滾動容器並添加監聽器
-    const mainBody = document.querySelector('.main-body')
-    if (mainBody) {
-      mainBody.addEventListener('scroll', handleScroll)
-
-      // 清理函數
+    if (mainBodyRef.current) {
+      mainBodyRef.current.addEventListener('scroll', handleScroll)
       return () => {
-        mainBody.removeEventListener('scroll', handleScroll)
+        if (mainBodyRef.current) {
+          mainBodyRef.current.removeEventListener('scroll', handleScroll)
+        }
       }
     }
   }, [])
 
-  // 處理滾動到頂部
   const scrollToTop = () => {
-    if (!isClient) return
+    if (!isClient || !mainBodyRef.current) return
 
-    const mainBody = document.querySelector('.main-body')
-    if (mainBody) {
-      mainBody.scrollTo({
-        top: 0,
-        behavior: 'smooth',
-      })
-    }
+    mainBodyRef.current.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
   }
 
-  // 只在客戶端渲染按鈕
   if (!isClient) {
     return null
   }

@@ -122,12 +122,11 @@ export default function Header() {
   useEffect(() => {
     if (!isClient) return
 
-    const body = document.querySelector('body')
-    if (body) {
-      body.style.paddingTop = bodyPadding
-      return () => {
-        body.style.paddingTop = '0px'
-      }
+    // 使用 CSS 變數替代直接操作 style
+    document.documentElement.style.setProperty('--header-padding', bodyPadding)
+
+    return () => {
+      document.documentElement.style.setProperty('--header-padding', '0px')
     }
   }, [bodyPadding])
 

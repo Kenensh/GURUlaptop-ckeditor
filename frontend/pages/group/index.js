@@ -8,6 +8,18 @@ import GroupJoin from '@/components/group/GroupJoin'
 import GroupNavbar from '@/components/group/GroupNavbar'
 import Head from 'next/head'
 
+const isClient = typeof window !== 'undefined'
+
+// body overflow 管理函數
+const setBodyOverflow = (isHidden) => {
+  if (!isClient) return
+  if (isHidden) {
+    document.documentElement.style.overflow = 'hidden'
+  } else {
+    document.documentElement.style.overflow = 'unset'
+  }
+}
+
 const Group = () => {
   const searchParams = useSearchParams()
   const eventId = searchParams.get('eventId')
@@ -119,13 +131,13 @@ const Group = () => {
       eventName: groupData.event_name,
     })
     setIsModalOpen(true)
-    document.body.style.overflow = 'hidden'
+    setBodyOverflow(true)
   }
 
   const handleCloseModal = () => {
     setIsModalOpen(false)
     setSelectedGroup(null)
-    document.body.style.overflow = 'unset'
+    setBodyOverflow(false)
   }
 
   const handleOpenJoinModal = (groupData) => {
@@ -135,7 +147,7 @@ const Group = () => {
       setSelectedGroup(groupData)
     }
     setIsJoinModalOpen(true)
-    document.body.style.overflow = 'hidden'
+    setBodyOverflow(true)
   }
 
   const handleCloseJoinModal = () => {
@@ -143,7 +155,7 @@ const Group = () => {
     if (!isModalOpen) {
       setSelectedGroup(null)
     }
-    document.body.style.overflow = 'unset'
+    setBodyOverflow(false)
   }
 
   const generatePaginationItems = () => {
