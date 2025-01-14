@@ -1,10 +1,14 @@
 const isClient = typeof window !== 'undefined'
 
-// 檢測移動設備
+// 檢測移動設備 - 優化錯誤處理和類型檢查
 const isMobile = () => {
   if (!isClient) return false
 
   try {
+    if (typeof navigator === 'undefined' || !navigator.userAgent) {
+      throw new Error('Navigator or userAgent not available')
+    }
+
     const userAgent = navigator.userAgent
     const isMobileDevice =
       /\b(iPhone|iP[ao]d)/.test(userAgent) ||
@@ -30,7 +34,7 @@ const isMobile = () => {
   }
 }
 
-// 取得螢幕資訊的安全函數
+// 取得螢幕資訊 - 增強型別安全性
 const getScreenInfo = () => {
   if (!isClient) {
     console.info('[PopupWindow] Running in server environment')
@@ -44,19 +48,25 @@ const getScreenInfo = () => {
   }
 
   try {
-    const screenX = window?.screenX ?? window?.screenLeft ?? 0
-    const screenY = window?.screenY ?? window?.screenTop ?? 0
-    const outerWidth =
-      window?.outerWidth ?? document?.documentElement?.clientWidth ?? 0
-    const outerHeight =
-      (window?.outerHeight ?? document?.documentElement?.clientHeight ?? 0) - 22
+    // 確保所有值都有合理的預設值
+    const screenX = Math.max(window?.screenX ?? window?.screenLeft ?? 0, 0)
+    const screenY = Math.max(window?.screenY ?? window?.screenTop ?? 0, 0)
+    const outerWidth = Math.max(
+      window?.outerWidth ?? document?.documentElement?.clientWidth ?? 0,
+      0
+    )
+    const outerHeight = Math.max(
+      (window?.outerHeight ?? document?.documentElement?.clientHeight ?? 0) -
+        22,
+      0
+    )
 
     console.log('[PopupWindow] Screen info detected:', {
       screenX,
       screenY,
       outerWidth,
       outerHeight,
-      windowExists: typeof window !== 'undefined',
+      windowExists: isClient,
       documentExists: typeof document !== 'undefined',
       timestamp: new Date().toISOString(),
     })
@@ -66,10 +76,9 @@ const getScreenInfo = () => {
     console.error('[PopupWindow] Screen info detection failed:', {
       error: error.message,
       stack: error.stack,
-      windowDimensions: {
-        width: window?.innerWidth,
-        height: window?.innerHeight,
-      },
+      windowDimensions: isClient
+        ? { width: window?.innerWidth, height: window?.innerHeight }
+        : null,
       timestamp: new Date().toISOString(),
     })
     return {
@@ -82,10 +91,15 @@ const getScreenInfo = () => {
   }
 }
 
-// 主要的彈窗函數
+// 主要彈窗函數 - 增加安全檢查
 export function popupCenter(url, title, w, h) {
   if (!isClient) {
     console.info('[PopupWindow] Popup attempted in server environment')
+    return null
+  }
+
+  if (!url) {
+    console.error('[PopupWindow] URL is required')
     return null
   }
 
@@ -105,34 +119,49 @@ export function popupCenter(url, title, w, h) {
     const targetWidth = mobile ? null : w
     const targetHeight = mobile ? null : h
 
-    const V = screenX < 0 ? (window?.screen?.width ?? 0) + screenX : screenX
-    const left = parseInt(V + (outerWidth - (targetWidth ?? 0)) / 2, 10)
-    const right = parseInt(
-      screenY + (outerHeight - (targetHeight ?? 0)) / 2.5,
-      10
+    // 確保計算值為正數
+    const V = Math.max(
+      screenX < 0 ? (window?.screen?.width ?? 0) + screenX : screenX,
+      0
+    )
+    const left = Math.max(
+      parseInt(V + (outerWidth - (targetWidth ?? 0)) / 2, 10),
+      0
+    )
+    const top = Math.max(
+      parseInt(screenY + (outerHeight - (targetHeight ?? 0)) / 2.5, 10),
+      0
     )
 
-    const features = []
-    if (targetWidth !== null) features.push(`width=${targetWidth}`)
-    if (targetHeight !== null) features.push(`height=${targetHeight}`)
-    features.push(`left=${left}`)
-    features.push(`top=${right}`)
-    features.push('scrollbars=1')
+    const features = [
+      targetWidth !== null && `width=${targetWidth}`,
+      targetHeight !== null && `height=${targetHeight}`,
+      `left=${left}`,
+      `top=${top}`,
+      'scrollbars=1',
+    ].filter(Boolean)
 
     console.log('[PopupWindow] Attempting to open window:', {
       url,
       title,
       dimensions: { width: w, height: h },
-      calculated: { left, right },
+      calculated: { left, top },
       features: features.join(','),
       isMobile: mobile,
       timestamp: new Date().toISOString(),
     })
 
     const newWindow = window.open(url, title, features.join(','))
-    if (window?.focus && newWindow) {
-      newWindow.focus()
-      console.log('[PopupWindow] Window opened successfully')
+
+    if (newWindow && window?.focus) {
+      setTimeout(() => {
+        try {
+          newWindow.focus()
+          console.log('[PopupWindow] Window opened and focused successfully')
+        } catch (error) {
+          console.warn('[PopupWindow] Focus failed:', error.message)
+        }
+      }, 0)
     }
 
     return newWindow
@@ -143,42 +172,47 @@ export function popupCenter(url, title, w, h) {
       dimensions: { width: w, height: h },
       error: error.message,
       stack: error.stack,
-      browserInfo: {
-        userAgent: navigator?.userAgent,
-        viewport: {
-          width: window?.innerWidth,
-          height: window?.innerHeight,
-        },
-      },
+      browserInfo: isClient
+        ? {
+            userAgent: navigator?.userAgent,
+            viewport: {
+              width: window?.innerWidth,
+              height: window?.innerHeight,
+            },
+          }
+        : null,
       timestamp: new Date().toISOString(),
     })
     return null
   }
 }
 
-// 事件處理函數工廠
+// 事件處理相關函數 - 優化錯誤處理
 const createSafeEventHandler = (action) => (eventName, listener) => {
-  if (!isClient) {
+  if (!isClient || !document) {
     console.info(`[EventSystem] ${action} attempted in server environment`)
     return
   }
 
+  if (!eventName) {
+    console.error(`[EventSystem] ${action} failed: eventName is required`)
+    return
+  }
+
+  if (typeof listener !== 'function') {
+    console.error(`[EventSystem] ${action} failed: listener must be a function`)
+    return
+  }
+
   try {
-    if (typeof document?.[action] === 'function') {
-      document[action](eventName, listener)
-      console.log(`[EventSystem] ${action} successful:`, {
-        eventName,
-        hasListener: !!listener,
-        timestamp: new Date().toISOString(),
-      })
-    } else {
-      throw new Error(`Document ${action} is not a function`)
-    }
+    document[action](eventName, listener)
+    console.log(`[EventSystem] ${action} successful:`, {
+      eventName,
+      timestamp: new Date().toISOString(),
+    })
   } catch (error) {
     console.error(`[EventSystem] ${action} failed:`, {
       eventName,
-      hasDocument: typeof document !== 'undefined',
-      hasListener: typeof listener === 'function',
       error: error.message,
       stack: error.stack,
       timestamp: new Date().toISOString(),
@@ -190,8 +224,13 @@ export const subscribe = createSafeEventHandler('addEventListener')
 export const unsubscribe = createSafeEventHandler('removeEventListener')
 
 export function publish(eventName, data) {
-  if (!isClient) {
+  if (!isClient || !document) {
     console.info('[EventSystem] Event publish attempted in server environment')
+    return
+  }
+
+  if (!eventName) {
+    console.error('[EventSystem] Event publish failed: eventName is required')
     return
   }
 

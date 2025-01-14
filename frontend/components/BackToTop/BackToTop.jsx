@@ -6,48 +6,84 @@ const isClient = typeof window !== 'undefined'
 const BackToTop = () => {
   const [isVisible, setIsVisible] = useState(false)
   const mainBodyRef = useRef(null)
+  const scrollObserver = useRef(null)
 
   useEffect(() => {
     if (!isClient) return
 
-    // 只在組件初始化時查詢一次 DOM
-    mainBodyRef.current = document.querySelector('.main-body')
+    try {
+      // 使用 requestAnimationFrame 來優化性能
+      let ticking = false
+      const handleScroll = () => {
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            const mainBody = document.querySelector('.main-body')
+            if (!mainBody) {
+              console.warn('[BackToTop] Main body element not found')
+              return
+            }
 
-    const handleScroll = () => {
-      if (!mainBodyRef.current) return
+            const scrollTop = mainBody.scrollTop || 0
+            setIsVisible(scrollTop > 300)
+            ticking = false
+          })
+          ticking = true
+        }
+      }
 
-      const scrollTop = mainBodyRef.current.scrollTop || 0
-      setIsVisible(scrollTop > 300)
-    }
+      // 找到主要的滾動容器
+      mainBodyRef.current = document.querySelector('.main-body')
+      if (mainBodyRef.current) {
+        mainBodyRef.current.addEventListener('scroll', handleScroll, { passive: true })
+        
+        // 初始檢查
+        handleScroll()
+      } else {
+        console.warn('[BackToTop] Main body element not found on mount')
+      }
 
-    if (mainBodyRef.current) {
-      mainBodyRef.current.addEventListener('scroll', handleScroll)
       return () => {
         if (mainBodyRef.current) {
           mainBodyRef.current.removeEventListener('scroll', handleScroll)
         }
       }
+    } catch (error) {
+      console.error('[BackToTop] Error setting up scroll listener:', error)
     }
   }, [])
 
   const scrollToTop = () => {
-    if (!isClient || !mainBodyRef.current) return
+    if (!isClient) return
 
-    mainBodyRef.current.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    })
+    try {
+      const mainBody = document.querySelector('.main-body')
+      if (!mainBody) {
+        console.warn('[BackToTop] Main body element not found on scroll')
+        return
+      }
+
+      mainBody.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      })
+    } catch (error) {
+      console.error('[BackToTop] Error scrolling to top:', error)
+      // 降級方案
+      if (mainBodyRef.current) {
+        mainBodyRef.current.scrollTop = 0
+      }
+    }
   }
 
-  if (!isClient) {
-    return null
-  }
+  // 在 SSR 時不渲染
+  if (!isClient) return null
 
   return (
     <button
       onClick={scrollToTop}
       className={`${styles.backToTop} ${isVisible ? styles.show : ''}`}
       aria-label="回到頂部"
+      type="button"
     >
       ↑
     </button>

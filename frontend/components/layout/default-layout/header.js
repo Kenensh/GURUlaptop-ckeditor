@@ -122,11 +122,13 @@ export default function Header() {
   useEffect(() => {
     if (!isClient) return
 
-    // 使用 CSS 變數替代直接操作 style
-    document.documentElement.style.setProperty('--header-padding', bodyPadding)
+    const root = document.documentElement
+    root.style.setProperty('--header-padding', bodyPadding)
 
     return () => {
-      document.documentElement.style.setProperty('--header-padding', '0px')
+      if (isClient) {
+        root.style.setProperty('--header-padding', '0px')
+      }
     }
   }, [bodyPadding])
 
@@ -150,8 +152,11 @@ export default function Header() {
     { name: '部落格', path: '/blog' },
   ]
 
-  // 將頭像渲染邏輯抽出來作為獨立組件
   const UserAvatar = () => {
+    if (!isClient) {
+      return <div className="user-avatar-placeholder" />
+    }
+
     return (
       <img
         src={
