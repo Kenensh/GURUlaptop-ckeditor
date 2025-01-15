@@ -11,6 +11,8 @@ import NextBreadCrumb from '@/components/common/next-breadcrumb'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 
+const fileInputRef = useRef(null)
+
 const isClient = typeof window !== 'undefined'
 const MySwal = withReactContent(Swal)
 import Head from 'next/head'
@@ -167,7 +169,7 @@ export default function Blogcreated(props) {
 
         <div
           className="BlogImgUploadDiv d-flex align-items-center justify-content-center"
-          onClick={() => document.getElementById('imageInput').click()}
+          onClick={() => fileInputRef.current?.click()}
         >
           {blog_image ? (
             <img
@@ -183,6 +185,7 @@ export default function Blogcreated(props) {
             </>
           )}
           <input
+            ref={fileInputRef}
             type="file"
             onChange={(e) => setImage(e.target.files[0])}
             style={{ display: 'none' }}
