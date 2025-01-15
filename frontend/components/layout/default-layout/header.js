@@ -4,6 +4,7 @@ import { useAuth } from '@/hooks/use-auth'
 import Swal from 'sweetalert2'
 import { useRouter } from 'next/router'
 import { MessageCircle, ShoppingCart, Menu } from 'lucide-react'
+import dynamic from 'next/dynamic'
 
 const isClient = typeof window !== 'undefined'
 
@@ -122,12 +123,21 @@ export default function Header() {
   useEffect(() => {
     if (!isClient) return
 
-    const root = document.documentElement
-    root.style.setProperty('--header-padding', bodyPadding)
+    const updatePadding = () => {
+      const style = document.documentElement.style
+      style.setProperty('--header-padding', bodyPadding)
+    }
+
+    // 只在客戶端執行
+    if (typeof requestAnimationFrame !== 'undefined') {
+      requestAnimationFrame(updatePadding)
+    }
 
     return () => {
-      if (isClient) {
-        root.style.setProperty('--header-padding', '0px')
+      if (isClient && typeof requestAnimationFrame !== 'undefined') {
+        requestAnimationFrame(() => {
+          document.documentElement.style.setProperty('--header-padding', '0px')
+        })
       }
     }
   }, [bodyPadding])
@@ -152,20 +162,25 @@ export default function Header() {
     { name: '部落格', path: '/blog' },
   ]
 
-  const UserAvatar = () => {
-    if (!isClient) {
-      return <div className="user-avatar-placeholder" />
-    }
-
-    return (
-      <img
-        src={
-          auth?.userData?.image_path || getDefaultImage(auth?.userData?.gender)
+  const UserAvatar = dynamic(
+    () =>
+      Promise.resolve(({ auth, getDefaultImage }) => {
+        if (!isClient) {
+          return <div className="user-avatar-placeholder" />
         }
-        alt="User"
-      />
-    )
-  }
+
+        return (
+          <img
+            src={
+              auth?.userData?.image_path ||
+              getDefaultImage(auth?.userData?.gender)
+            }
+            alt="User"
+          />
+        )
+      }),
+    { ssr: false }
+  )
 
   return (
     <header className="tech-nav">
