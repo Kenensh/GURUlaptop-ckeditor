@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDiamond } from '@fortawesome/free-solid-svg-icons'
 import { useRouter } from 'next/router'
@@ -11,14 +11,13 @@ import NextBreadCrumb from '@/components/common/next-breadcrumb'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 
-const fileInputRef = useRef(null)
-
 const isClient = typeof window !== 'undefined'
 const MySwal = withReactContent(Swal)
 import Head from 'next/head'
 import Myeditor from '@/components/blog/Myeditor'
 
 export default function Blogcreated(props) {
+  const fileInputRef = useRef(null)
   const router = useRouter() // 加入 router
   const [editorLoaded, setEditorLoaded] = useState(false)
 
