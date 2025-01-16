@@ -9,6 +9,10 @@ const LoaderContext = createContext(null)
 
 // delay 和 timeout 函數保持不變...
 
+export const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
+export const timeout = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
 export const LoaderProvider = ({
   children,
   close = 2,

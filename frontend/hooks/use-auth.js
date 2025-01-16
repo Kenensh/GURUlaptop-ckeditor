@@ -7,7 +7,18 @@ const AuthContext = createContext(null)
 const MAX_LOGIN_ATTEMPTS = 3
 const HOME_ROUTE = '/'
 
-// ... initUserData 保持不變 ...
+// 定義初始用戶數據
+export const initUserData = {
+  id: 0,
+  email: '',
+  name: '',
+  nickname: '',
+  birthday: '',
+  mobile: '',
+  address: '',
+  credit_card: '',
+  // 根據需要添加其他用戶數據欄位
+}
 
 export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({
@@ -32,6 +43,7 @@ export const AuthProvider = ({ children }) => {
 
     try {
       // ... 登入邏輯保持不變 ...
+      return { status: 'success', message: '登入成功' }
     } catch (error) {
       console.error('登入錯誤:', error)
       return { status: 'error', message: '系統錯誤' }
@@ -44,7 +56,12 @@ export const AuthProvider = ({ children }) => {
       return { status: 'error', message: 'Cannot logout on server side' }
 
     try {
-      // ... 登出邏輯保持不變 ...
+      setAuth({
+        isAuth: false,
+        userData: initUserData,
+      })
+      // 可以在這裡添加其他登出邏輯，例如清除 localStorage
+      return { status: 'success', message: '登出成功' }
     } catch (error) {
       console.error('登出過程發生錯誤:', error)
       return { status: 'error', message: '登出系統發生錯誤' }
@@ -123,3 +140,5 @@ export const useAuth = () => {
   }
   return context
 }
+
+export default useAuth
