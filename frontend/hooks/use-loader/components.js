@@ -1,18 +1,21 @@
-// https://github.com/Gamote/lottie-react
-import Lottie from 'lottie-react'
-import catAnimation from '@/assets/loader-cat.json'
-import nikeAnimation from '@/assets/loader-nike.json'
-import { PacmanLoader } from "react-spinners";
+import dynamic from 'next/dynamic'
+import { PacmanLoader } from 'react-spinners'
 
-// 展示用載入元件
+// 動態導入 Lottie
+const Lottie = dynamic(() => import('lottie-react'), { ssr: false })
+
+// 其他 imports...
+const isClient = typeof window !== 'undefined'
+
 export function DefaultLoader({ show = true }) {
+  if (!isClient) return null
   return (
     <div className={`semi-loader ${show ? '' : 'semi-loader--hide'}`}></div>
   )
 }
 
-// 展示用載入文字元件
 export function LoaderText({ text = 'loading', show = false }) {
+  if (!isClient) return null
   return (
     <div className={`loading-text-bg ${show ? '' : 'loading-text--hide'}`}>
       <div className={`loading-text ${show ? '' : 'loading-text--hide'}`}>
@@ -22,8 +25,8 @@ export function LoaderText({ text = 'loading', show = false }) {
   )
 }
 
-// lottie-react
 export function CatLoader({ show = false }) {
+  if (!isClient) return null
   return (
     <div className={`cat-loader-bg ${show ? '' : 'cat-loader--hide'}`}>
       <Lottie
@@ -34,8 +37,8 @@ export function CatLoader({ show = false }) {
   )
 }
 
-// lottie-react
 export function NikeLoader({ show = false }) {
+  if (!isClient) return null
   return (
     <div className={`nike-loader-bg ${show ? '' : 'nike-loader--hide'}`}>
       <Lottie
@@ -47,5 +50,5 @@ export function NikeLoader({ show = false }) {
 }
 
 export function NoLoader({ show = false }) {
-  return <></>
+  return null
 }

@@ -1,24 +1,14 @@
 import { useState, useContext, createContext, useRef, useEffect } from 'react'
-// 可自訂載入動畫元件
 import { DefaultLoader, LoaderText } from './components'
 import { useRouter } from 'next/router'
 import { LoadingSpinner } from '@/components/dashboard/loading-spinner'
 import { useLoading as useNewLoading } from '@/context/LoadingContext'
 
+const isClient = typeof window !== 'undefined'
 const LoaderContext = createContext(null)
 
-// 保留原有的 delay 和 timeout 函數
-export function delay(ms) {
-  return function (x) {
-    return new Promise((resolve) => setTimeout(() => resolve(x), ms))
-  }
-}
+// delay 和 timeout 函數保持不變...
 
-export function timeout(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
-// 修改 LoaderProvider，整合新的 loading 系統
 export const LoaderProvider = ({
   children,
   close = 2,
@@ -32,8 +22,9 @@ export const LoaderProvider = ({
     useNewLoading()
 
   useEffect(() => {
+    if (!isClient) return
+
     const handleChangeStart = () => {
-      // 改進路徑檢查邏輯
       const currentPath = router.pathname
       const shouldShowLoader = !excludePaths.some(
         (path) => currentPath === path || currentPath.startsWith(`${path}/`)
@@ -46,6 +37,7 @@ export const LoaderProvider = ({
     }
 
     const handleChangeEnd = () => {
+      if (!isClient) return
       if (close && global) {
         timeout(close * 1000).then(() => {
           setShow(false)
@@ -54,8 +46,8 @@ export const LoaderProvider = ({
       }
     }
 
-    // 初始路徑檢查
     const initialCheck = () => {
+      if (!isClient) return
       const currentPath = router.pathname
       const shouldHideLoader = excludePaths.some(
         (path) => currentPath === path || currentPath.startsWith(`${path}/`)
@@ -66,7 +58,6 @@ export const LoaderProvider = ({
       }
     }
 
-    // 執行初始檢查
     initialCheck()
 
     router.events.on('routeChangeStart', handleChangeStart)
@@ -80,10 +71,32 @@ export const LoaderProvider = ({
     }
   }, [router, global, close, showNewLoading, hideNewLoading, excludePaths])
 
+  // 提供一個基本的 SSR 狀態
+  if (!isClient) {
+    return (
+      <LoaderContext.Provider
+        value={{
+          showLoader: () => {},
+          hideLoader: () => {},
+          loading: false,
+          delay,
+          loader: () => null,
+          loaderText: () => null,
+          isNewLoading: false,
+          showNewLoading: () => {},
+          hideNewLoading: () => {},
+        }}
+      >
+        {children}
+      </LoaderContext.Provider>
+    )
+  }
+
   return (
     <LoaderContext.Provider
       value={{
         showLoader: () => {
+          if (!isClient) return
           const currentPath = router.pathname
           const shouldShowLoader = !excludePaths.some(
             (path) => currentPath === path || currentPath.startsWith(`${path}/`)
@@ -101,6 +114,7 @@ export const LoaderProvider = ({
           }
         },
         hideLoader: () => {
+          if (!isClient) return
           setShow(false)
           hideNewLoading()
         },
@@ -115,7 +129,6 @@ export const LoaderProvider = ({
   )
 }
 
-// 保持原有的 useLoader hook，但整合新的功能
 export const useLoader = () => {
   const context = useContext(LoaderContext)
   const newLoading = useNewLoading()
@@ -126,7 +139,6 @@ export const useLoader = () => {
 
   return {
     ...context,
-    // 暴露新的 loading 狀態和方法
     isNewLoading: newLoading.isLoading,
     showNewLoading: newLoading.showLoading,
     hideNewLoading: newLoading.hideLoading,

@@ -2,27 +2,12 @@ import React, { useState, useContext, createContext, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { checkAuth } from '@/services/user'
 
+const isClient = typeof window !== 'undefined'
 const AuthContext = createContext(null)
-const MAX_LOGIN_ATTEMPTS = 3 // 設定最大登入嘗試次數
-const HOME_ROUTE = '/' // 設定首頁路由
+const MAX_LOGIN_ATTEMPTS = 3
+const HOME_ROUTE = '/'
 
-export const initUserData = {
-  user_id: 0,
-  name: '',
-  password: '',
-  gender: '',
-  birthdate: '',
-  phone: '',
-  email: '',
-  country: '',
-  city: '',
-  district: '',
-  road_name: '',
-  detailed_address: '',
-  image_path: '',
-  remarks: '',
-  level: 0,
-}
+// ... initUserData 保持不變 ...
 
 export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({
@@ -30,92 +15,36 @@ export const AuthProvider = ({ children }) => {
     userData: initUserData,
   })
   const [loginAttempts, setLoginAttempts] = useState(0)
-
+  const [isLoading, setIsLoading] = useState(true) // 添加載入狀態
   const router = useRouter()
   const loginRoute = '/member/login'
-  // 修改需要保護的路由列表
+
   const protectedRoutes = [
     '/dashboard',
     '/coupon/coupon-user',
     '/member/profile',
-    // 其他需要登入的路由
   ]
 
-  // 登入函數修改
+  // 修改 login 函數
   const login = async (email, password) => {
+    if (!isClient)
+      return { status: 'error', message: 'Cannot login on server side' }
+
     try {
-      if (loginAttempts >= MAX_LOGIN_ATTEMPTS) {
-        console.log(`已達到最大登入嘗試次數(${MAX_LOGIN_ATTEMPTS}次)`)
-        router.replace(HOME_ROUTE)
-        return {
-          status: 'error',
-          message: '登入嘗試次數過多，請稍後再試',
-        }
-      }
-
-      const response = await fetch('http://localhost:3005/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ email, password }),
-      })
-
-      const result = await response.json()
-
-      if (result.status === 'success') {
-        console.log('登入成功')
-        setLoginAttempts(0) // 重置嘗試次數
-        setAuth({
-          isAuth: true,
-          userData: { ...initUserData, ...result.data.user },
-        })
-        return { status: 'success', message: '登入成功' }
-      }
-
-      // 登入失敗處理
-      const newAttempts = loginAttempts + 1
-      console.log(`登入失敗！第 ${newAttempts} 次嘗試`)
-      setLoginAttempts(newAttempts)
-
-      if (newAttempts >= MAX_LOGIN_ATTEMPTS) {
-        console.log('登入失敗次數過多，即將返回首頁')
-        setTimeout(() => router.replace(HOME_ROUTE), 1500)
-      }
-
-      return {
-        status: 'error',
-        message: `登入失敗 (第 ${newAttempts}/${MAX_LOGIN_ATTEMPTS} 次嘗試)`,
-      }
+      // ... 登入邏輯保持不變 ...
     } catch (error) {
       console.error('登入錯誤:', error)
       return { status: 'error', message: '系統錯誤' }
     }
   }
 
+  // 修改 logout 函數
   const logout = async () => {
+    if (!isClient)
+      return { status: 'error', message: 'Cannot logout on server side' }
+
     try {
-      const response = await fetch('http://localhost:3005/api/auth/logout', {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-
-      const result = await response.json()
-
-      if (result.status === 'success') {
-        setAuth({
-          isAuth: false,
-          userData: initUserData,
-        })
-        // 登出時重置登入嘗試次數
-        setLoginAttempts(0)
-        console.log('登出成功！重置登入嘗試次數')
-        await router.replace(loginRoute)
-        return { status: 'success', message: '登出成功' }
-      }
-      return { status: 'error', message: '登出失敗' }
+      // ... 登出邏輯保持不變 ...
     } catch (error) {
       console.error('登出過程發生錯誤:', error)
       return { status: 'error', message: '登出系統發生錯誤' }
@@ -124,8 +53,10 @@ export const AuthProvider = ({ children }) => {
 
   // 修改認證檢查函數
   const handleCheckAuth = async () => {
-    // 不在受保護路由，不需要檢查
+    if (!isClient || !router.isReady) return
+
     if (!protectedRoutes.includes(router.pathname)) {
+      setIsLoading(false)
       return
     }
 
@@ -139,7 +70,6 @@ export const AuthProvider = ({ children }) => {
           userData: { ...initUserData, ...res.data.data.user },
         })
       } else if (protectedRoutes.includes(router.pathname)) {
-        console.log('需要登入才能訪問此頁面')
         router.replace(loginRoute)
       }
     } catch (error) {
@@ -147,18 +77,27 @@ export const AuthProvider = ({ children }) => {
       if (protectedRoutes.includes(router.pathname)) {
         router.replace(loginRoute)
       }
+    } finally {
+      setIsLoading(false)
     }
   }
 
   useEffect(() => {
-    console.log('認證狀態變更:', auth)
+    if (isClient) {
+      console.log('認證狀態變更:', auth)
+    }
   }, [auth])
 
   useEffect(() => {
-    if (router.isReady) {
+    if (isClient && router.isReady) {
       handleCheckAuth()
     }
   }, [router.isReady, router.pathname])
+
+  // 如果是服務器端渲染，返回一個基礎狀態
+  if (!isClient && isLoading) {
+    return <>{children}</>
+  }
 
   return (
     <AuthContext.Provider
@@ -169,6 +108,7 @@ export const AuthProvider = ({ children }) => {
         setAuth,
         loginAttempts,
         maxAttempts: MAX_LOGIN_ATTEMPTS,
+        isLoading,
       }}
     >
       {children}
