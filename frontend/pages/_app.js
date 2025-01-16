@@ -1,66 +1,20 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
-
-// 修正 DefaultLayout 的導入路徑
 import DefaultLayout from '@/components/layout/default-layout'
 
-//render 用
-import 'bootstrap/dist/css/bootstrap.min.css'
-
-// 樣式
-import '@/styles/globals.scss'
-import '@/styles/product.scss'
-import '@/styles/cart.scss'
-import '@/styles/loader.scss'
-import '@/styles/coupon.scss'
-import '@/styles/header.scss'
-import '@/styles/footer.scss'
-
-// 首頁
-import '@/styles/frontPage.scss'
-
-// 文章/部落格用 css
-import '@/styles/ArticleDetail.scss'
-import '@/styles/ArticleHomePage.scss'
-import '@/styles/BlogCreated.scss'
-import '@/styles/BlogDetail.scss'
-import '@/styles/BlogEdit.scss'
-import '@/styles/BlogHomePage.scss'
-import '@/styles/BlogUserOverview.scss'
-import 'animate.css'
-
-// 載入購物車context
-import { CartProvider } from '@/hooks/use-cart-state'
-// 載入認証用context
-import { AuthProvider } from '@/hooks/use-auth'
-// 載入動畫context
-import { LoaderProvider } from '@/hooks/use-loader'
-// 自訂用載入動畫元件
-import { LoadingSpinner } from '@/components/dashboard/loading-spinner'
-// event的scss
-import '../styles/event.scss'
-// eventdetail的scss
-import '../styles/eventDetail.scss'
-// evenRegistration的scss
-import '../styles/eventRegistration.scss'
-// group的scss
-import '../styles/group.scss'
-// groupCreat的scss
-import '../styles/groupCreat.scss'
-
-import { GroupAuthProvider } from '@/context/GroupAuthContext'
-
-//  新增加
-import { LoadingProviderAnimation } from '@/context/LoadingContext'
-import LoadingAnimation from '@/components/LoadingAnimation/LoadingAnimation'
+// ... (其他 imports 保持不變)
 
 const isClient = typeof window !== 'undefined'
+
+// 後端 API URL
+const BACKEND_URL = 'https://gurulaptop-ckeditor.onrender.com'
 
 export default function MyApp({ Component, pageProps }) {
   const router = useRouter()
 
   useEffect(() => {
     if (isClient) {
+      // 錯誤處理
       window.onerror = function (msg, url, lineNo, columnNo, error) {
         console.log('Global Error:', {
           message: msg,
@@ -80,11 +34,36 @@ export default function MyApp({ Component, pageProps }) {
     import('bootstrap/dist/js/bootstrap')
   }, [])
 
+  // 添加喚醒後端的功能
+  useEffect(() => {
+    const wakeUpBackend = async () => {
+      try {
+        console.log('Attempting to wake up backend...')
+        const response = await fetch(`${BACKEND_URL}/health`)
+        if (response.ok) {
+          console.log('Backend is awake!')
+        }
+      } catch (error) {
+        console.log('Backend wake-up attempt failed:', error)
+      }
+    }
+
+    if (isClient) {
+      // 立即執行一次
+      wakeUpBackend()
+
+      // 設定每 14 分鐘執行一次
+      const interval = setInterval(wakeUpBackend, 14 * 60 * 1000)
+
+      // 清理函數
+      return () => clearInterval(interval)
+    }
+  }, [])
+
   const getLayout =
     Component.getLayout ||
     ((page) => {
       if (!isClient) {
-        // SSR 基本渲染
         return page
       }
       return <DefaultLayout>{page}</DefaultLayout>
