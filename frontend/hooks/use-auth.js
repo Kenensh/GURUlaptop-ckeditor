@@ -17,7 +17,17 @@ export const initUserData = {
   mobile: '',
   address: '',
   credit_card: '',
-  // 根據需要添加其他用戶數據欄位
+}
+
+// 預設的 context 值，用於 SSR
+const defaultContextValue = {
+  auth: { isAuth: false, userData: initUserData },
+  login: () => Promise.resolve({ status: 'error', message: 'SSR不支援登入' }),
+  logout: () => Promise.resolve({ status: 'error', message: 'SSR不支援登出' }),
+  setAuth: () => {},
+  loginAttempts: 0,
+  maxAttempts: MAX_LOGIN_ATTEMPTS,
+  isLoading: true,
 }
 
 export const AuthProvider = ({ children }) => {
@@ -26,7 +36,7 @@ export const AuthProvider = ({ children }) => {
     userData: initUserData,
   })
   const [loginAttempts, setLoginAttempts] = useState(0)
-  const [isLoading, setIsLoading] = useState(true) // 添加載入狀態
+  const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
   const loginRoute = '/member/login'
 
@@ -34,65 +44,106 @@ export const AuthProvider = ({ children }) => {
     '/dashboard',
     '/coupon/coupon-user',
     '/member/profile',
+    '/cart/checkout',
+    '/member/logout',
+    '/blog/create',
+    '/blog/edit',
   ]
 
-  // 修改 login 函數
+  // 改進的 login 函數
   const login = async (email, password) => {
-    if (!isClient)
+    if (!isClient) {
       return { status: 'error', message: 'Cannot login on server side' }
+    }
 
     try {
-      // ... 登入邏輯保持不變 ...
+      if (loginAttempts >= MAX_LOGIN_ATTEMPTS) {
+        return { status: 'error', message: '登入嘗試次數過多，請稍後再試' }
+      }
+
+      // TODO: 實作實際的登入邏輯
+      // const response = await loginAPI(email, password)
+
+      setLoginAttempts((prev) => prev + 1)
       return { status: 'success', message: '登入成功' }
     } catch (error) {
       console.error('登入錯誤:', error)
-      return { status: 'error', message: '系統錯誤' }
+      setLoginAttempts((prev) => prev + 1)
+      return {
+        status: 'error',
+        message: error?.response?.data?.message || '系統錯誤',
+      }
     }
   }
 
-  // 修改 logout 函數
+  // 改進的 logout 函數
   const logout = async () => {
-    if (!isClient)
+    if (!isClient) {
       return { status: 'error', message: 'Cannot logout on server side' }
+    }
 
     try {
+      // TODO: 實作實際的登出 API 呼叫
+      // await logoutAPI()
+
       setAuth({
         isAuth: false,
         userData: initUserData,
       })
-      // 可以在這裡添加其他登出邏輯，例如清除 localStorage
+
+      // 清除本地存儲
+      if (isClient) {
+        localStorage.removeItem('auth_token')
+        sessionStorage.removeItem('auth_token')
+      }
+
       return { status: 'success', message: '登出成功' }
     } catch (error) {
-      console.error('登出過程發生錯誤:', error)
-      return { status: 'error', message: '登出系統發生錯誤' }
+      console.error('登出錯誤:', error)
+      return {
+        status: 'error',
+        message: error?.response?.data?.message || '登出系統發生錯誤',
+      }
     }
   }
 
-  // 修改認證檢查函數
+  // 改進的認證檢查函數
   const handleCheckAuth = async () => {
     if (!isClient || !router.isReady) return
 
-    if (!protectedRoutes.includes(router.pathname)) {
+    // 檢查是否需要認證
+    const needsAuth = protectedRoutes.some((route) =>
+      router.pathname.startsWith(route)
+    )
+
+    if (!needsAuth) {
       setIsLoading(false)
       return
     }
 
     try {
       const res = await checkAuth()
-      console.log('驗證狀態檢查:', res)
+      const isAuthenticated =
+        res?.data?.status === 'success' && res?.data?.data?.user
 
-      if (res?.data?.status === 'success' && res?.data?.data?.user) {
+      if (isAuthenticated) {
         setAuth({
           isAuth: true,
           userData: { ...initUserData, ...res.data.data.user },
         })
-      } else if (protectedRoutes.includes(router.pathname)) {
-        router.replace(loginRoute)
+      } else if (needsAuth) {
+        router.replace({
+          pathname: loginRoute,
+          query: { returnUrl: router.asPath },
+        })
       }
     } catch (error) {
-      console.error('驗證檢查錯誤:', error)
-      if (protectedRoutes.includes(router.pathname)) {
-        router.replace(loginRoute)
+      console.error('認證檢查錯誤:', error)
+      if (needsAuth) {
+        router.replace({
+          pathname: loginRoute,
+          query: { returnUrl: router.asPath },
+        })
       }
     } finally {
       setIsLoading(false)
@@ -111,9 +162,13 @@ export const AuthProvider = ({ children }) => {
     }
   }, [router.isReady, router.pathname])
 
-  // 如果是服務器端渲染，返回一個基礎狀態
-  if (!isClient && isLoading) {
-    return <>{children}</>
+  // 服務器端渲染時返回預設值
+  if (!isClient) {
+    return (
+      <AuthContext.Provider value={defaultContextValue}>
+        {children}
+      </AuthContext.Provider>
+    )
   }
 
   return (
