@@ -31,6 +31,12 @@ export default function BlogSearchPage() {
 
   // 統一的文章載入邏輯
   useEffect(() => {
+    // 添加環境變數判斷
+    const BACKEND_URL =
+      process.env.NODE_ENV === 'development'
+        ? 'http://localhost:3005'
+        : 'https://gurulaptop-ckeditor.onrender.com'
+
     const fetchBlogs = async () => {
       try {
         const queryParams = new URLSearchParams({
@@ -41,9 +47,7 @@ export default function BlogSearchPage() {
           brands: filters.brands.join(','),
         })
 
-        const res = await fetch(
-          `http://localhost:3005/api/blog/search?${queryParams}`
-        )
+        const res = await fetch(`${BACKEND_URL}/api/blog/search?${queryParams}`)
         const data = await res.json()
 
         if (data.blogs) {
@@ -226,8 +230,8 @@ export default function BlogSearchPage() {
                       <img
                         src={
                           blog.blog_image
-                            ? `http://localhost:3005${blog.blog_image}`
-                            : 'http://localhost:3005/blog-images/nolaptopupload.jpeg'
+                            ? `${BACKEND_URL}${blog.blog_image}`
+                            : `${BACKEND_URL}/blog-images/nolaptopupload.jpeg`
                         }
                         className="card-img-top w-50 h-100 BlogCardImg"
                         alt={blog.blog_title}
