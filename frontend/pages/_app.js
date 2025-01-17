@@ -73,7 +73,13 @@ export default function MyApp({ Component, pageProps }) {
     const wakeUpBackend = async () => {
       try {
         console.log('Attempting to wake up backend...')
-        const response = await fetch(`${BACKEND_URL}/health`)
+        const response = await fetch(`${BACKEND_URL}/health`, {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
         if (response.ok) {
           const data = await response.json()
           console.log('Backend is awake!', data)
