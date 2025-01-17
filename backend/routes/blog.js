@@ -58,11 +58,22 @@ router.post(
 )
 
 // 搜尋路由
-router.get('/search', async (req, res) => {
+router.get('/search', cors(), async (req, res) => {
+  // 加入 cors() 中間件
   const page = parseInt(req.query.page) || 1
   const limit = parseInt(req.query.limit) || 6
   const { search = '', types = '', brands = '' } = req.query
   const offset = (page - 1) * limit
+
+  // 添加請求日誌
+  console.log('Search request:', {
+    page,
+    limit,
+    search,
+    types,
+    brands,
+    offset,
+  })
 
   // 輸入驗證
   if (page < 1 || limit < 1) {
