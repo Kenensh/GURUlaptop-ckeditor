@@ -1,6 +1,7 @@
 import express from 'express'
 import { pool } from '##/configs/db.js'
 import multer from 'multer'
+import cors from 'cors'
 
 const router = express.Router()
 
@@ -13,10 +14,22 @@ const upload = multer({
   }),
 })
 
+// CORS 配置
+const corsOptions = {
+  origin: [
+    'http://localhost:3000',
+    'https://localhost:9000',
+    'https://gurulaptop-ckeditor-frontend.onrender.com',
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+}
+
 // 在現有的 multer 配置之後，添加新的上傳路由
 router.post(
-  '/api/upload-image', // 加上前導斜線
-  upload.single('upload'), // CKEditor 預設使用 'upload' 作為欄位名稱
+  '/upload-image', // 移除多餘的 /api 前綴
+  upload.single('upload'),
   async (req, res) => {
     try {
       if (!req.file) {
@@ -26,12 +39,9 @@ router.post(
         })
       }
 
-      // 返回圖片 URL
       const fileUrl = `/blog-images/${req.file.originalname}`
+      console.log('File uploaded successfully:', fileUrl)
 
-      console.log('File uploaded successfully:', fileUrl) // 添加日誌
-
-      // 注意這個回應格式，它是 CKEditor 期望的格式
       res.json({
         uploaded: 1,
         fileName: req.file.originalname,
@@ -47,18 +57,8 @@ router.post(
   }
 )
 
-// CORS 配置
-const corsOptions = {
-  origin: [
-    'https://gurulaptop-ckeditor-frontend.onrender.com',
-    'http://localhost:3000',
-  ],
-  methods: ['GET', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}
-
 // 搜尋路由
-router.get('/search', cors(corsOptions), async (req, res) => {
+router.get('/search', async (req, res) => {
   const page = parseInt(req.query.page) || 1
   const limit = parseInt(req.query.limit) || 6
   const { search = '', types = '', brands = '' } = req.query
@@ -93,7 +93,7 @@ router.get('/search', cors(corsOptions), async (req, res) => {
         .split(',')
         .filter(Boolean)
         .map((type) => type.trim())
-        .filter((type) => type.length <= 50) // 假設類型名稱不應超過 50 字元
+        .filter((type) => type.length <= 50)
 
       if (typeArray.length) {
         whereConditions.push(`blog_type = ANY($${paramIndex}::text[])`)
@@ -108,7 +108,7 @@ router.get('/search', cors(corsOptions), async (req, res) => {
         .split(',')
         .filter(Boolean)
         .map((brand) => brand.trim())
-        .filter((brand) => brand.length <= 50) // 假設品牌名稱不應超過 50 字元
+        .filter((brand) => brand.length <= 50)
 
       if (brandArray.length) {
         whereConditions.push(`blog_brand = ANY($${paramIndex}::text[])`)
@@ -201,8 +201,6 @@ router.get('/search', cors(corsOptions), async (req, res) => {
     })
   }
 })
-
-module.exports = router
 
 router.get('/blog/ckeitor', async (req, res) => {
   const page = parseInt(req.query.page) || 1
@@ -753,6 +751,22 @@ router.post('/blog-comment/:blog_id', async (req, res) => {
       detail: error.message,
     })
   }
+})
+
+// 添加錯誤處理中間件
+router.use((error, req, res, next) => {
+  console.error('Blog route error:', {
+    message: error.message,
+    stack: error.stack,
+    path: req.path,
+    method: req.method,
+  })
+
+  res.status(500).json({
+    status: 'error',
+    message: '伺服器錯誤',
+    detail: process.env.NODE_ENV === 'development' ? error.message : undefined,
+  })
 })
 
 export default router
