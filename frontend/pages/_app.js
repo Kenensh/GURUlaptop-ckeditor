@@ -40,7 +40,50 @@ import { LoadingSpinner } from '@/components/dashboard/loading-spinner'
 
 // 常數定義
 const isClient = typeof window !== 'undefined'
-const BACKEND_URL = 'https://gurulaptop-ckeditor.onrender.com'
+const BACKEND_URL =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3005'
+    : 'https://gurulaptop-ckeditor.onrender.com'
+
+// 重寫 fetch（在 window 對象可用時）
+if (typeof window !== 'undefined') {
+  const originalFetch = window.fetch
+  window.fetch = async (url, options = {}) => {
+    try {
+      // 只處理相對路徑或以 https://gurulaptop-ckeditor.onrender.com 開頭的請求
+      if (
+        url.startsWith('/') ||
+        url.startsWith('https://gurulaptop-ckeditor.onrender.com')
+      ) {
+        // 如果是相對路徑，加上 BACKEND_URL
+        const newUrl = url.startsWith('/') ? `${BACKEND_URL}${url}` : url
+
+        // 將 render URL 替換為 localhost（在開發環境）
+        const finalUrl =
+          process.env.NODE_ENV === 'development'
+            ? newUrl.replace(
+                'https://gurulaptop-ckeditor.onrender.com',
+                'http://localhost:3005'
+              )
+            : newUrl
+
+        console.log('Intercepted fetch request:', {
+          originalUrl: url,
+          finalUrl: finalUrl,
+          environment: process.env.NODE_ENV,
+        })
+
+        return originalFetch(finalUrl, options)
+      }
+
+      // 其他請求保持不變
+      return originalFetch(url, options)
+    } catch (error) {
+      console.error('Fetch interceptor error:', error)
+      throw error
+    }
+  }
+}
 
 export default function MyApp({ Component, pageProps }) {
   const router = useRouter()
@@ -71,6 +114,10 @@ export default function MyApp({ Component, pageProps }) {
   // 後端喚醒機制
   useEffect(() => {
     const wakeUpBackend = async () => {
+      console.log('Wake up process starting...')
+      console.log('Current BACKEND_URL:', BACKEND_URL)
+      console.log('Environment:', process.env.NODE_ENV)
+
       try {
         console.log('Attempting to wake up backend...')
         const response = await fetch(`${BACKEND_URL}/health`, {
@@ -78,18 +125,32 @@ export default function MyApp({ Component, pageProps }) {
           credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
+            Accept: 'application/json',
+            Origin: window.location.origin,
           },
         })
+
+        console.log('Response status:', response.status)
+
         if (response.ok) {
           const data = await response.json()
-          console.log('Backend is awake!', data)
+          console.log('Backend is awake! Data:', data)
+        } else {
+          console.log('Backend response not ok:', response.statusText)
+          console.log('Full response:', response)
         }
       } catch (error) {
-        console.log('Backend wake-up attempt failed:', error)
+        console.error('Backend wake-up attempt failed:', {
+          error: error,
+          message: error.message,
+          stack: error.stack,
+          type: error.name,
+        })
       }
     }
 
     if (isClient) {
+      console.log('Initializing wake up mechanism...')
       // 立即執行一次
       wakeUpBackend()
       // 設定每 14 分鐘執行一次
