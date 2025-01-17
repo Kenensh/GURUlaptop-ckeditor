@@ -4,7 +4,7 @@ import cors from 'cors'
 import createError from 'http-errors'
 import express from 'express'
 import db from './configs/db.js'
-import logger from 'morgan'
+import morganLogger from 'morgan'
 import path from 'path'
 import session from 'express-session'
 import authRouter from './routes/auth.js'
@@ -19,6 +19,7 @@ import chatRoutes from './routes/chat.js'
 import GroupRequests from './routes/group-request.js'
 import blogRouter from './routes/blog.js'
 import forgotPasswordRouter from './routes/forgot-password.js'
+import winston from 'winston'
 
 // 使用檔案的session store，存在sessions資料夾
 import sessionFileStore from 'session-file-store'
@@ -34,10 +35,83 @@ import { extendLog } from '#utils/tool.js'
 import 'colors'
 extendLog()
 
+// 建立 Winston Logger
+const logger = winston.createLogger({
+  level: process.env.LOG_LEVEL || 'info',
+  format: winston.format.combine(
+    winston.format.timestamp({
+      format: 'YYYY-MM-DD HH:mm:ss',
+    }),
+    winston.format.errors({ stack: true }),
+    winston.format.json()
+  ),
+  transports: [
+    new winston.transports.Console({
+      format: winston.format.combine(
+        winston.format.colorize(),
+        winston.format.printf(({ level, message, timestamp, ...meta }) => {
+          let output = `${timestamp} ${level}: ${message}`
+          if (meta.stack) {
+            output += `\nStack: ${meta.stack}`
+          }
+          const { stack, ...restMeta } = meta
+          if (Object.keys(restMeta).length > 0) {
+            output += `\nMetadata: ${JSON.stringify(restMeta, null, 2)}`
+          }
+          return output
+        })
+      ),
+    }),
+    new winston.transports.File({
+      filename: 'logs/error.log',
+      level: 'error',
+    }),
+    new winston.transports.File({
+      filename: 'logs/combined.log',
+    }),
+  ],
+})
+
 // 建立 Express 應用程式
 const app = express()
 
-// 添加 health check 路由 (放在最前面以確保快速響應)
+// 確保日誌目錄存在
+const logDir = path.join(__dirname, 'logs')
+if (!fs.existsSync(logDir)) {
+  fs.mkdirSync(logDir, { recursive: true })
+}
+
+// 請求記錄中間件
+const requestLogger = (req, res, next) => {
+  const startTime = Date.now()
+
+  logger.info(`${req.method} ${req.url} started`, {
+    method: req.method,
+    url: req.url,
+    query: req.query,
+    headers: {
+      'user-agent': req.get('user-agent'),
+      'content-type': req.get('content-type'),
+      authorization: req.get('authorization') ? '[PRESENT]' : '[NONE]',
+    },
+  })
+
+  res.on('finish', () => {
+    const duration = Date.now() - startTime
+    logger.info(`${req.method} ${req.url} completed`, {
+      method: req.method,
+      url: req.url,
+      status: res.statusCode,
+      duration: `${duration}ms`,
+    })
+  })
+
+  next()
+}
+
+app.use(requestLogger)
+
+// Health check 路由
 app.get('/health', (req, res) => {
   const startTime = new Date().getTime()
 
@@ -52,16 +126,14 @@ app.get('/health', (req, res) => {
       health.database = 'connected'
       const responseTime = new Date().getTime() - startTime
       health.responseTime = `${responseTime}ms`
-      console.log(
-        `Health check passed in ${responseTime}ms at ${new Date().toISOString()}`
-      )
+      logger.info('Health check passed', health)
       res.json(health)
     })
     .catch((err) => {
       health.status = 'error'
       health.database = 'disconnected'
       health.error = err.message
-      console.error('Health check failed:', err)
+      logger.error('Health check failed', { error: err, health })
       res.status(503).json(health)
     })
 })
@@ -84,50 +156,12 @@ app.use(
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'pug')
 
-// 記錄HTTP要求
-app.use(logger('dev'))
-// 剖析 POST 與 PUT 要求的JSON格式資料
+// 中間件設定
+app.use(morganLogger('dev'))
 app.use(express.json({ limit: '20mb' }))
 app.use(express.urlencoded({ extended: false, limit: '20mb' }))
-// 剖折 Cookie 標頭與增加至 req.cookies
 app.use(cookieParser())
-// 在 public 的目錄，提供影像、CSS 等靜態檔案
 app.use(express.static(path.join(__dirname, 'public')))
-
-// 添加伺服器基本信息路由
-app.get('/api/server-info', (req, res) => {
-  res.json({
-    nodeVersion: process.version,
-    uptime: process.uptime(),
-    memoryUsage: process.memoryUsage(),
-    timestamp: new Date().toISOString(),
-  })
-})
-
-// 手動註冊路由
-app.use('/api/auth', authRouter)
-app.use('/api/blog', blogRouter) // 添加 blog 路由
-app.use('/api/login', loginRouter)
-app.use('/api/signup', signupRouter)
-app.use('/api/dashboard', dashboardRouter)
-app.use('/api/users', usersRouter)
-app.use('/api/events', eventsRouter)
-app.use('/api/forgot-password', forgotPasswordRouter)
-app.use('/api/coupon', couponRouter)
-app.use('/api/coupon-user', couponUserRouter)
-
-// 測試資料庫連接
-async function testConnection() {
-  try {
-    await db.query('SELECT 1')
-    console.log('Database connection successful')
-  } catch (error) {
-    console.error('Database connection failed:', error)
-    process.exit(1)
-  }
-}
-
-testConnection()
 
 // Session 設定
 const fileStoreOptions = { logFn: function () {} }
@@ -144,6 +178,33 @@ app.use(
   })
 )
 
+// API 路由
+app.use('/api/auth', authRouter)
+app.use('/api/blog', blogRouter)
+app.use('/api/login', loginRouter)
+app.use('/api/signup', signupRouter)
+app.use('/api/dashboard', dashboardRouter)
+app.use('/api/users', usersRouter)
+app.use('/api/events', eventsRouter)
+app.use('/api/forgot-password', forgotPasswordRouter)
+app.use('/api/coupon', couponRouter)
+app.use('/api/coupon-user', couponUserRouter)
+app.use('/api/chat', chatRoutes)
+app.use('/api', GroupRequests)
+
+// 測試資料庫連接
+async function testConnection() {
+  try {
+    await db.query('SELECT 1')
+    logger.info('Database connection successful')
+  } catch (error) {
+    logger.error('Database connection failed', { error })
+    process.exit(1)
+  }
+}
+
+testConnection()
+
 // 自動載入路由
 const apiPath = '/api'
 const routePath = path.join(__dirname, 'routes')
@@ -155,16 +216,30 @@ for (const filename of filenames) {
   app.use(`${apiPath}/${slug === 'index' ? '' : slug}`, item.default)
 }
 
-// 錯誤處理
+// 404 處理
 app.use(function (req, res, next) {
   next(createError(404))
 })
 
+// 錯誤處理
 app.use(function (err, req, res, next) {
+  logger.error('Application error', {
+    error: {
+      message: err.message,
+      stack: err.stack,
+      status: err.status || 500,
+    },
+    request: {
+      method: req.method,
+      url: req.url,
+      query: req.query,
+      body: req.body,
+    },
+  })
+
   res.locals.message = err.message
   res.locals.error = req.app.get('env') === 'development' ? err : {}
-  res.status(err.status || 500)
-  res.status(500).send({ error: err })
+  res.status(err.status || 500).send({ error: err })
 })
 
 // 設定靜態檔案提供
@@ -176,8 +251,25 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true })
 }
 
-// 使用聊天室路由
-app.use('/api/chat', chatRoutes)
-app.use('/api/', GroupRequests)
+// 未捕獲的 Promise 錯誤處理
+process.on('unhandledRejection', (reason, promise) => {
+  logger.error('Unhandled Rejection at:', {
+    promise: promise,
+    reason: reason,
+  })
+})
+
+// 未捕獲的異常處理
+process.on('uncaughtException', (error) => {
+  logger.error('Uncaught Exception:', {
+    error: {
+      message: error.message,
+      stack: error.stack,
+    },
+  })
+
+  // 給程序一點時間來記錄錯誤然後結束
+  setTimeout(() => process.exit(1), 1000)
+})
 
 export default app
