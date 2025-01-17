@@ -47,11 +47,30 @@ router.post(
   }
 )
 
-router.get('/search', async (req, res) => {
+// CORS 配置
+const corsOptions = {
+  origin: [
+    'https://gurulaptop-ckeditor-frontend.onrender.com',
+    'http://localhost:3000',
+  ],
+  methods: ['GET', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}
+
+// 搜尋路由
+router.get('/search', cors(corsOptions), async (req, res) => {
   const page = parseInt(req.query.page) || 1
   const limit = parseInt(req.query.limit) || 6
   const { search = '', types = '', brands = '' } = req.query
   const offset = (page - 1) * limit
+
+  // 輸入驗證
+  if (page < 1 || limit < 1) {
+    return res.status(400).json({
+      error: 'Invalid pagination parameters',
+      message: '分頁參數無效',
+    })
+  }
 
   try {
     // 建立基本條件
@@ -59,18 +78,23 @@ router.get('/search', async (req, res) => {
     let params = []
     let paramIndex = 1
 
-    // 搜尋條件
-    if (search) {
+    // 搜尋條件 - 加入 SQL 注入防護
+    if (search.trim()) {
       whereConditions.push(
         `(blog_content ILIKE $${paramIndex} OR blog_title ILIKE $${paramIndex})`
       )
-      params.push(`%${search}%`)
+      params.push(`%${search.replace(/[%_]/g, (char) => `\\${char}`)}%`)
       paramIndex++
     }
 
-    // 類型條件
-    if (types) {
-      const typeArray = types.split(',').filter(Boolean)
+    // 類型條件 - 加入驗證
+    if (types.trim()) {
+      const typeArray = types
+        .split(',')
+        .filter(Boolean)
+        .map((type) => type.trim())
+        .filter((type) => type.length <= 50) // 假設類型名稱不應超過 50 字元
+
       if (typeArray.length) {
         whereConditions.push(`blog_type = ANY($${paramIndex}::text[])`)
         params.push(typeArray)
@@ -78,9 +102,14 @@ router.get('/search', async (req, res) => {
       }
     }
 
-    // 品牌條件
-    if (brands) {
-      const brandArray = brands.split(',').filter(Boolean)
+    // 品牌條件 - 加入驗證
+    if (brands.trim()) {
+      const brandArray = brands
+        .split(',')
+        .filter(Boolean)
+        .map((brand) => brand.trim())
+        .filter((brand) => brand.length <= 50) // 假設品牌名稱不應超過 50 字元
+
       if (brandArray.length) {
         whereConditions.push(`blog_brand = ANY($${paramIndex}::text[])`)
         params.push(brandArray)
@@ -96,46 +125,84 @@ router.get('/search', async (req, res) => {
     // 分頁參數
     const queryParams = [...params, limit, offset]
 
-    // 查詢語句
+    // 查詢語句 - 使用 WITH 子句優化性能
     const dataQuery = {
       text: `
-        SELECT * FROM blogoverview 
-        ${whereClause}
+        WITH filtered_blogs AS (
+          SELECT * FROM blogoverview 
+          ${whereClause}
+        )
+        SELECT 
+          fb.*,
+          COUNT(*) OVER() as total_count
+        FROM filtered_blogs fb
         ORDER BY blog_created_date DESC
         LIMIT $${paramIndex} OFFSET $${paramIndex + 1}
       `,
       values: queryParams,
     }
 
-    const countQuery = {
-      text: `SELECT COUNT(*) FROM blogoverview ${whereClause}`,
-      values: params,
+    // 執行查詢
+    const blogsResult = await pool.query(dataQuery)
+
+    // 計算總數和總頁數
+    const totalCount = blogsResult.rows[0]?.total_count || 0
+    const totalPages = Math.ceil(totalCount / limit)
+
+    // 檢查分頁參數是否有效
+    if (page > totalPages && totalPages > 0) {
+      return res.status(400).json({
+        error: 'Page number exceeds total pages',
+        message: '頁碼超出範圍',
+      })
     }
 
-    // 執行查詢
-    const [countResult, blogsResult] = await Promise.all([
-      pool.query(countQuery),
-      pool.query(dataQuery),
-    ])
+    // 移除結果中的 total_count 欄位
+    const blogs = blogsResult.rows.map((row) => {
+      const { total_count, ...blogData } = row
+      return blogData
+    })
 
     // 回傳結果
     res.json({
-      blogs: blogsResult.rows,
-      total: parseInt(countResult.rows[0].count),
+      blogs,
+      total: parseInt(totalCount),
       currentPage: page,
-      totalPages: Math.ceil(parseInt(countResult.rows[0].count) / limit),
+      totalPages,
+      hasMore: page < totalPages,
     })
   } catch (error) {
-    console.error('Search error:', error)
-    console.error('Query details:', {
+    console.error('Search error:', {
       message: error.message,
       code: error.code,
-      query: error.query,
-      parameters: error.parameters,
+      query: error?.query,
+      parameters: error?.parameters,
+      stack: error.stack,
     })
-    res.status(500).json({ message: '搜尋失敗' })
+
+    // 根據錯誤類型返回適當的狀態碼和訊息
+    if (error.code === '42P01') {
+      return res.status(500).json({
+        error: 'Database table not found',
+        message: '資料表不存在',
+      })
+    }
+
+    if (error.code === '42703') {
+      return res.status(500).json({
+        error: 'Invalid column name',
+        message: '欄位名稱無效',
+      })
+    }
+
+    res.status(500).json({
+      error: 'Internal server error',
+      message: '搜尋失敗，請稍後再試',
+    })
   }
 })
+
+module.exports = router
 
 router.get('/blog/ckeitor', async (req, res) => {
   const page = parseInt(req.query.page) || 1
