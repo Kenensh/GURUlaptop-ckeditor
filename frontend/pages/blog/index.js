@@ -29,15 +29,21 @@ export default function BlogSearchPage() {
     brands: [],
   })
 
-  // 統一的文章載入邏輯
+  // 修改 useEffect 中的 fetchBlogs 函數
   useEffect(() => {
-    // 添加環境變數判斷
     const BACKEND_URL =
       process.env.NODE_ENV === 'development'
         ? 'http://localhost:3005'
         : 'https://gurulaptop-ckeditor.onrender.com'
 
     const fetchBlogs = async () => {
+      console.log('Fetching blogs with params:', {
+        page: currentPage,
+        limit: ITEMS_PER_PAGE,
+        filters: filters,
+        backendUrl: BACKEND_URL,
+      })
+
       try {
         const queryParams = new URLSearchParams({
           page: currentPage,
@@ -47,17 +53,44 @@ export default function BlogSearchPage() {
           brands: filters.brands.join(','),
         })
 
+        console.log(
+          'Request URL:',
+          `${BACKEND_URL}/api/blog/search?${queryParams}`
+        )
+
         const res = await fetch(`${BACKEND_URL}/api/blog/search?${queryParams}`)
+        console.log('Response status:', res.status)
+
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`)
+        }
+
         const data = await res.json()
+        console.log('Received data:', {
+          blogCount: data.blogs?.length,
+          totalPages: Math.ceil(data.total / ITEMS_PER_PAGE),
+        })
 
         if (data.blogs) {
           setBlogs(data.blogs)
           setTotalPages(Math.ceil(data.total / ITEMS_PER_PAGE))
+        } else {
+          console.warn('No blogs data in response')
+          setBlogs([])
+          setTotalPages(0)
         }
       } catch (err) {
-        console.error('載入文章錯誤:', err)
+        console.error('Blog fetch error:', {
+          message: err.message,
+          stack: err.stack,
+          filters: filters,
+          currentPage: currentPage,
+        })
+        setBlogs([])
+        setTotalPages(0)
       }
     }
+
     fetchBlogs()
   }, [currentPage, filters])
 

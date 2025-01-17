@@ -45,20 +45,25 @@ const BACKEND_URL =
     ? 'http://localhost:3005'
     : 'https://gurulaptop-ckeditor.onrender.com'
 
-// 重寫 fetch（在 window 對象可用時）
+// 在 fetch 攔截器部分加強錯誤處理
 if (typeof window !== 'undefined') {
   const originalFetch = window.fetch
   window.fetch = async (url, options = {}) => {
     try {
-      // 只處理相對路徑或以 https://gurulaptop-ckeditor.onrender.com 開頭的請求
+      console.log('Starting fetch request:', {
+        url,
+        method: options.method || 'GET',
+        environment: process.env.NODE_ENV,
+      })
+
+      // 記錄請求開始時間
+      const startTime = Date.now()
+
       if (
         url.startsWith('/') ||
         url.startsWith('https://gurulaptop-ckeditor.onrender.com')
       ) {
-        // 如果是相對路徑，加上 BACKEND_URL
         const newUrl = url.startsWith('/') ? `${BACKEND_URL}${url}` : url
-
-        // 將 render URL 替換為 localhost（在開發環境）
         const finalUrl =
           process.env.NODE_ENV === 'development'
             ? newUrl.replace(
@@ -67,19 +72,55 @@ if (typeof window !== 'undefined') {
               )
             : newUrl
 
-        console.log('Intercepted fetch request:', {
+        console.log('URL transformation:', {
           originalUrl: url,
-          finalUrl: finalUrl,
-          environment: process.env.NODE_ENV,
+          finalUrl,
+          transformationTime: Date.now() - startTime,
         })
 
-        return originalFetch(finalUrl, options)
+        try {
+          const response = await originalFetch(finalUrl, {
+            ...options,
+            headers: {
+              ...options.headers,
+              'X-Request-Start': startTime.toString(),
+            },
+          })
+
+          console.log('Fetch response received:', {
+            url: finalUrl,
+            status: response.status,
+            statusText: response.statusText,
+            responseTime: Date.now() - startTime,
+          })
+
+          if (!response.ok) {
+            console.warn('Non-OK response:', {
+              url: finalUrl,
+              status: response.status,
+              statusText: response.statusText,
+            })
+          }
+
+          return response
+        } catch (networkError) {
+          console.error('Network error:', {
+            url: finalUrl,
+            error: networkError.message,
+            stack: networkError.stack,
+          })
+          throw networkError
+        }
       }
 
-      // 其他請求保持不變
       return originalFetch(url, options)
     } catch (error) {
-      console.error('Fetch interceptor error:', error)
+      console.error('Fetch interceptor error:', {
+        url,
+        error: error.message,
+        stack: error.stack,
+        options,
+      })
       throw error
     }
   }
