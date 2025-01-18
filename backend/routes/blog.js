@@ -227,28 +227,30 @@ router.get('/blogcardgroup', async (req, res) => {
     res.status(500).json({ message: '伺服器錯誤' })
   }
 })
-// 修改部落格詳細資料的路由
 router.get('/blog-detail/:blog_id', async (req, res) => {
   try {
-    const blogId = parseInt(req.params.blog_id)
-
-    if (isNaN(blogId)) {
-      return res.status(400).json({
-        status: 'error',
-        message: '無效的部落格 ID',
-      })
-    }
+    // 添加 debug 日誌
+    console.log(
+      'Received blog_id:',
+      req.params.blog_id,
+      typeof req.params.blog_id
+    )
 
     const query = {
       text: `
-        SELECT b.*, u.name as author_name 
+        SELECT b.* 
         FROM blogoverview b
-        LEFT JOIN users u ON b.user_id = u.user_id
         WHERE b.blog_valid_value = 1 
         AND b.blog_id = $1
       `,
-      values: [blogId],
+      values: [Number(req.params.blog_id)], // 使用 Number() 而不是 parseInt
     }
+
+    // 印出完整 query 資訊
+    console.log('Executing query:', {
+      text: query.text,
+      values: query.values,
+    })
 
     const result = await pool.query(query)
 
@@ -259,52 +261,24 @@ router.get('/blog-detail/:blog_id', async (req, res) => {
       })
     }
 
-    // 移除敏感資訊
-    const blogData = result.rows[0]
-    delete blogData.user_password
-    delete blogData.user_email
-
     res.json({
       status: 'success',
-      data: blogData,
+      data: result.rows[0],
     })
   } catch (error) {
-    console.error('Blog detail error:', error)
-    console.error('Query details:', {
-      message: error.message,
-      code: error.code,
+    // 更詳細的錯誤日誌
+    console.error('Blog detail error:', {
+      error: error.message,
+      stack: error.stack,
+      query: error.query,
       parameters: error.parameters,
     })
 
     res.status(500).json({
       status: 'error',
       message: '伺服器錯誤',
+      detail: error.message, // 在開發環境中回傳詳細錯誤訊息
     })
-  }
-})
-
-// 取得部落格詳細資料
-router.get('/blog-user-detail/:blog_id', async (req, res) => {
-  try {
-    const query = {
-      text: `SELECT user_id, blog_type, blog_title, blog_content,
-             blog_created_date, blog_brand, blog_image,
-             blog_views, blog_keyword, blog_valid_value, blog_url
-             FROM blogoverview
-             WHERE blog_valid_value = 1 AND blog_id = $1::integer`,
-      values: [req.params.blog_id],
-    }
-
-    const result = await pool.query(query)
-
-    if (result.rows.length === 0) {
-      return res.json({ status: 'error', message: '查無相關部落格資料' })
-    }
-
-    res.json({ status: 'success', data: result.rows[0] })
-  } catch (error) {
-    console.error('Error fetching blog data:', error)
-    res.status(500).json({ status: 'error', message: '伺服器錯誤' })
   }
 })
 
