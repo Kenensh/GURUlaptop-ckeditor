@@ -31,6 +31,13 @@ export default function BlogSearchPage() {
 
   // 修改 useEffect 中的 fetchBlogs 函數
   useEffect(() => {
+    console.log('Current Environment:', {
+      NODE_ENV: process.env.NODE_ENV,
+      BACKEND_URL,
+      origin:
+        typeof window !== 'undefined' ? window.location.origin : 'server-side',
+    })
+
     const BACKEND_URL =
       process.env.NODE_ENV === 'development'
         ? 'http://localhost:3005'
@@ -58,10 +65,25 @@ export default function BlogSearchPage() {
           `${BACKEND_URL}/api/blog/search?${queryParams}`
         )
 
-        const res = await fetch(`${BACKEND_URL}/api/blog/search?${queryParams}`)
-        console.log('Response status:', res.status)
+        const res = await fetch(
+          `${BACKEND_URL}/api/blog/search?${queryParams}`,
+          {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
+            },
+          }
+        )
 
         if (!res.ok) {
+          const errorText = await res.text() // 嘗試讀取錯誤訊息
+          console.error('Error response:', {
+            status: res.status,
+            statusText: res.statusText,
+            errorText,
+          })
           throw new Error(`HTTP error! status: ${res.status}`)
         }
 
