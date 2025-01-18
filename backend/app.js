@@ -146,13 +146,16 @@ app.use(
       'https://localhost:9000',
       'https://gurulaptop-ckeditor-frontend.onrender.com',
     ],
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     credentials: true,
     allowedHeaders: [
       'Content-Type',
       'Authorization',
+      'Origin',
       'X-Requested-With',
       'Accept',
+      'Access-Control-Request-Method',
+      'Access-Control-Request-Headers',
     ],
     exposedHeaders: ['Content-Range', 'X-Content-Range'],
   })

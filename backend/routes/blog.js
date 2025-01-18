@@ -65,14 +65,16 @@ router.get('/search', cors(), async (req, res) => {
   const { search = '', types = '', brands = '' } = req.query
   const offset = (page - 1) * limit
 
-  // 添加請求日誌
   console.log('Search request:', {
-    page,
-    limit,
-    search,
-    types,
-    brands,
-    offset,
+    page: req.query.page,
+    limit: req.query.limit,
+    search: req.query.search,
+    types: req.query.types,
+    brands: req.query.brands,
+    headers: {
+      origin: req.headers.origin,
+      'content-type': req.headers['content-type'],
+    },
   })
 
   // 輸入驗證
@@ -82,6 +84,9 @@ router.get('/search', cors(), async (req, res) => {
       message: '分頁參數無效',
     })
   }
+
+  res.header('Access-Control-Allow-Origin', req.headers.origin)
+  res.header('Access-Control-Allow-Credentials', 'true')
 
   try {
     // 建立基本條件
@@ -189,6 +194,7 @@ router.get('/search', cors(), async (req, res) => {
       query: error?.query,
       parameters: error?.parameters,
       stack: error.stack,
+      headers: req.headers, // 添加請求頭信息到錯誤日誌
     })
 
     // 根據錯誤類型返回適當的狀態碼和訊息
