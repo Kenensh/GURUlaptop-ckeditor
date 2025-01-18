@@ -35,6 +35,25 @@ import { extendLog } from '#utils/tool.js'
 import 'colors'
 extendLog()
 
+// CORS 設定
+app.use(
+  cors({
+    origin: [
+      'http://localhost:3000',
+      'https://gurulaptop-ckeditor-frontend.onrender.com',
+    ],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    credentials: true,
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'Origin',
+      'Accept',
+      'X-Requested-With',
+    ],
+  })
+)
+
 // 建立 Winston Logger
 const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || 'info',
@@ -137,25 +156,6 @@ app.get('/health', (req, res) => {
       res.status(503).json(health)
     })
 })
-
-// CORS 設定
-app.use(
-  cors({
-    origin: [
-      'http://localhost:3000',
-      'https://gurulaptop-ckeditor-frontend.onrender.com',
-    ],
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    credentials: true,
-    allowedHeaders: [
-      'Content-Type',
-      'Authorization',
-      'Origin',
-      'Accept',
-      'X-Requested-With',
-    ],
-  })
-)
 
 // 視圖引擎設定
 app.set('views', path.join(__dirname, 'views'))

@@ -65,7 +65,6 @@ router.post('/login', upload.none(), async (req, res) => {
         .json({ status: 'error', message: '帳號或密碼錯誤' })
     }
 
-    // 簡化 token 資料
     const tokenData = {
       user_id: user.user_id,
       email: user.email,
@@ -76,14 +75,19 @@ router.post('/login', upload.none(), async (req, res) => {
       expiresIn: '3d',
     })
 
+    // 更新 cookie 設定
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      domain:
+        process.env.NODE_ENV === 'production'
+          ? '.onrender.com' // 允許所有 onrender.com 子域名
+          : 'localhost',
       maxAge: 3 * 24 * 60 * 60 * 1000,
     })
 
-    // 回傳完整用戶資料但不包含密碼
+    // 回傳用戶資料但不包含密碼
     const userData = { ...user }
     delete userData.password
 
