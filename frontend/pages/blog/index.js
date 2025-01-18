@@ -9,27 +9,28 @@ import NextBreadCrumb from '@/components/common/next-breadcrumb'
 import Head from 'next/head'
 import { Search } from 'lucide-react'
 
+// 定義常量
+const BACKEND_URL =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3005'
+    : 'https://gurulaptop-ckeditor.onrender.com'
+
+const ITEMS_PER_PAGE = 6
+
 export default function BlogSearchPage() {
   const [blogs, setBlogs] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
-  const ITEMS_PER_PAGE = 6
-
-  // -------------------使用者-------------------
-  const { auth } = useAuth()
-  const { userData } = auth
-  const user_id = userData?.user_id
-  console.log(user_id)
-  // -------------------使用者-------------------
-
-  // 統一的過濾狀態
   const [filters, setFilters] = useState({
     searchText: '',
     types: [],
     brands: [],
   })
 
-  // 修改 useEffect 中的 fetchBlogs 函數
+  const { auth } = useAuth()
+  const { userData } = auth
+  const user_id = userData?.user_id
+
   useEffect(() => {
     console.log('Current Environment:', {
       NODE_ENV: process.env.NODE_ENV,
@@ -38,16 +39,11 @@ export default function BlogSearchPage() {
         typeof window !== 'undefined' ? window.location.origin : 'server-side',
     })
 
-    const BACKEND_URL =
-      process.env.NODE_ENV === 'development'
-        ? 'http://localhost:3005'
-        : 'https://gurulaptop-ckeditor.onrender.com'
-
     const fetchBlogs = async () => {
       console.log('Fetching blogs with params:', {
         page: currentPage,
         limit: ITEMS_PER_PAGE,
-        filters: filters,
+        filters,
         backendUrl: BACKEND_URL,
       })
 
@@ -78,7 +74,7 @@ export default function BlogSearchPage() {
         )
 
         if (!res.ok) {
-          const errorText = await res.text() // 嘗試讀取錯誤訊息
+          const errorText = await res.text()
           console.error('Error response:', {
             status: res.status,
             statusText: res.statusText,
@@ -105,8 +101,8 @@ export default function BlogSearchPage() {
         console.error('Blog fetch error:', {
           message: err.message,
           stack: err.stack,
-          filters: filters,
-          currentPage: currentPage,
+          filters,
+          currentPage,
         })
         setBlogs([])
         setTotalPages(0)
@@ -116,35 +112,29 @@ export default function BlogSearchPage() {
     fetchBlogs()
   }, [currentPage, filters])
 
-  // 統一的事件處理函數
   const handleSearch = (e) => {
     setFilters((prev) => ({ ...prev, searchText: e.target.value }))
     setCurrentPage(1)
   }
 
-  // 修改 handleTypeChange 函數
   const handleTypeChange = (e) => {
     const { value, checked } = e.target
     setFilters((prev) => ({
       ...prev,
-      types: checked ? [value] : [], // 改為單選：選中時只存一個值，取消時清空
-      // brands: [] // 如果需要互斥，取消註解這行
+      types: checked ? [value] : [],
     }))
     setCurrentPage(1)
   }
 
-  // 修改 handleBrandChange 函數
   const handleBrandChange = (e) => {
     const { value, checked } = e.target
     setFilters((prev) => ({
       ...prev,
-      brands: checked ? [value] : [], // 改為單選：選中時只存一個值，取消時清空
-      // types: [] // 如果需要互斥，取消註解這行
+      brands: checked ? [value] : [],
     }))
     setCurrentPage(1)
   }
 
-  // 分頁處理
   const handlePageChange = (pageNumber) => {
     if (pageNumber >= 1 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber)
