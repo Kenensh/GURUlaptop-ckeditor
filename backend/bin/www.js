@@ -1,73 +1,46 @@
-/**
- * Module dependencies.
- */
-
-import app from '../app.js'
+import app from './../app.js' // 修正路徑
 import debugLib from 'debug'
 import http from 'http'
-const debug = debugLib('node-express-es6:server')
 import { exit } from 'node:process'
-import { initializeWebSocket } from '../configs/websocket.js'
-
-// 導入dotenv 使用 .env 檔案中的設定值 process.env
+import { initializeWebSocket } from './../configs/websocket.js' // 修正路徑
 import 'dotenv/config.js'
 
-/**
- * Get port from environment and store in Express.
- */
+const debug = debugLib('node-express-es6:server')
 
-var port = normalizePort(process.env.PORT || '3005')
+// 設定 port 和 host
+const port = normalizePort(process.env.PORT || '3005')
+const host = '0.0.0.0' // 簡化 host 設定
+
 app.set('port', port)
 
-/**
- * Create HTTP server.
- */
+// 創建 HTTP server
+const server = http.createServer(app)
 
-var server = http.createServer(app)
-
-/**
- * Listen on provided port, on all network interfaces.
- */
+// WebSocket 初始化
 initializeWebSocket(server)
 
-// 修改這裡，添加 host
-const host = process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost'
-server.listen(port, host)
+// 啟動伺服器
+server.listen(port, host, () => {
+  console.log(`Server is running on http://${host}:${port}`)
+})
+
 server.on('error', onError)
 server.on('listening', onListening)
 
-/**
- * Normalize a port into a number, string, or false.
- */
-
 function normalizePort(val) {
-  var port = parseInt(val, 10)
-
-  if (isNaN(port)) {
-    // named pipe
-    return val
-  }
-
-  if (port >= 0) {
-    // port number
-    return port
-  }
-
+  const port = parseInt(val, 10)
+  if (isNaN(port)) return val
+  if (port >= 0) return port
   return false
 }
-
-/**
- * Event listener for HTTP server "error" event.
- */
 
 function onError(error) {
   if (error.syscall !== 'listen') {
     throw error
   }
 
-  var bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port
+  const bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port
 
-  // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
       console.error(`Port ${port} 需要系統管理員權限`)
@@ -82,15 +55,15 @@ function onError(error) {
   }
 }
 
-/**
- * Event listener for HTTP server "listening" event.
- */
-
 function onListening() {
-  var addr = server.address()
-  var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port
+  const addr = server.address()
+  const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port
   debug('Listening on ' + bind)
-  // 修改這裡，使用實際的 host
-  const displayHost = process.env.NODE_ENV === 'production' ? host : 'localhost'
-  console.log(`伺服器啟動成功 http://${displayHost}:${port}`)
+
+  const displayHost =
+    process.env.NODE_ENV === 'production'
+      ? 'production server'
+      : 'http://localhost:' + port
+
+  console.log(`伺服器啟動成功: ${displayHost}`)
 }
