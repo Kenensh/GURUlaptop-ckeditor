@@ -78,19 +78,17 @@ if (typeof window !== 'undefined') {
           transformationTime: Date.now() - startTime,
         })
 
-        if (url.startsWith('/') || url.startsWith('https://gurulaptop-ckeditor.onrender.com')) {
-          const newUrl = url.startsWith('/') ? `${BACKEND_URL}${url}` : url
-          const finalUrl = process.env.NODE_ENV === 'development'
-            ? newUrl.replace('https://gurulaptop-ckeditor.onrender.com', 'http://localhost:3005')
-            : newUrl
-
         try {
           const response = await originalFetch(finalUrl, {
             ...options,
-            credentials: 'include', // 添加這行
+            credentials: 'include',
             headers: {
               ...options.headers,
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
               'X-Request-Start': startTime.toString(),
+              Origin:
+                typeof window !== 'undefined' ? window.location.origin : '',
             },
           })
 
