@@ -143,7 +143,6 @@ app.use(
   cors({
     origin: [
       'http://localhost:3000',
-      'https://localhost:9000',
       'https://gurulaptop-ckeditor-frontend.onrender.com',
     ],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
@@ -152,12 +151,9 @@ app.use(
       'Content-Type',
       'Authorization',
       'Origin',
-      'X-Requested-With',
       'Accept',
-      'Access-Control-Request-Method',
-      'Access-Control-Request-Headers',
+      'X-Requested-With',
     ],
-    exposedHeaders: ['Content-Range', 'X-Content-Range'],
   })
 )
 

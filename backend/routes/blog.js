@@ -1,5 +1,5 @@
 import express from 'express'
-import { pool } from '##/configs/db.js'
+import { pool } from '#configs/db.js' // 使用 #configs 別名
 import multer from 'multer'
 import cors from 'cors'
 
@@ -56,61 +56,27 @@ router.post(
     }
   }
 )
-
-// 搜尋路由
-router.get('/search', cors(), async (req, res) => {
-  // 加入 cors() 中間件
+router.get('/search', async (req, res) => {
   const page = parseInt(req.query.page) || 1
   const limit = parseInt(req.query.limit) || 6
   const { search = '', types = '', brands = '' } = req.query
   const offset = (page - 1) * limit
 
-  console.log('Search request:', {
-    page: req.query.page,
-    limit: req.query.limit,
-    search: req.query.search,
-    types: req.query.types,
-    brands: req.query.brands,
-    headers: {
-      origin: req.headers.origin,
-      'content-type': req.headers['content-type'],
-    },
-  })
-
-  // 輸入驗證
-  if (page < 1 || limit < 1) {
-    return res.status(400).json({
-      error: 'Invalid pagination parameters',
-      message: '分頁參數無效',
-    })
-  }
-
-  res.header('Access-Control-Allow-Origin', req.headers.origin)
-  res.header('Access-Control-Allow-Credentials', 'true')
-
   try {
-    // 建立基本條件
     let whereConditions = ['blog_valid_value = 1']
     let params = []
     let paramIndex = 1
 
-    // 搜尋條件 - 加入 SQL 注入防護
     if (search.trim()) {
       whereConditions.push(
         `(blog_content ILIKE $${paramIndex} OR blog_title ILIKE $${paramIndex})`
       )
-      params.push(`%${search.replace(/[%_]/g, (char) => `\\${char}`)}%`)
+      params.push(`%${search.trim()}%`)
       paramIndex++
     }
 
-    // 類型條件 - 加入驗證
     if (types.trim()) {
-      const typeArray = types
-        .split(',')
-        .filter(Boolean)
-        .map((type) => type.trim())
-        .filter((type) => type.length <= 50)
-
+      const typeArray = types.split(',').filter(Boolean)
       if (typeArray.length) {
         whereConditions.push(`blog_type = ANY($${paramIndex}::text[])`)
         params.push(typeArray)
@@ -118,14 +84,8 @@ router.get('/search', cors(), async (req, res) => {
       }
     }
 
-    // 品牌條件 - 加入驗證
     if (brands.trim()) {
-      const brandArray = brands
-        .split(',')
-        .filter(Boolean)
-        .map((brand) => brand.trim())
-        .filter((brand) => brand.length <= 50)
-
+      const brandArray = brands.split(',').filter(Boolean)
       if (brandArray.length) {
         whereConditions.push(`blog_brand = ANY($${paramIndex}::text[])`)
         params.push(brandArray)
@@ -133,16 +93,12 @@ router.get('/search', cors(), async (req, res) => {
       }
     }
 
-    // 組合 WHERE 子句
     const whereClause = whereConditions.length
       ? `WHERE ${whereConditions.join(' AND ')}`
       : ''
 
-    // 分頁參數
     const queryParams = [...params, limit, offset]
-
-    // 查詢語句 - 使用 WITH 子句優化性能
-    const dataQuery = {
+    const query = {
       text: `
         WITH filtered_blogs AS (
           SELECT * FROM blogoverview 
@@ -158,60 +114,17 @@ router.get('/search', cors(), async (req, res) => {
       values: queryParams,
     }
 
-    // 執行查詢
-    const blogsResult = await pool.query(dataQuery)
+    const result = await pool.query(query)
+    const blogs = result.rows.map(({ total_count, ...blog }) => blog)
+    const total = result.rows[0]?.total_count || 0
 
-    // 計算總數和總頁數
-    const totalCount = blogsResult.rows[0]?.total_count || 0
-    const totalPages = Math.ceil(totalCount / limit)
-
-    // 檢查分頁參數是否有效
-    if (page > totalPages && totalPages > 0) {
-      return res.status(400).json({
-        error: 'Page number exceeds total pages',
-        message: '頁碼超出範圍',
-      })
-    }
-
-    // 移除結果中的 total_count 欄位
-    const blogs = blogsResult.rows.map((row) => {
-      const { total_count, ...blogData } = row
-      return blogData
-    })
-
-    // 回傳結果
     res.json({
       blogs,
-      total: parseInt(totalCount),
+      total,
       currentPage: page,
-      totalPages,
-      hasMore: page < totalPages,
+      totalPages: Math.ceil(total / limit),
     })
   } catch (error) {
-    console.error('Search error:', {
-      message: error.message,
-      code: error.code,
-      query: error?.query,
-      parameters: error?.parameters,
-      stack: error.stack,
-      headers: req.headers, // 添加請求頭信息到錯誤日誌
-    })
-
-    // 根據錯誤類型返回適當的狀態碼和訊息
-    if (error.code === '42P01') {
-      return res.status(500).json({
-        error: 'Database table not found',
-        message: '資料表不存在',
-      })
-    }
-
-    if (error.code === '42703') {
-      return res.status(500).json({
-        error: 'Invalid column name',
-        message: '欄位名稱無效',
-      })
-    }
-
     res.status(500).json({
       error: 'Internal server error',
       message: '搜尋失敗，請稍後再試',

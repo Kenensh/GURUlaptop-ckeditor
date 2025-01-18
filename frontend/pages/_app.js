@@ -86,7 +86,6 @@ if (typeof window !== 'undefined') {
               ...options.headers,
               'Content-Type': 'application/json',
               Accept: 'application/json',
-              'X-Request-Start': startTime.toString(),
               Origin:
                 typeof window !== 'undefined' ? window.location.origin : '',
             },

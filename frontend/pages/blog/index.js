@@ -47,14 +47,15 @@ export default function BlogSearchPage() {
         backendUrl: BACKEND_URL,
       })
 
-      try {
-        const queryParams = new URLSearchParams({
-          page: currentPage,
-          limit: ITEMS_PER_PAGE,
-          search: filters.searchText,
-          types: filters.types.join(','),
-          brands: filters.brands.join(','),
-        })
+      const fetchBlogs = async () => {
+        try {
+          const queryParams = new URLSearchParams({
+            page: currentPage,
+            limit: ITEMS_PER_PAGE,
+            search: filters.searchText || '',  // 添加默認值
+            types: filters.types.join(','),
+            brands: filters.brands.join(','),
+          })
 
         console.log(
           'Request URL:',
