@@ -40,22 +40,14 @@ export default function BlogSearchPage() {
     })
 
     const fetchBlogs = async () => {
-      console.log('Fetching blogs with params:', {
-        page: currentPage,
-        limit: ITEMS_PER_PAGE,
-        filters,
-        backendUrl: BACKEND_URL,
-      })
-
-      const fetchBlogs = async () => {
-        try {
-          const queryParams = new URLSearchParams({
-            page: currentPage,
-            limit: ITEMS_PER_PAGE,
-            search: filters.searchText || '',  // 添加默認值
-            types: filters.types.join(','),
-            brands: filters.brands.join(','),
-          })
+      try {
+        const queryParams = new URLSearchParams({
+          page: currentPage,
+          limit: ITEMS_PER_PAGE,
+          search: filters.searchText || '',
+          types: filters.types.join(','),
+          brands: filters.brands.join(','),
+        })
 
         console.log(
           'Request URL:',
@@ -85,11 +77,6 @@ export default function BlogSearchPage() {
         }
 
         const data = await res.json()
-        console.log('Received data:', {
-          blogCount: data.blogs?.length,
-          totalPages: Math.ceil(data.total / ITEMS_PER_PAGE),
-        })
-
         if (data.blogs) {
           setBlogs(data.blogs)
           setTotalPages(Math.ceil(data.total / ITEMS_PER_PAGE))
@@ -99,12 +86,7 @@ export default function BlogSearchPage() {
           setTotalPages(0)
         }
       } catch (err) {
-        console.error('Blog fetch error:', {
-          message: err.message,
-          stack: err.stack,
-          filters,
-          currentPage,
-        })
+        console.error('Blog fetch error:', err)
         setBlogs([])
         setTotalPages(0)
       }
