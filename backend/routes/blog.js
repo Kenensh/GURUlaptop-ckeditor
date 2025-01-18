@@ -227,25 +227,31 @@ router.get('/blogcardgroup', async (req, res) => {
     res.status(500).json({ message: '伺服器錯誤' })
   }
 })
+// 修改部落格詳細資料的路由
 router.get('/blog-detail/:blog_id', async (req, res) => {
   try {
-    // 轉換並檢查 blog_id
     const blogId = parseInt(req.params.blog_id)
 
-    // 查詢語句
+    if (isNaN(blogId)) {
+      return res.status(400).json({
+        status: 'error',
+        message: '無效的部落格 ID',
+      })
+    }
+
     const query = {
       text: `
-        SELECT * FROM blogoverview 
-        WHERE blog_valid_value = 1 
-        AND blog_id = $1::integer
+        SELECT b.*, u.name as author_name 
+        FROM blogoverview b
+        LEFT JOIN users u ON b.user_id = u.user_id
+        WHERE b.blog_valid_value = 1 
+        AND b.blog_id = $1
       `,
       values: [blogId],
     }
 
-    // 執行查詢
     const result = await pool.query(query)
 
-    // 檢查結果
     if (result.rows.length === 0) {
       return res.status(404).json({
         status: 'error',
@@ -253,19 +259,23 @@ router.get('/blog-detail/:blog_id', async (req, res) => {
       })
     }
 
-    // 回傳結果
+    // 移除敏感資訊
+    const blogData = result.rows[0]
+    delete blogData.user_password
+    delete blogData.user_email
+
     res.json({
       status: 'success',
-      data: result.rows[0],
+      data: blogData,
     })
   } catch (error) {
     console.error('Blog detail error:', error)
     console.error('Query details:', {
       message: error.message,
       code: error.code,
-      query: error.query,
       parameters: error.parameters,
     })
+
     res.status(500).json({
       status: 'error',
       message: '伺服器錯誤',
