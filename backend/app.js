@@ -3,6 +3,8 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import createError from 'http-errors'
 import express from 'express'
+// 建立 Express 應用程式
+const app = express()
 import db from './configs/db.js'
 import morganLogger from 'morgan'
 import path from 'path'
@@ -90,9 +92,6 @@ const logger = winston.createLogger({
     }),
   ],
 })
-
-// 建立 Express 應用程式
-const app = express()
 
 // 確保日誌目錄存在
 const logDir = path.join(__dirname, 'logs')
