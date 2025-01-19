@@ -1,14 +1,30 @@
+import express from 'express'
 import * as fs from 'fs'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import createError from 'http-errors'
-import express from 'express'
-// 建立 Express 應用程式
-const app = express()
-import db from './configs/db.js'
 import morganLogger from 'morgan'
 import path from 'path'
 import session from 'express-session'
+import winston from 'winston'
+import { fileURLToPath, pathToFileURL } from 'url'
+import sessionFileStore from 'session-file-store'
+import { extendLog } from '#utils/tool.js'
+import 'colors'
+import 'dotenv/config.js'
+
+// 建立 Express 應用程式（確保最先初始化）
+const app = express()
+
+// 修正 ESM 中的 __dirname
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+// 初始化其他相依模組
+const FileStore = sessionFileStore(session)
+
+// 導入資料庫和路由
+import db from './configs/db.js'
 import authRouter from './routes/auth.js'
 import loginRouter from './routes/login.js'
 import signupRouter from './routes/signup.js'
@@ -21,20 +37,8 @@ import chatRoutes from './routes/chat.js'
 import GroupRequests from './routes/group-request.js'
 import blogRouter from './routes/blog.js'
 import forgotPasswordRouter from './routes/forgot-password.js'
-import winston from 'winston'
 
-// 使用檔案的session store，存在sessions資料夾
-import sessionFileStore from 'session-file-store'
-const FileStore = sessionFileStore(session)
-
-// 修正 ESM 中的 __dirname
-import { fileURLToPath, pathToFileURL } from 'url'
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-// 讓console.log呈現檔案與行號，與字串訊息呈現顏色用
-import { extendLog } from '#utils/tool.js'
-import 'colors'
+// 擴展 console.log
 extendLog()
 
 // CORS 設定
@@ -129,6 +133,41 @@ const requestLogger = (req, res, next) => {
 
 app.use(requestLogger)
 
+// 基本中間件設定
+app.use(morganLogger('dev'))
+app.use(express.json({ limit: '20mb' }))
+app.use(express.urlencoded({ extended: false, limit: '20mb' }))
+app.use(cookieParser())
+app.use(express.static(path.join(__dirname, 'public')))
+
+// 在 Session 設定之前添加這段
+const sessionsDir = path.join(__dirname, 'sessions')
+if (!fs.existsSync(sessionsDir)) {
+  fs.mkdirSync(sessionsDir, { recursive: true })
+}
+
+// Session 設定
+const fileStoreOptions = { logFn: function () {} }
+app.use(
+  session({
+    store: new FileStore(fileStoreOptions),
+    name: 'SESSION_ID',
+    secret: '67f71af4602195de2450faeb6f8856c0',
+    cookie: {
+      maxAge: 30 * 86400000,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    },
+    resave: false,
+    saveUninitialized: false,
+  })
+)
+
+// 視圖引擎設定
+app.set('views', path.join(__dirname, 'views'))
+app.set('view engine', 'pug')
+
 // Health check 路由
 app.get('/health', (req, res) => {
   const startTime = new Date().getTime()
@@ -156,33 +195,7 @@ app.get('/health', (req, res) => {
     })
 })
 
-// 視圖引擎設定
-app.set('views', path.join(__dirname, 'views'))
-app.set('view engine', 'pug')
-
-// 中間件設定
-app.use(morganLogger('dev'))
-app.use(express.json({ limit: '20mb' }))
-app.use(express.urlencoded({ extended: false, limit: '20mb' }))
-app.use(cookieParser())
-app.use(express.static(path.join(__dirname, 'public')))
-
-// Session 設定
-const fileStoreOptions = { logFn: function () {} }
-app.use(
-  session({
-    store: new FileStore(fileStoreOptions),
-    name: 'SESSION_ID',
-    secret: '67f71af4602195de2450faeb6f8856c0',
-    cookie: {
-      maxAge: 30 * 86400000,
-    },
-    resave: false,
-    saveUninitialized: false,
-  })
-)
-
-// API 路由
+// API 路由設定
 app.use('/api/auth', authRouter)
 app.use('/api/blog', blogRouter)
 app.use('/api/login', loginRouter)
@@ -196,6 +209,15 @@ app.use('/api/coupon-user', couponUserRouter)
 app.use('/api/chat', chatRoutes)
 app.use('/api', GroupRequests)
 
+// 設定靜態檔案提供
+app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')))
+
+// 確保上傳目錄存在
+const uploadDir = path.join(__dirname, 'public', 'uploads')
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true })
+}
+
 // 測試資料庫連接
 async function testConnection() {
   try {
@@ -208,17 +230,6 @@ async function testConnection() {
 }
 
 testConnection()
-
-// 自動載入路由
-const apiPath = '/api'
-const routePath = path.join(__dirname, 'routes')
-const filenames = await fs.promises.readdir(routePath)
-
-for (const filename of filenames) {
-  const item = await import(pathToFileURL(path.join(routePath, filename)))
-  const slug = filename.split('.')[0]
-  app.use(`${apiPath}/${slug === 'index' ? '' : slug}`, item.default)
-}
 
 // 404 處理
 app.use(function (req, res, next) {
@@ -246,15 +257,6 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500).send({ error: err })
 })
 
-// 設定靜態檔案提供
-app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')))
-
-// 確保上傳目錄存在
-const uploadDir = path.join(__dirname, 'public', 'uploads')
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true })
-}
-
 // 未捕獲的 Promise 錯誤處理
 process.on('unhandledRejection', (reason, promise) => {
   logger.error('Unhandled Rejection at:', {
@@ -272,7 +274,6 @@ process.on('uncaughtException', (error) => {
     },
   })
 
-  // 給程序一點時間來記錄錯誤然後結束
   setTimeout(() => process.exit(1), 1000)
 })
 

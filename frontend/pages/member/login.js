@@ -9,13 +9,19 @@ import { MdOutlineEmail, MdArrowForward } from 'react-icons/md'
 import { useJumpingLetters } from '@/hooks/jumping-letters-hook'
 import Header from '@/components/layout/default-layout/header'
 import MyFooter from '@/components/layout/default-layout/my-footer'
-import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai' // 記得引入
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 import { useLoader } from '@/hooks/use-loader'
 import Head from 'next/head'
 import GlitchText from '@/components/dashboard/glitch-text/glitch-text'
 import GlowingText from '@/components/dashboard/glowing-text/glowing-text'
 
 const isClient = typeof window !== 'undefined'
+
+// 定義 API URL
+const BACKEND_URL =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3005'
+    : 'https://gurulaptop-ckeditor.onrender.com'
 
 export default function LogIn(props) {
   const [showpassword, setShowpassword] = useState(false)
@@ -31,33 +37,43 @@ export default function LogIn(props) {
     e.preventDefault()
     const formData = new FormData(e.target)
     if (isClient) {
-      showLoader() // 只在客戶端執行
+      showLoader()
     }
 
     try {
-      const response = await fetch(`http://localhost:3005/api/login`, {
+      const response = await fetch(`${BACKEND_URL}/api/login`, {
         method: 'POST',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
+          Accept: 'application/json',
         },
         body: JSON.stringify({
           email: formData.get('email'),
           password: formData.get('password'),
         }),
       })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
       const result = await response.json()
 
       if (result.status === 'success') {
-        console.log('登入前端接上後端成功')
+        console.log('登入成功')
+        // 登入成功後更新 auth 狀態
+        if (login) {
+          await login(result.data.user)
+        }
         router.push('/dashboard')
       } else {
         setErrors({
-          message: result.message,
+          message: result.message || '登入失敗，請稍後再試',
         })
       }
     } catch (error) {
-      console.error('無法取得資料:', error)
+      console.error('登入錯誤:', error)
       if (isClient) {
         Swal.fire({
           title: '登入失敗',
@@ -69,7 +85,7 @@ export default function LogIn(props) {
       }
     } finally {
       if (isClient) {
-        hideLoader() // 只在客戶端執行
+        hideLoader()
       }
     }
   }
