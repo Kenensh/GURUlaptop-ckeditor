@@ -1,15 +1,14 @@
-import app from './../app.js' // 修正路徑
+import app from './../app.js'
 import debugLib from 'debug'
 import http from 'http'
 import { exit } from 'node:process'
-import { initializeWebSocket } from './../configs/websocket.js' // 修正路徑
+import { initializeWebSocket } from './../configs/websocket.js'
 import 'dotenv/config.js'
 
 const debug = debugLib('node-express-es6:server')
 
-// 設定 port 和 host
+// 設定 port，移除 host
 const port = normalizePort(process.env.PORT || '3005')
-const host = '0.0.0.0' // 簡化 host 設定
 
 app.set('port', port)
 
@@ -19,9 +18,9 @@ const server = http.createServer(app)
 // WebSocket 初始化
 initializeWebSocket(server)
 
-// 啟動伺服器
-server.listen(port, host, () => {
-  console.log(`Server is running on http://${host}:${port}`)
+// 直接啟動伺服器，不指定 host
+server.listen(port, () => {
+  console.log(`Server is running on port ${port}`)
 })
 
 server.on('error', onError)
@@ -59,11 +58,5 @@ function onListening() {
   const addr = server.address()
   const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port
   debug('Listening on ' + bind)
-
-  const displayHost =
-    process.env.NODE_ENV === 'production'
-      ? 'production server'
-      : 'http://localhost:' + port
-
-  console.log(`伺服器啟動成功: ${displayHost}`)
+  console.log(`伺服器啟動成功在 port ${port}`)
 }
