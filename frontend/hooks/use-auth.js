@@ -4,10 +4,10 @@ import { checkAuth } from '@/services/user'
 
 const isClient = typeof window !== 'undefined'
 const AuthContext = createContext(null)
+AuthContext.displayName = 'AuthProvider' // 加入這行
 const MAX_LOGIN_ATTEMPTS = 3
 const HOME_ROUTE = '/'
 
-// 定義初始用戶數據
 export const initUserData = {
   id: 0,
   email: '',
@@ -19,7 +19,6 @@ export const initUserData = {
   credit_card: '',
 }
 
-// 預設的 context 值，用於 SSR
 const defaultContextValue = {
   auth: { isAuth: false, userData: initUserData },
   login: () => Promise.resolve({ status: 'error', message: 'SSR不支援登入' }),
@@ -50,30 +49,43 @@ export const AuthProvider = ({ children }) => {
     '/blog/edit',
   ]
 
-  // 修改後的 login 函數
+  // 改進的 login 函數
   const login = async (userData) => {
+    console.log('Login function called with userData:', userData)
+
     if (!isClient) {
+      console.error('Cannot login on server side')
       return { status: 'error', message: 'Cannot login on server side' }
     }
 
     try {
-      // 直接設置認證狀態
-      setAuth({
-        isAuth: true,
-        userData: {
-          ...initUserData,
-          ...userData,
-        },
+      if (!userData) {
+        throw new Error('No user data provided')
+      }
+
+      // 先更新狀態
+      await new Promise((resolve) => {
+        setAuth((prevAuth) => {
+          console.log('Updating auth state from:', prevAuth)
+          const newAuth = {
+            isAuth: true,
+            userData: {
+              ...initUserData,
+              ...userData,
+            },
+          }
+          console.log('To new auth state:', newAuth)
+          return newAuth
+        })
+        // 確保狀態更新完成
+        setTimeout(resolve, 100)
       })
 
-      console.log('Auth state updated:', {
-        isAuth: true,
-        userData: userData,
-      })
-
+      console.log('Auth state updated successfully')
       return { status: 'success', message: '登入成功' }
     } catch (error) {
       console.error('Login error:', error)
+      setAuth({ isAuth: false, userData: initUserData })
       return {
         status: 'error',
         message: error?.message || '登入失敗',
@@ -81,24 +93,27 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  // logout 函數
+  // 改進的 logout 函數
   const logout = async () => {
+    console.log('Logout function called')
+
     if (!isClient) {
       return { status: 'error', message: 'Cannot logout on server side' }
     }
 
     try {
-      setAuth({
-        isAuth: false,
-        userData: initUserData,
+      // 先清除狀態
+      await new Promise((resolve) => {
+        setAuth({ isAuth: false, userData: initUserData })
+        setTimeout(resolve, 100)
       })
 
-      // 清除本地存儲
+      // 清除存儲
       localStorage.removeItem('auth_token')
       sessionStorage.removeItem('auth_token')
 
-      // 導向登入頁
-      await router.push(loginRoute)
+      console.log('Redirecting to login page')
+      await router.replace(loginRoute)
 
       return { status: 'success', message: '登出成功' }
     } catch (error) {
@@ -110,37 +125,40 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
+  // 改進的認證檢查函數
   const handleCheckAuth = async () => {
     if (!isClient || !router.isReady) return
 
-    console.log('檢查路徑:', router.pathname)
+    console.log('Checking auth for path:', router.pathname)
     const needsAuth = protectedRoutes.some((route) =>
       router.pathname.startsWith(route)
     )
-    console.log('需要認證:', needsAuth)
+    console.log('Authentication required:', needsAuth)
 
-    // 如果不需要認證，直接返回
     if (!needsAuth) {
       setIsLoading(false)
       return
     }
 
     try {
+      console.log('Performing auth check...')
       const res = await checkAuth()
-      console.log('認證檢查結果:', res)
+      console.log('Auth check response:', res)
 
       const isAuthenticated =
         res?.data?.status === 'success' && res?.data?.data?.user
 
       if (isAuthenticated) {
-        console.log('用戶已認證，更新狀態')
-        setAuth({
-          isAuth: true,
-          userData: { ...initUserData, ...res.data.data.user },
+        console.log('User authenticated, updating state')
+        await new Promise((resolve) => {
+          setAuth({
+            isAuth: true,
+            userData: { ...initUserData, ...res.data.data.user },
+          })
+          setTimeout(resolve, 100)
         })
       } else {
-        console.log('認證失敗，重定向到登入頁')
-        // 保存當前路徑
+        console.log('Authentication failed, redirecting to login')
         const returnUrl = router.asPath
         await router.replace({
           pathname: loginRoute,
@@ -148,19 +166,21 @@ export const AuthProvider = ({ children }) => {
         })
       }
     } catch (error) {
-      console.error('認證檢查錯誤:', error)
+      console.error('Auth check error:', error)
       router.replace(loginRoute)
     } finally {
       setIsLoading(false)
     }
   }
 
+  // 監控 auth 狀態變化
   useEffect(() => {
     if (isClient) {
-      console.log('Auth state changed:', auth)
+      console.log('Auth state updated:', auth)
     }
   }, [auth])
 
+  // 監控路由變化
   useEffect(() => {
     if (isClient && router.isReady) {
       handleCheckAuth()

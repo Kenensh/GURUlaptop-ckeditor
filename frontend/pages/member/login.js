@@ -36,14 +36,9 @@ export default function LogIn(props) {
   const handleSubmit = async (e) => {
     e.preventDefault()
     const formData = new FormData(e.target)
+    console.log('開始登入流程')
 
     try {
-      console.log('開始登入請求...')
-      // 顯示 loader
-      if (isClient) {
-        showLoader()
-      }
-
       const response = await fetch(`${BACKEND_URL}/api/login`, {
         method: 'POST',
         credentials: 'include',
@@ -56,33 +51,24 @@ export default function LogIn(props) {
         }),
       })
 
+      console.log('登入響應狀態:', response.status)
       const result = await response.json()
-      console.log('登入響應:', result)
+      console.log('登入響應內容:', result)
 
       if (result.status === 'success') {
-        console.log('登入成功，用戶數據:', result.data.user)
+        console.log('開始更新 auth context')
+        await login(result.data.user)
+        console.log('auth context 更新完成，準備跳轉')
 
-        // 更新 auth 狀態
-        const loginResult = await login(result.data.user)
-        console.log('Auth context 更新結果:', loginResult)
+        // 加入延遲確保狀態更新
+        await new Promise((resolve) => setTimeout(resolve, 500))
 
-        // 等待狀態更新
-        await new Promise((resolve) => setTimeout(resolve, 100))
-
-        // 使用 replace 而不是 push
         await router.replace('/dashboard')
       } else {
         console.error('登入失敗:', result.message)
-        setErrors({ message: result.message || '登入失敗' })
       }
     } catch (error) {
       console.error('登入錯誤:', error)
-      setErrors({ message: '系統錯誤，請稍後再試' })
-    } finally {
-      // 隱藏 loader
-      if (isClient) {
-        hideLoader()
-      }
     }
   }
 
