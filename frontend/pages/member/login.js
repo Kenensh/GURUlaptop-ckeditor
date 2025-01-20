@@ -36,17 +36,14 @@ export default function LogIn(props) {
   const handleSubmit = async (e) => {
     e.preventDefault()
     const formData = new FormData(e.target)
-    if (isClient) {
-      showLoader()
-    }
 
     try {
+      console.log('開始登入請求...')
       const response = await fetch(`${BACKEND_URL}/api/login`, {
         method: 'POST',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
-          Accept: 'application/json',
         },
         body: JSON.stringify({
           email: formData.get('email'),
@@ -54,39 +51,20 @@ export default function LogIn(props) {
         }),
       })
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
       const result = await response.json()
+      console.log('登入響應:', result)
 
       if (result.status === 'success') {
-        console.log('登入成功')
-        // 登入成功後更新 auth 狀態
-        if (login) {
-          await login(result.data.user)
-        }
-        router.push('/dashboard')
+        console.log('登入成功，用戶數據:', result.data.user)
+        await login(result.data.user)
+        console.log('Auth context 已更新')
+        await router.push('/dashboard')
       } else {
-        setErrors({
-          message: result.message || '登入失敗，請稍後再試',
-        })
+        console.error('登入失敗:', result.message)
+        setErrors({ message: result.message || '登入失敗' })
       }
     } catch (error) {
       console.error('登入錯誤:', error)
-      if (isClient) {
-        Swal.fire({
-          title: '登入失敗',
-          text: '連接伺服器有問題',
-          icon: 'error',
-          confirmButtonText: '確定',
-          confirmButtonColor: '#3085d6',
-        })
-      }
-    } finally {
-      if (isClient) {
-        hideLoader()
-      }
     }
   }
 

@@ -80,7 +80,7 @@ router.post('/login', upload.none(), async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-      // 移除 domain 設置，讓瀏覽器自動處理
+      path: '/', // 添加這行
       maxAge: 3 * 24 * 60 * 60 * 1000,
     })
 
