@@ -50,68 +50,70 @@ export const AuthProvider = ({ children }) => {
     '/blog/edit',
   ]
 
-  // 改進的 login 函數
-  const login = async (email, password) => {
+  // 修改後的 login 函數
+  const login = async (userData) => {
     if (!isClient) {
       return { status: 'error', message: 'Cannot login on server side' }
     }
 
     try {
-      if (loginAttempts >= MAX_LOGIN_ATTEMPTS) {
-        return { status: 'error', message: '登入嘗試次數過多，請稍後再試' }
-      }
+      // 直接設置認證狀態
+      setAuth({
+        isAuth: true,
+        userData: {
+          ...initUserData,
+          ...userData,
+        },
+      })
 
-      // TODO: 實作實際的登入邏輯
-      // const response = await loginAPI(email, password)
+      console.log('Auth state updated:', {
+        isAuth: true,
+        userData: userData,
+      })
 
-      setLoginAttempts((prev) => prev + 1)
       return { status: 'success', message: '登入成功' }
     } catch (error) {
-      console.error('登入錯誤:', error)
-      setLoginAttempts((prev) => prev + 1)
+      console.error('Login error:', error)
       return {
         status: 'error',
-        message: error?.response?.data?.message || '系統錯誤',
+        message: error?.message || '登入失敗',
       }
     }
   }
 
-  // 改進的 logout 函數
+  // logout 函數
   const logout = async () => {
     if (!isClient) {
       return { status: 'error', message: 'Cannot logout on server side' }
     }
 
     try {
-      // TODO: 實作實際的登出 API 呼叫
-      // await logoutAPI()
-
       setAuth({
         isAuth: false,
         userData: initUserData,
       })
 
       // 清除本地存儲
-      if (isClient) {
-        localStorage.removeItem('auth_token')
-        sessionStorage.removeItem('auth_token')
-      }
+      localStorage.removeItem('auth_token')
+      sessionStorage.removeItem('auth_token')
+
+      // 導向登入頁
+      await router.push(loginRoute)
 
       return { status: 'success', message: '登出成功' }
     } catch (error) {
-      console.error('登出錯誤:', error)
+      console.error('Logout error:', error)
       return {
         status: 'error',
-        message: error?.response?.data?.message || '登出系統發生錯誤',
+        message: error?.message || '登出失敗',
       }
     }
   }
 
-  // 改進的認證檢查函數
+  // 認證檢查函數
   const handleCheckAuth = async () => {
     if (!isClient || !router.isReady) return
 
-    // 檢查是否需要認證
     const needsAuth = protectedRoutes.some((route) =>
       router.pathname.startsWith(route)
     )
@@ -123,6 +125,8 @@ export const AuthProvider = ({ children }) => {
 
     try {
       const res = await checkAuth()
+      console.log('CheckAuth response:', res)
+
       const isAuthenticated =
         res?.data?.status === 'success' && res?.data?.data?.user
 
@@ -132,13 +136,14 @@ export const AuthProvider = ({ children }) => {
           userData: { ...initUserData, ...res.data.data.user },
         })
       } else if (needsAuth) {
+        console.log('Redirecting to login due to failed auth check')
         router.replace({
           pathname: loginRoute,
           query: { returnUrl: router.asPath },
         })
       }
     } catch (error) {
-      console.error('認證檢查錯誤:', error)
+      console.error('Auth check error:', error)
       if (needsAuth) {
         router.replace({
           pathname: loginRoute,
@@ -152,7 +157,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (isClient) {
-      console.log('認證狀態變更:', auth)
+      console.log('Auth state changed:', auth)
     }
   }, [auth])
 
@@ -162,7 +167,6 @@ export const AuthProvider = ({ children }) => {
     }
   }, [router.isReady, router.pathname])
 
-  // 服務器端渲染時返回預設值
   if (!isClient) {
     return (
       <AuthContext.Provider value={defaultContextValue}>

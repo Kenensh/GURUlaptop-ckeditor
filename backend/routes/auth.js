@@ -80,10 +80,7 @@ router.post('/login', upload.none(), async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-      domain:
-        process.env.NODE_ENV === 'production'
-          ? '.onrender.com' // 允許所有 onrender.com 子域名
-          : 'localhost',
+      // 移除 domain 設置，讓瀏覽器自動處理
       maxAge: 3 * 24 * 60 * 60 * 1000,
     })
 

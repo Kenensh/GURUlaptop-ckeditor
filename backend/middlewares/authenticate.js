@@ -5,6 +5,8 @@ import 'dotenv/config.js'
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET
 
 function authenticate(req, res, next) {
+  console.log('Cookie:', req.cookies)
+  console.log('Authorization header:', req.headers.authorization)
   try {
     // 檢查 token 來源
     const token =
