@@ -110,14 +110,16 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  // 認證檢查函數
   const handleCheckAuth = async () => {
     if (!isClient || !router.isReady) return
 
+    console.log('檢查路徑:', router.pathname)
     const needsAuth = protectedRoutes.some((route) =>
       router.pathname.startsWith(route)
     )
+    console.log('需要認證:', needsAuth)
 
+    // 如果不需要認證，直接返回
     if (!needsAuth) {
       setIsLoading(false)
       return
@@ -125,31 +127,29 @@ export const AuthProvider = ({ children }) => {
 
     try {
       const res = await checkAuth()
-      console.log('CheckAuth response:', res)
+      console.log('認證檢查結果:', res)
 
       const isAuthenticated =
         res?.data?.status === 'success' && res?.data?.data?.user
 
       if (isAuthenticated) {
+        console.log('用戶已認證，更新狀態')
         setAuth({
           isAuth: true,
           userData: { ...initUserData, ...res.data.data.user },
         })
-      } else if (needsAuth) {
-        console.log('Redirecting to login due to failed auth check')
-        router.replace({
+      } else {
+        console.log('認證失敗，重定向到登入頁')
+        // 保存當前路徑
+        const returnUrl = router.asPath
+        await router.replace({
           pathname: loginRoute,
-          query: { returnUrl: router.asPath },
+          query: returnUrl ? { returnUrl } : undefined,
         })
       }
     } catch (error) {
-      console.error('Auth check error:', error)
-      if (needsAuth) {
-        router.replace({
-          pathname: loginRoute,
-          query: { returnUrl: router.asPath },
-        })
-      }
+      console.error('認證檢查錯誤:', error)
+      router.replace(loginRoute)
     } finally {
       setIsLoading(false)
     }
