@@ -63,29 +63,34 @@ export const AuthProvider = ({ children }) => {
         throw new Error('No user data provided')
       }
 
-      // 先更新狀態
-      await new Promise((resolve) => {
-        setAuth((prevAuth) => {
-          console.log('Updating auth state from:', prevAuth)
-          const newAuth = {
-            isAuth: true,
-            userData: {
-              ...initUserData,
-              ...userData,
-            },
-          }
-          console.log('To new auth state:', newAuth)
-          return newAuth
-        })
-        // 確保狀態更新完成
-        setTimeout(resolve, 100)
-      })
+      // 使用 Promise.all 確保狀態更新和本地存儲都完成
+      await Promise.all([
+        new Promise((resolve) => {
+          setAuth((prevAuth) => {
+            console.log('Updating auth state from:', prevAuth)
+            const newAuth = {
+              isAuth: true,
+              userData: {
+                ...initUserData,
+                ...userData,
+              },
+            }
+            console.log('To new auth state:', newAuth)
+            return newAuth
+          })
+          // 延長等待時間
+          setTimeout(resolve, 300)
+        }),
+        // 可以考慮在本地存儲保存一個標記
+        localStorage.setItem('isAuthenticated', 'true'),
+      ])
 
       console.log('Auth state updated successfully')
       return { status: 'success', message: '登入成功' }
     } catch (error) {
       console.error('Login error:', error)
       setAuth({ isAuth: false, userData: initUserData })
+      localStorage.removeItem('isAuthenticated')
       return {
         status: 'error',
         message: error?.message || '登入失敗',
@@ -182,18 +187,48 @@ export const AuthProvider = ({ children }) => {
 
   // 監控路由變化
   useEffect(() => {
-    if (isClient && router.isReady) {
-      handleCheckAuth()
-    }
-  }, [router.isReady, router.pathname])
+    const checkAuthStatus = async () => {
+      if (!isClient || !router.isReady) return
 
-  if (!isClient) {
-    return (
-      <AuthContext.Provider value={defaultContextValue}>
-        {children}
-      </AuthContext.Provider>
-    )
-  }
+      console.log('Checking auth for path:', router.pathname)
+      const needsAuth = protectedRoutes.some((route) =>
+        router.pathname.startsWith(route)
+      )
+
+      if (!needsAuth) {
+        setIsLoading(false)
+        return
+      }
+
+      try {
+        const isAuthenticated =
+          localStorage.getItem('isAuthenticated') === 'true'
+        if (!isAuthenticated) {
+          throw new Error('Not authenticated')
+        }
+
+        const res = await checkAuth()
+        if (res?.data?.status === 'success' && res?.data?.data?.user) {
+          setAuth({
+            isAuth: true,
+            userData: { ...initUserData, ...res.data.data.user },
+          })
+        } else {
+          throw new Error('Auth check failed')
+        }
+      } catch (error) {
+        console.error('Auth check error:', error)
+        await router.replace({
+          pathname: loginRoute,
+          query: { returnUrl: router.asPath },
+        })
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    checkAuthStatus()
+  }, [router.isReady, router.pathname])
 
   return (
     <AuthContext.Provider

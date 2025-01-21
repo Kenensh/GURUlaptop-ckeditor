@@ -88,12 +88,14 @@ router.post('/login', upload.none(), async (req, res) => {
     // 更新 cookie 設定
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      secure: true, // 在生產環境總是使用 secure
+      sameSite: 'none', // 跨站請求需要
       path: '/',
       maxAge: 3 * 24 * 60 * 60 * 1000,
       domain:
-        process.env.NODE_ENV === 'production' ? '.onrender.com' : 'localhost',
+        process.env.NODE_ENV === 'production'
+          ? 'onrender.com' // 移除前導點
+          : 'localhost',
     })
 
     // 準備回傳的用戶資料

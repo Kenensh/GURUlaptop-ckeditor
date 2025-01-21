@@ -3,6 +3,13 @@ const path = require('path')
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
+  // 加入資產前綴配置
+  assetPrefix:
+    process.env.NODE_ENV === 'production'
+      ? 'https://gurulaptop-ckeditor-frontend.onrender.com'
+      : '',
+  // 加入公共路徑配置
+  basePath: '',
   // images 設定保持不變
   images: {
     remotePatterns: [
@@ -37,6 +44,13 @@ const nextConfig = {
     config.resolve.alias['@'] = path.resolve(__dirname)
     if (!dev && isServer) {
       config.devtool = 'source-map'
+    }
+    // 加入公共路徑配置
+    if (!isServer) {
+      config.output.publicPath =
+        process.env.NODE_ENV === 'production'
+          ? 'https://gurulaptop-ckeditor-frontend.onrender.com/_next/'
+          : '/_next/'
     }
     return config
   },
