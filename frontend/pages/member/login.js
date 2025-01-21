@@ -44,6 +44,7 @@ export default function LogIn(props) {
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache'  // 添加這行
         },
         body: JSON.stringify({
           email: formData.get('email'),

@@ -39,18 +39,22 @@ router.get('/check', authenticate, async (req, res) => {
 })
 
 router.post('/login', upload.none(), async (req, res) => {
+  console.log('開始處理登入請求...')
   const { email, password } = req.body
 
   if (!email || !password) {
+    console.log('登入失敗：缺少必要資料')
     return res.status(400).json({ status: 'error', message: '缺少必要資料' })
   }
 
   try {
+    console.log('查詢用戶資料...')
     const result = await pool.query('SELECT * FROM users WHERE email = $1', [
       email,
     ])
 
     if (result.rows.length === 0) {
+      console.log('登入失敗：找不到用戶')
       return res
         .status(401)
         .json({ status: 'error', message: '帳號或密碼錯誤' })
@@ -60,11 +64,13 @@ router.post('/login', upload.none(), async (req, res) => {
     const passwordMatch = await compareHash(password, user.password)
 
     if (!passwordMatch) {
+      console.log('登入失敗：密碼錯誤')
       return res
         .status(401)
         .json({ status: 'error', message: '帳號或密碼錯誤' })
     }
 
+    console.log('生成 token...')
     const tokenData = {
       user_id: user.user_id,
       email: user.email,
@@ -75,19 +81,26 @@ router.post('/login', upload.none(), async (req, res) => {
       expiresIn: '3d',
     })
 
+    console.log('設置 cookie...')
+    // 設置 no-cache header
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private')
+
     // 更新 cookie 設定
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-      path: '/', // 添加這行
+      path: '/',
       maxAge: 3 * 24 * 60 * 60 * 1000,
+      domain:
+        process.env.NODE_ENV === 'production' ? '.onrender.com' : 'localhost',
     })
 
-    // 回傳用戶資料但不包含密碼
+    // 準備回傳的用戶資料
     const userData = { ...user }
     delete userData.password
 
+    console.log('登入成功')
     return res.json({
       status: 'success',
       data: { user: userData },
