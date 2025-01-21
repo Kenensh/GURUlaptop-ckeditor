@@ -26,8 +26,6 @@ const FileStore = sessionFileStore(session)
 // 導入資料庫和路由
 import db from './configs/db.js'
 import authRouter from './routes/auth.js'
-import loginRouter from './routes/login.js'
-import signupRouter from './routes/signup.js'
 import dashboardRouter from './routes/dashboard.js'
 import usersRouter from './routes/users.js'
 import eventsRouter from './routes/events.js'
@@ -41,24 +39,37 @@ import forgotPasswordRouter from './routes/forgot-password.js'
 // 擴展 console.log
 extendLog()
 
-// CORS 設定
-app.use(
-  cors({
-    origin: [
-      'http://localhost:3000',
-      'https://gurulaptop-ckeditor-frontend.onrender.com',
-    ],
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    credentials: true,
-    allowedHeaders: [
-      'Content-Type',
-      'Authorization',
-      'Origin',
-      'Accept',
-      'X-Requested-With',
-    ],
-  })
-)
+// 定義允許的來源
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://gurulaptop-ckeditor-frontend.onrender.com',
+]
+
+// CORS 設定優化
+const corsOptions = {
+  origin: function (origin, callback) {
+    // 允許沒有 origin 的請求（如移動應用）或在允許清單中的 origin
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'Cache-Control',
+    'X-Requested-With',
+    'Accept',
+  ],
+  exposedHeaders: ['set-cookie'],
+  maxAge: 600, // 預檢請求的快取時間（秒）
+}
+
+app.use(cors(corsOptions))
+app.options('*', cors(corsOptions)) // 處理 OPTIONS 預檢請求
 
 // 建立 Winston Logger
 const logger = winston.createLogger({
@@ -103,28 +114,34 @@ if (!fs.existsSync(logDir)) {
   fs.mkdirSync(logDir, { recursive: true })
 }
 
-// 請求記錄中間件
+// 增強的請求記錄中間件
 const requestLogger = (req, res, next) => {
   const startTime = Date.now()
+  const requestId = Math.random().toString(36).substring(7)
 
-  logger.info(`${req.method} ${req.url} started`, {
+  logger.info(`Request started [${requestId}]`, {
+    requestId,
     method: req.method,
     url: req.url,
     query: req.query,
+    body: req.method !== 'GET' ? req.body : undefined,
     headers: {
       'user-agent': req.get('user-agent'),
       'content-type': req.get('content-type'),
+      origin: req.get('origin'),
       authorization: req.get('authorization') ? '[PRESENT]' : '[NONE]',
     },
   })
 
   res.on('finish', () => {
     const duration = Date.now() - startTime
-    logger.info(`${req.method} ${req.url} completed`, {
+    logger.info(`Request completed [${requestId}]`, {
+      requestId,
       method: req.method,
       url: req.url,
       status: res.statusCode,
       duration: `${duration}ms`,
+      contentLength: res.get('content-length'),
     })
   })
 
@@ -137,69 +154,80 @@ app.use(requestLogger)
 app.use(morganLogger('dev'))
 app.use(express.json({ limit: '20mb' }))
 app.use(express.urlencoded({ extended: false, limit: '20mb' }))
-app.use(cookieParser())
+app.use(
+  cookieParser(process.env.COOKIE_SECRET || '67f71af4602195de2450faeb6f8856c0')
+)
+
+// 靜態檔案服務
 app.use(express.static(path.join(__dirname, 'public')))
 
-// 在 Session 設定之前添加這段
+// Session 目錄設定
 const sessionsDir = path.join(__dirname, 'sessions')
 if (!fs.existsSync(sessionsDir)) {
   fs.mkdirSync(sessionsDir, { recursive: true })
 }
 
-// Session 設定
-const fileStoreOptions = { logFn: function () {} }
-app.use(
-  session({
-    store: new FileStore(fileStoreOptions),
-    name: 'SESSION_ID',
-    secret: '67f71af4602195de2450faeb6f8856c0',
-    cookie: {
-      maxAge: 30 * 86400000,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-    },
-    resave: false,
-    saveUninitialized: false,
-  })
-)
+// 增強的 Session 設定
+const sessionConfig = {
+  store: new FileStore({
+    path: sessionsDir,
+    logFn: function () {},
+    ttl: 86400, // 24小時
+  }),
+  name: 'SESSION_ID',
+  secret: process.env.SESSION_SECRET || '67f71af4602195de2450faeb6f8856c0',
+  cookie: {
+    maxAge: 30 * 86400000, // 30天
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    domain: process.env.NODE_ENV === 'production' ? '.onrender.com' : undefined,
+    path: '/',
+  },
+  resave: false,
+  saveUninitialized: false,
+  rolling: true, // 每次請求都重新計算過期時間
+}
+
+app.use(session(sessionConfig))
 
 // 視圖引擎設定
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'pug')
 
-// Health check 路由
-app.get('/health', (req, res) => {
-  const startTime = new Date().getTime()
+// 增強的 Health check 路由
+app.get('/health', async (req, res) => {
+  const startTime = Date.now()
 
   const health = {
     uptime: process.uptime(),
     timestamp: new Date().toISOString(),
     status: 'ok',
+    environment: process.env.NODE_ENV,
+    memoryUsage: process.memoryUsage(),
   }
 
-  db.query('SELECT 1')
-    .then(() => {
-      health.database = 'connected'
-      const responseTime = new Date().getTime() - startTime
-      health.responseTime = `${responseTime}ms`
-      logger.info('Health check passed', health)
-      res.json(health)
-    })
-    .catch((err) => {
-      health.status = 'error'
-      health.database = 'disconnected'
-      health.error = err.message
-      logger.error('Health check failed', { error: err, health })
-      res.status(503).json(health)
-    })
+  try {
+    await db.query('SELECT 1')
+    health.database = 'connected'
+    health.responseTime = `${Date.now() - startTime}ms`
+    logger.info('Health check passed', health)
+    res.json(health)
+  } catch (err) {
+    health.status = 'error'
+    health.database = 'disconnected'
+    health.error =
+      process.env.NODE_ENV === 'production'
+        ? 'Database connection failed'
+        : err.message
+    logger.error('Health check failed', { error: err, health })
+    res.status(503).json(health)
+  }
 })
 
-// API 路由設定
+// API 路由設定（整合認證相關路由）
 app.use('/api/auth', authRouter)
 app.use('/api/blog', blogRouter)
-app.use('/api/login', loginRouter)
-app.use('/api/signup', signupRouter)
 app.use('/api/dashboard', dashboardRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/events', eventsRouter)
@@ -209,22 +237,23 @@ app.use('/api/coupon-user', couponUserRouter)
 app.use('/api/chat', chatRoutes)
 app.use('/api', GroupRequests)
 
-// 設定靜態檔案提供
-app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')))
-
-// 確保上傳目錄存在
+// 設定上傳目錄
 const uploadDir = path.join(__dirname, 'public', 'uploads')
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true })
 }
+app.use('/uploads', express.static(uploadDir))
 
-// 測試資料庫連接
+// 資料庫連接測試
 async function testConnection() {
   try {
     await db.query('SELECT 1')
     logger.info('Database connection successful')
   } catch (error) {
-    logger.error('Database connection failed', { error })
+    logger.error('Database connection failed', {
+      error: error.message,
+      stack: error.stack,
+    })
     process.exit(1)
   }
 }
@@ -232,12 +261,28 @@ async function testConnection() {
 testConnection()
 
 // 404 處理
-app.use(function (req, res, next) {
-  next(createError(404))
+app.use((req, res, next) => {
+  const err = createError(404)
+  logger.warn('Route not found', {
+    method: req.method,
+    url: req.url,
+    headers: req.headers,
+  })
+  next(err)
 })
 
-// 錯誤處理
-app.use(function (err, req, res, next) {
+// 增強的錯誤處理
+app.use((err, req, res, next) => {
+  const errorResponse = {
+    status: 'error',
+    message:
+      process.env.NODE_ENV === 'production'
+        ? 'Internal Server Error'
+        : err.message,
+    code: err.status || 500,
+  }
+
+  // 詳細的錯誤記錄
   logger.error('Application error', {
     error: {
       message: err.message,
@@ -248,13 +293,22 @@ app.use(function (err, req, res, next) {
       method: req.method,
       url: req.url,
       query: req.query,
-      body: req.body,
+      body: req.method !== 'GET' ? req.body : undefined,
+      headers: {
+        'content-type': req.headers['content-type'],
+        'user-agent': req.headers['user-agent'],
+        origin: req.headers.origin,
+      },
     },
   })
 
-  res.locals.message = err.message
-  res.locals.error = req.app.get('env') === 'development' ? err : {}
-  res.status(err.status || 500).send({ error: err })
+  // 開發環境下提供更多錯誤細節
+  if (process.env.NODE_ENV !== 'production') {
+    errorResponse.stack = err.stack
+    errorResponse.details = err
+  }
+
+  res.status(err.status || 500).json(errorResponse)
 })
 
 // 未捕獲的 Promise 錯誤處理
@@ -262,18 +316,19 @@ process.on('unhandledRejection', (reason, promise) => {
   logger.error('Unhandled Rejection at:', {
     promise: promise,
     reason: reason,
+    stack: reason?.stack,
   })
 })
 
 // 未捕獲的異常處理
 process.on('uncaughtException', (error) => {
   logger.error('Uncaught Exception:', {
-    error: {
-      message: error.message,
-      stack: error.stack,
-    },
+    message: error.message,
+    stack: error.stack,
+    time: new Date().toISOString(),
   })
 
+  // 給一些時間讓日誌寫入後再結束程序
   setTimeout(() => process.exit(1), 1000)
 })
 
