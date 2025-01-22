@@ -35,6 +35,7 @@ import chatRoutes from './routes/chat.js'
 import GroupRequests from './routes/group-request.js'
 import blogRouter from './routes/blog.js'
 import forgotPasswordRouter from './routes/forgot-password.js'
+import loginRouter from './routes/login.js'
 
 // 擴展 console.log
 extendLog()
@@ -67,7 +68,7 @@ const corsOptions = {
   exposedHeaders: ['set-cookie'],
   maxAge: 600, // 預檢請求的快取時間（秒）
 }
-
+app.use('/api/auth/login', loginRouter)
 app.use(cors(corsOptions))
 app.options('*', cors(corsOptions)) // 處理 OPTIONS 預檢請求
 
