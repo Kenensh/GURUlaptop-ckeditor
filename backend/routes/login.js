@@ -1,11 +1,9 @@
 import express from 'express'
 import authenticate from '#middlewares/authenticate.js'
 import { pool } from '##/configs/db.js'
-import multer from 'multer'
 import jsonwebtoken from 'jsonwebtoken'
 import { compareHash } from '#db-helpers/password-hash.js'
 
-const upload = multer()
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET
 const router = express.Router()
 const isProduction = process.env.NODE_ENV === 'production'
@@ -20,13 +18,27 @@ const cookieConfig = {
   maxAge: 2 * 24 * 60 * 60 * 1000, // 2 days
 }
 
-/* 登入路由 */
-router.post('/', upload.none(), async (req, res) => {
+// 移除 upload.none() 因為我們接收 JSON
+// Cookie 設定
+const cookieConfig = {
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: isProduction ? 'none' : 'lax',
+  path: '/',
+  domain: isProduction ? '.onrender.com' : 'localhost',
+  maxAge: 2 * 24 * 60 * 60 * 1000, // 2 days
+}
+
+// 移除 multer，改用 express.json()
+router.post('/', express.json(), async (req, res) => {
   const requestId = Math.random().toString(36).substring(7)
-  console.log(`[${requestId}] 開始處理登入請求`)
+  console.log(`[${requestId}] 開始處理登入請求`, {
+    body: req.body,
+    headers: req.headers,
+  })
 
   try {
-    const { email, password } = req.body
+    const { email, password } = req.body || {}  // 添加預設值防止解構錯誤
 
     if (!email || !password) {
       return res.status(400).json({
@@ -35,42 +47,23 @@ router.post('/', upload.none(), async (req, res) => {
       })
     }
 
-    // 明確列出需要的欄位
     const result = await pool.query(
-      `SELECT 
-        user_id, email, password, name, level, 
-        gender, phone, country, city, district, 
-        road_name, detailed_address, image_path, 
-        remarks, valid, birthdate, google_uid
-       FROM users 
-       WHERE email = $1 AND valid = true`,
+      'SELECT * FROM users WHERE email = $1 AND valid = true',
       [email]
     )
 
-    // 查無此用戶
     if (result.rows.length === 0) {
       console.log(`[${requestId}] 找不到用戶:${email}`)
       return res.status(401).json({
         status: 'error',
-        message: '帳號或密碼錯誤。或已停用本帳號，請聯繫客服',
+        message: '帳號或密碼錯誤',
       })
     }
 
     const user = result.rows[0]
 
-    // 檢查帳號是否被停用
-    if (!user.valid) {
-      console.log(`[${requestId}] 帳號已停用:${email}`)
-      return res.status(401).json({
-        status: 'error',
-        message: '此帳號已被停用',
-      })
-    }
-
-    // compareHash比對輸入與資料庫中的密碼
     const passwordMatch = await compareHash(password, user.password)
 
-    // 密碼錯誤
     if (!passwordMatch) {
       console.log(`[${requestId}] 密碼錯誤:${email}`)
       return res.status(401).json({
@@ -79,46 +72,35 @@ router.post('/', upload.none(), async (req, res) => {
       })
     }
 
-    // 產生 JWT token，只包含必要資訊
-    const tokenData = {
-      user_id: user.user_id,
-      email: user.email,
-      name: user.name,
-      level: user.level,
-      phone: user.phone,
-      country: user.country,
-      city: user.city,
-      district: user.district,
-      road_name: user.road_name,
-      detailed_address: user.detailed_address,
-    }
+    const token = jsonwebtoken.sign(
+      {
+        user_id: user.user_id,
+        email: user.email,
+        level: user.level,
+      },
+      accessTokenSecret,
+      { expiresIn: '2d' }
+    )
 
-    const token = jsonwebtoken.sign(tokenData, accessTokenSecret, {
-      expiresIn: '2d',
-    })
-
-    // 使用統一的 cookie 設定
     res.cookie('accessToken', token, cookieConfig)
 
-    // 移除敏感資訊
     const userData = { ...user }
     delete userData.password
-    delete userData.google_uid
 
     console.log(`[${requestId}] 登入成功:${email}`)
 
     res.json({
       status: 'success',
       data: {
-        user: userData,
         token,
+        user: userData,
       },
     })
   } catch (error) {
     console.error(`[${requestId}] 登入錯誤:`, error)
     res.status(500).json({
       status: 'error',
-      message: '系統錯誤或帳號已停用',
+      message: '系統錯誤',
       details: isProduction ? null : error.message,
     })
   }
