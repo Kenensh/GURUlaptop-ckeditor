@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { Nav, Tab } from 'react-bootstrap'
-import { FaPenFancy } from 'react-icons/fa'
 import { useAuth } from '@/hooks/use-auth'
+import Head from 'next/head'
+
+// 組件導入
 import UserProfile from '@/components/dashboard/userInfoEdit'
 import MembershipLevels from '@/components/dashboard/membership-levels'
 import EditPassword from '@/components/dashboard/EditPassword'
@@ -12,26 +14,46 @@ import GroupManagement from '@/components/group/GroupManagement'
 import BuylistPage from '@/components/dashboard/buylist-page'
 import Favorites from '@/components/product/favorites'
 import BlogUserOverview from '@/components/blog/bloguseroverview'
-import Link from 'next/link'
-import Head from 'next/head'
-// import { LoadingSpinner } from '@/components/dashboard/loading-spinner'
-// import MarioGame from '@/components/dashboard/MarioGame'
 
 export default function DashboardIndex() {
-  const { auth } = useAuth()
+  // 狀態管理
   const [activeKey, setActiveKey] = useState('home')
   const [couponActiveKey, setCouponActiveKey] = useState('available')
-  // 需要加入這個state
-  const [subActiveKey, setSubActiveKey] = useState('')
-  // 狀態用一樣的就好，因為畫面上一次只會呈現一個就不用多組狀態控制
+  const [subActiveKey, setSubActiveKey] = useState('profile')
+  const [isLoading, setIsLoading] = useState(true)
 
-  // 定義不同頁籤對應的左側導航配置
+  // Auth Hook
+  const { auth } = useAuth()
+
+  // 用戶檢查
+  useEffect(() => {
+    const checkUserAuth = async () => {
+      const requestId = Math.random().toString(36).substring(7)
+      console.log(`[${requestId}] 檢查用戶授權狀態`)
+
+      try {
+        if (!auth.isAuth) {
+          console.log(`[${requestId}] 用戶未登入`)
+          throw new Error('未授權的存取')
+        }
+
+        console.log(`[${requestId}] 用戶已登入:`, auth.userData.email)
+      } catch (error) {
+        console.error(`[${requestId}] 授權檢查錯誤:`, error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    checkUserAuth()
+  }, [auth])
+
+  // 頁籤配置
   const sideNavConfigs = {
     home: [
       { key: 'profile', label: '檔案管理' },
       { key: 'EditPassword', label: '密碼修改' },
       { key: 'membership', label: '會員等級' },
-      // { key: 'MarioGame', label: '小遊戲' },
     ],
     'shopping-record': [
       { key: 'all-orders', label: '全部訂單' },
@@ -46,10 +68,7 @@ export default function DashboardIndex() {
       { key: 'available', label: '優惠卷' },
       { key: 'used', label: '領取優惠卷' },
     ],
-    'blog-record': [
-      { key: 'my-posts', label: '我的文章' },
-      // { key: 'drafts', label: '草稿' },
-    ],
+    'blog-record': [{ key: 'my-posts', label: '我的文章' }],
     'activity-record': [
       { key: 'upcoming', label: '即將參加' },
       { key: 'past', label: '歷史活動' },
@@ -60,37 +79,56 @@ export default function DashboardIndex() {
     ],
   }
 
+  // 獲取當前側邊導航
   const getCurrentSideNav = () => {
     return sideNavConfigs[activeKey] || []
   }
 
+  // 處理側邊導航點擊
   const handleSideNavClick = (key) => {
     if (activeKey === 'coupon-record') {
       setCouponActiveKey(key)
     }
+    setSubActiveKey(key)
   }
 
+  // 渲染主頁內容
   const renderHome = (key) => {
-    switch (key) {
-      case 'profile':
-        return <UserProfile />
-      case 'membership':
-        return <MembershipLevels />
-      case 'EditPassword':
-        return <EditPassword />
-      // case 'MarioGame':
-      //   return <MarioGame />
-      default:
-        return <UserProfile />
+    const components = {
+      profile: UserProfile,
+      membership: MembershipLevels,
+      EditPassword: EditPassword,
     }
+
+    const Component = components[key] || UserProfile
+    return <Component />
+  }
+
+  // 渲染主要內容
+  const renderMainContent = () => {
+    const contentMap = {
+      home: () => renderHome(subActiveKey),
+      'shopping-record': () => <BuylistPage orderStatus={subActiveKey} />,
+      'coupon-record': () =>
+        couponActiveKey === 'available' ? <CouponUser /> : <CouponList />,
+      'blog-record': () => <BlogUserOverview />,
+      'activity-record': () => <EventManagement />,
+      'group-record': () => <GroupManagement />,
+      favorites: () => <Favorites />,
+    }
+
+    const render = contentMap[activeKey]
+    return render ? render() : null
+  }
+
+  if (isLoading) {
+    return <div className="text-center p-5">載入中...</div>
   }
 
   return (
     <>
-      {/* <LoadingSpinner loading={isLoading} /> */}
-      {/* {!isLoading && ( */}
       <Head>
-        <title>會員中心</title>
+        <title>會員中心 | GuruLaptop</title>
       </Head>
 
       <div className="container">
@@ -98,11 +136,9 @@ export default function DashboardIndex() {
           <Tab.Container
             id="dashboard-tabs"
             activeKey={activeKey}
-            onSelect={(k) => {
-              setActiveKey(k)
-            }}
+            onSelect={(k) => setActiveKey(k)}
           >
-            {/* Left Sidebar */}
+            {/* 左側邊欄 */}
             <div className="col-md-2">
               <div className="text-center">
                 <img
@@ -123,27 +159,16 @@ export default function DashboardIndex() {
                   }}
                 />
                 <h5 className="mb-2">{auth?.userData?.name}</h5>
-                {/* <Link href="">
-                    <button
-                      className="btn btn-outline-primary btn-sm mb-3 "
-                      style={{ color: '#805AF5', borderColor: '#805AF5' }}
-                    >
-                      <FaPenFancy />
-                      編輯個人簡介
-                    </button>
-                  </Link> */}
               </div>
 
-              {/* 左側導航 - 動態根據上方選擇改變 */}
+              {/* 左側導航 */}
               <Nav className="flex-column">
                 {getCurrentSideNav().map((item) => (
                   <Nav.Item key={item.key}>
                     <Nav.Link
-                      onClick={() => {
-                        handleSideNavClick(item.key)
-                        setSubActiveKey(item.key)
-                      }}
-                      className={`text-center`}
+                      onClick={() => handleSideNavClick(item.key)}
+                      active={subActiveKey === item.key}
+                      className="text-center"
                     >
                       {item.label}
                     </Nav.Link>
@@ -152,7 +177,7 @@ export default function DashboardIndex() {
               </Nav>
             </div>
 
-            {/* Main Content Area */}
+            {/* 主內容區 */}
             <div className="col-md-10">
               {/* 上方導航 */}
               <Nav
@@ -186,58 +211,17 @@ export default function DashboardIndex() {
 
               {/* 內容區域 */}
               <Tab.Content className="mb-5">
-                <Tab.Pane eventKey="home">
-                  <div className="row justify-content-end">
-                    {renderHome(subActiveKey)}
-                  </div>
-                </Tab.Pane>
-                <Tab.Pane eventKey="shopping-record">
-                  <div>
-                    <BuylistPage orderStatus={subActiveKey} />
-                  </div>
-                </Tab.Pane>
-                <Tab.Pane eventKey="coupon-record">
-                  {couponActiveKey === 'available' ? (
-                    <CouponUser />
-                  ) : (
-                    <CouponList />
-                  )}{' '}
-                </Tab.Pane>
-                <Tab.Pane eventKey="blog-record">
-                  <div>
-                    <BlogUserOverview />
-                    {/* <h4>文章列表</h4>
-                  <p>這裡是文章列表的內容。</p> */}
-                  </div>
-                </Tab.Pane>
-                <Tab.Pane eventKey="activity-record">
-                  <div>
-                    <h4>活動列表</h4>
-                    <EventManagement />
-                  </div>
-                </Tab.Pane>
-                <Tab.Pane eventKey="group-record">
-                  <div>
-                    <h4>揪團列表</h4>
-                    <GroupManagement />
-                  </div>
-                </Tab.Pane>
-                <Tab.Pane eventKey="favorites">
-                  <div>
-                    <Favorites />
-                  </div>
-                </Tab.Pane>
-                <Tab.Pane eventKey="membership">
-                  <div>
-                    <MembershipLevels />
-                  </div>
+                <Tab.Pane eventKey={activeKey} active>
+                  {renderMainContent()}
                 </Tab.Pane>
               </Tab.Content>
             </div>
           </Tab.Container>
         </div>
       </div>
-      {/* )} */}
     </>
   )
 }
+
+// 添加布局設定
+DashboardIndex.requireAuth = true

@@ -12,7 +12,6 @@ import Header from '@/components/layout/default-layout/header'
 import MyFooter from '@/components/layout/default-layout/my-footer'
 import GlowingText from '@/components/dashboard/glowing-text/glowing-text'
 
-// 定義 API URL - 使用環境變數
 const BACKEND_URL =
   process.env.NEXT_PUBLIC_BACKEND_URL ||
   (process.env.NODE_ENV === 'development'
@@ -31,8 +30,15 @@ export default function LogIn() {
 
   // Hooks
   const router = useRouter()
-  const { login } = useAuth()
+  const { login, auth } = useAuth()
   const { showLoader, hideLoader } = useLoader()
+
+  // 檢查是否已登入
+  useEffect(() => {
+    if (auth.isAuth) {
+      router.replace('/dashboard')
+    }
+  }, [auth.isAuth, router])
 
   // 表單輸入處理
   const handleInputChange = (e) => {
@@ -41,7 +47,7 @@ export default function LogIn() {
       ...prev,
       [name]: value,
     }))
-    // 清除對應欄位的錯誤訊息
+
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
@@ -73,10 +79,10 @@ export default function LogIn() {
   // 表單提交處理
   const handleSubmit = async (e) => {
     e.preventDefault()
+    const requestId = Math.random().toString(36).substring(7)
 
-    // 檢查表單
     if (!validateForm()) {
-      console.log('表單驗證失敗:', errors)
+      console.log(`[${requestId}] 表單驗證失敗:`, errors)
       return
     }
 
@@ -84,7 +90,7 @@ export default function LogIn() {
     showLoader()
 
     try {
-      console.log('開始登入流程:', { email: formData.email })
+      console.log(`[${requestId}] 開始登入流程:`, { email: formData.email })
 
       // 發送登入請求
       const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
@@ -100,21 +106,21 @@ export default function LogIn() {
         }),
       })
 
-      console.log('登入響應狀態:', response.status)
+      console.log(`[${requestId}] 登入響應狀態:`, response.status)
 
       if (!response.ok) {
         throw new Error(`登入失敗: ${response.status}`)
       }
 
       const result = await response.json()
-      console.log('登入響應內容:', result)
+      console.log(`[${requestId}] 登入響應內容:`, result)
 
       if (result.status === 'success' && result.data?.user) {
-        console.log('開始更新 auth context')
+        console.log(`[${requestId}] 開始更新 auth context`)
         const loginResult = await login(result.data.user)
 
         if (loginResult.status === 'success') {
-          console.log('登入成功，準備跳轉')
+          console.log(`[${requestId}] 登入成功，準備跳轉`)
           const returnUrl = router.query.returnUrl || '/dashboard'
           await router.replace(returnUrl)
         } else {
@@ -124,7 +130,7 @@ export default function LogIn() {
         throw new Error(result.message || '登入失敗')
       }
     } catch (error) {
-      console.error('登入錯誤:', error)
+      console.error(`[${requestId}] 登入錯誤:`, error)
       setErrors({
         general: error.message || '登入過程發生錯誤，請稍後再試',
       })
@@ -134,12 +140,12 @@ export default function LogIn() {
     }
   }
 
-  // 顯示/隱藏密碼
+  // 密碼顯示切換
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev)
   }
 
-  // 渲染錯誤訊息
+  // 錯誤訊息渲染
   const renderError = (field) => {
     return errors[field] ? (
       <div className="text-red-500 text-sm mt-1">{errors[field]}</div>
@@ -224,6 +230,7 @@ export default function LogIn() {
                       }`}
                       disabled={isSubmitting}
                       required
+                      autoComplete="email"
                     />
                     <MdOutlineEmail
                       className={styles['input-icon']}
@@ -306,14 +313,6 @@ export default function LogIn() {
       </div>
 
       <MyFooter />
-
-      <style jsx>{`
-        .error {
-          color: red;
-          font-size: 16px;
-          margin-top: 0.25rem;
-        }
-      `}</style>
     </>
   )
 }

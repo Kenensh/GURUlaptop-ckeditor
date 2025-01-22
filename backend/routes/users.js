@@ -1,25 +1,12 @@
 import express from 'express'
 const router = express.Router()
-
-// 中介軟體，存取隱私會員資料用
-import authenticate from '#middlewares/authenticate.js'
-
-// 檢查空物件, 轉換req.params為數字
-import { getIdParam } from '#db-helpers/db-tool.js'
-
-// 資料庫使用
-import { Op } from 'sequelize'
-import sequelize from '#configs/db.js'
-const { User } = sequelize.models
-
-// 驗証加密密碼字串用
-import { compareHash } from '#db-helpers/password-hash.js'
-
-// 上傳檔案用使用multer
-import path from 'path'
 import multer from 'multer'
+import db from '../configs/db.js'
+import authenticate from '#middlewares/authenticate.js'
+import { compareHash } from '#db-helpers/password-hash.js'
+import path from 'path'
 
-import db from '../configs/db.js' // 改為 PostgreSQL 連線
+const isProduction = process.env.NODE_ENV === 'production'
 
 // multer 設定
 const storage = multer.diskStorage({
@@ -27,290 +14,319 @@ const storage = multer.diskStorage({
     callback(null, 'public/avatar/')
   },
   filename: (req, file, callback) => {
-    const newFilename = req.user.id
-    callback(null, newFilename + path.extname(file.originalname))
+    const newFilename = `${req.user.id}_${Date.now()}${path.extname(file.originalname)}`
+    callback(null, newFilename)
   },
 })
-const upload = multer({ storage: storage })
 
-// GET - 得到所有會員資料
-router.get('/', async function (req, res) {
-  const users = await User.findAll({ logging: console.log })
-  return res.json({ status: 'success', data: { users } })
+const upload = multer({
+  storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 限制 5MB
+  },
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif']
+    if (!allowedTypes.includes(file.mimetype)) {
+      cb(new Error('不支援的檔案類型'))
+      return
+    }
+    cb(null, true)
+  },
 })
 
-// GET - 得到單筆資料
-router.get('/:id', authenticate, async function (req, res) {
-  const id = getIdParam(req)
+// GET - 獲取所有用戶
+router.get('/', async (req, res) => {
+  const requestId = Math.random().toString(36).substring(7)
+  console.log(`[${requestId}] 開始獲取所有用戶`)
 
-  if (req.user.id !== id) {
-    return res.json({ status: 'error', message: '存取會員資料失敗' })
+  try {
+    const result = await db.query(`
+      SELECT user_id, email, name, level, created_at 
+      FROM users 
+      WHERE valid = 1
+      ORDER BY created_at DESC
+    `)
+
+    console.log(`[${requestId}] 成功獲取用戶列表，共 ${result.rows.length} 筆`)
+    return res.json({
+      status: 'success',
+      data: { users: result.rows },
+    })
+  } catch (error) {
+    console.error(`[${requestId}] 獲取用戶列表失敗:`, error)
+    return res.status(500).json({
+      status: 'error',
+      message: '獲取用戶列表失敗',
+      details: isProduction ? null : error.message,
+    })
   }
-
-  const user = await User.findByPk(id, {
-    raw: true,
-  })
-
-  delete user.password
-
-  return res.json({ status: 'success', data: { user } })
 })
 
-// POST - 新增會員資料
-router.post('/', async function (req, res) {
-  const newUser = req.body
+// GET - 獲取單一用戶
+router.get('/:id', authenticate, async (req, res) => {
+  const requestId = Math.random().toString(36).substring(7)
+  const { id } = req.params
+  console.log(`[${requestId}] 開始獲取用戶 ID ${id}`)
 
-  if (
-    !newUser.username ||
-    !newUser.email ||
-    !newUser.name ||
-    !newUser.password
-  ) {
-    return res.json({ status: 'error', message: '缺少必要資料' })
+  if (req.user.user_id !== parseInt(id)) {
+    console.log(
+      `[${requestId}] 存取未授權: 用戶 ${req.user.user_id} 嘗試獲取用戶 ${id} 的資料`
+    )
+    return res.status(403).json({
+      status: 'error',
+      message: '未授權的存取',
+    })
   }
 
-  const [user, created] = await User.findOrCreate({
-    where: {
-      [Op.or]: [{ username: newUser.username }, { email: newUser.email }],
-    },
-    defaults: {
-      name: newUser.name,
-      password: newUser.password,
-      username: newUser.username,
-      email: newUser.email,
-    },
-  })
+  try {
+    const result = await db.query(
+      `
+      SELECT user_id, email, name, level, gender, phone,
+             city, district, road_name, detailed_address, 
+             image_path, remarks, created_at
+      FROM users 
+      WHERE user_id = $1 AND valid = 1
+    `,
+      [id]
+    )
 
-  if (!created) {
-    return res.json({ status: 'error', message: '建立會員失敗' })
+    if (result.rows.length === 0) {
+      console.log(`[${requestId}] 找不到用戶 ${id}`)
+      return res.status(404).json({
+        status: 'error',
+        message: '找不到用戶',
+      })
+    }
+
+    console.log(`[${requestId}] 成功獲取用戶 ${id} 的資料`)
+    return res.json({
+      status: 'success',
+      data: { user: result.rows[0] },
+    })
+  } catch (error) {
+    console.error(`[${requestId}] 獲取用戶資料失敗:`, error)
+    return res.status(500).json({
+      status: 'error',
+      message: '獲取用戶資料失敗',
+      details: isProduction ? null : error.message,
+    })
   }
-
-  return res.status(201).json({
-    status: 'success',
-    data: null,
-  })
 })
 
-// POST - 上傳大頭貼
+// PUT - 更新用戶資料
+router.put('/:id/profile', authenticate, async (req, res) => {
+  const requestId = Math.random().toString(36).substring(7)
+  const { id } = req.params
+  console.log(`[${requestId}] 開始更新用戶 ${id} 的資料`)
+
+  if (req.user.user_id !== parseInt(id)) {
+    console.log(
+      `[${requestId}] 更新未授權: 用戶 ${req.user.user_id} 嘗試更新用戶 ${id} 的資料`
+    )
+    return res.status(403).json({
+      status: 'error',
+      message: '未授權的操作',
+    })
+  }
+
+  const updateData = req.body
+  const allowedFields = [
+    'name',
+    'gender',
+    'phone',
+    'city',
+    'district',
+    'road_name',
+    'detailed_address',
+    'image_path',
+    'remarks',
+  ]
+
+  // 過濾不允許更新的欄位
+  const filteredData = Object.keys(updateData)
+    .filter((key) => allowedFields.includes(key))
+    .reduce((obj, key) => {
+      obj[key] = updateData[key]
+      return obj
+    }, {})
+
+  if (Object.keys(filteredData).length === 0) {
+    return res.status(400).json({
+      status: 'error',
+      message: '未提供有效的更新資料',
+    })
+  }
+
+  try {
+    // 構建更新語句
+    const setClause = Object.keys(filteredData)
+      .map((key, index) => `${key} = $${index + 2}`)
+      .join(', ')
+    const values = [id, ...Object.values(filteredData)]
+
+    const query = `
+      UPDATE users 
+      SET ${setClause}, updated_at = CURRENT_TIMESTAMP 
+      WHERE user_id = $1 AND valid = 1 
+      RETURNING user_id, email, name, level, gender, phone,
+                city, district, road_name, detailed_address, 
+                image_path, remarks, updated_at
+    `
+
+    const result = await db.query(query, values)
+
+    if (result.rows.length === 0) {
+      console.log(`[${requestId}] 更新失敗: 找不到用戶 ${id}`)
+      return res.status(404).json({
+        status: 'error',
+        message: '找不到用戶或更新失敗',
+      })
+    }
+
+    console.log(`[${requestId}] 成功更新用戶 ${id} 的資料`)
+    return res.json({
+      status: 'success',
+      data: { user: result.rows[0] },
+    })
+  } catch (error) {
+    console.error(`[${requestId}] 更新用戶資料失敗:`, error)
+    return res.status(500).json({
+      status: 'error',
+      message: '更新用戶資料失敗',
+      details: isProduction ? null : error.message,
+    })
+  }
+})
+
+// PUT - 更新密碼
+router.put('/:id/password', authenticate, async (req, res) => {
+  const requestId = Math.random().toString(36).substring(7)
+  const { id } = req.params
+  console.log(`[${requestId}] 開始更新用戶 ${id} 的密碼`)
+
+  if (req.user.user_id !== parseInt(id)) {
+    console.log(
+      `[${requestId}] 更新密碼未授權: 用戶 ${req.user.user_id} 嘗試更新用戶 ${id} 的密碼`
+    )
+    return res.status(403).json({
+      status: 'error',
+      message: '未授權的操作',
+    })
+  }
+
+  const { currentPassword, newPassword } = req.body
+
+  if (!currentPassword || !newPassword) {
+    return res.status(400).json({
+      status: 'error',
+      message: '請提供當前密碼和新密碼',
+    })
+  }
+
+  try {
+    // 驗證當前密碼
+    const user = await db.query(
+      'SELECT password FROM users WHERE user_id = $1 AND valid = 1',
+      [id]
+    )
+
+    if (user.rows.length === 0) {
+      return res.status(404).json({
+        status: 'error',
+        message: '找不到用戶',
+      })
+    }
+
+    const isValid = await compareHash(currentPassword, user.rows[0].password)
+
+    if (!isValid) {
+      console.log(`[${requestId}] 密碼驗證失敗: 用戶 ${id}`)
+      return res.status(401).json({
+        status: 'error',
+        message: '當前密碼錯誤',
+      })
+    }
+
+    // 更新密碼
+    const hashedPassword = await bcrypt.hash(newPassword, 10)
+    await db.query(
+      `
+      UPDATE users 
+      SET password = $1, updated_at = CURRENT_TIMESTAMP 
+      WHERE user_id = $2 AND valid = 1
+    `,
+      [hashedPassword, id]
+    )
+
+    console.log(`[${requestId}] 成功更新用戶 ${id} 的密碼`)
+    return res.json({
+      status: 'success',
+      message: '密碼更新成功',
+    })
+  } catch (error) {
+    console.error(`[${requestId}] 更新密碼失敗:`, error)
+    return res.status(500).json({
+      status: 'error',
+      message: '更新密碼失敗',
+      details: isProduction ? null : error.message,
+    })
+  }
+})
+
+// POST - 上傳頭像
 router.post(
   '/upload-avatar',
   authenticate,
   upload.single('avatar'),
-  async function (req, res) {
-    if (req.file) {
-      const id = req.user.id
-      const data = { avatar: req.file.filename }
+  async (req, res) => {
+    const requestId = Math.random().toString(36).substring(7)
+    console.log(`[${requestId}] 開始處理頭像上傳`)
 
-      const [affectedRows] = await User.update(data, {
-        where: { id },
-      })
-
-      if (!affectedRows) {
-        return res.json({
+    try {
+      if (!req.file) {
+        return res.status(400).json({
           status: 'error',
-          message: '更新失敗或沒有資料被更新',
+          message: '未提供檔案',
         })
       }
 
+      // 更新資料庫中的頭像路徑
+      const result = await db.query(
+        `
+      UPDATE users 
+      SET image_path = $1, updated_at = CURRENT_TIMESTAMP 
+      WHERE user_id = $2 AND valid = 1 
+      RETURNING user_id, image_path
+    `,
+        [req.file.filename, req.user.user_id]
+      )
+
+      if (result.rows.length === 0) {
+        console.log(
+          `[${requestId}] 更新頭像失敗: 找不到用戶 ${req.user.user_id}`
+        )
+        return res.status(404).json({
+          status: 'error',
+          message: '更新頭像失敗',
+        })
+      }
+
+      console.log(`[${requestId}] 成功更新用戶 ${req.user.user_id} 的頭像`)
       return res.json({
         status: 'success',
-        data: { avatar: req.file.filename },
+        data: {
+          image_path: result.rows[0].image_path,
+        },
       })
-    } else {
-      return res.json({ status: 'fail', data: null })
+    } catch (error) {
+      console.error(`[${requestId}] 頭像上傳失敗:`, error)
+      return res.status(500).json({
+        status: 'error',
+        message: '頭像上傳失敗',
+        details: isProduction ? null : error.message,
+      })
     }
   }
 )
-
-// PUT - 更新會員密碼
-router.put('/:id/password', authenticate, async function (req, res) {
-  const id = getIdParam(req)
-
-  if (req.user.id !== id) {
-    return res.json({ status: 'error', message: '存取會員資料失敗' })
-  }
-
-  const userPassword = req.body
-
-  if (!id || !userPassword.origin || !userPassword.new) {
-    return res.json({ status: 'error', message: '缺少必要資料' })
-  }
-
-  const dbUser = await User.findByPk(id, {
-    raw: true,
-  })
-
-  if (!dbUser) {
-    return res.json({ status: 'error', message: '使用者不存在' })
-  }
-
-  const isValid = await compareHash(userPassword.origin, dbUser.password)
-
-  if (!isValid) {
-    return res.json({ status: 'error', message: '密碼錯誤' })
-  }
-
-  const [affectedRows] = await User.update(
-    { password: userPassword.new },
-    {
-      where: { id },
-      individualHooks: true,
-    }
-  )
-
-  if (!affectedRows) {
-    return res.json({ status: 'error', message: '更新失敗' })
-  }
-
-  return res.json({ status: 'success', data: null })
-})
-
-// PUT - 更新會員資料
-router.put('/:id/profile', authenticate, async function (req, res) {
-  const id = getIdParam(req)
-
-  if (req.user.id !== id) {
-    return res.json({ status: 'error', message: '存取會員資料失敗' })
-  }
-
-  const user = req.body
-
-  if (!id || !user.name) {
-    return res.json({ status: 'error', message: '缺少必要資料' })
-  }
-
-  const dbUser = await User.findByPk(id, {
-    raw: true,
-  })
-
-  if (!dbUser) {
-    return res.json({ status: 'error', message: '使用者不存在' })
-  }
-
-  if (!user.birth_date) {
-    delete user.birth_date
-  }
-
-  const [affectedRows] = await User.update(user, {
-    where: { id },
-  })
-
-  if (!affectedRows) {
-    return res.json({ status: 'error', message: '更新失敗或沒有資料被更新' })
-  }
-
-  const updatedUser = await User.findByPk(id, {
-    raw: true,
-  })
-
-  delete updatedUser.password
-
-  return res.json({ status: 'success', data: { user: updatedUser } })
-})
-
-// DELETE - 刪除會員
-router.delete('/:id', async function (req, res) {
-  const id = getIdParam(req)
-
-  const affectedRows = await User.destroy({
-    where: { id },
-  })
-
-  if (!affectedRows) {
-    return res.json({
-      status: 'fail',
-      message: 'Unable to delete.',
-    })
-  }
-
-  return res.json({ status: 'success', data: null })
-})
-
-// === 聊天室相關路由 ===
-// 獲取所有使用者
-router.get('/chat/users', async (req, res) => {
-  try {
-    const result = await db.query(`
-     SELECT 
-       user_id, 
-       name, 
-       email, 
-       image_path,
-       created_at
-     FROM users 
-     WHERE valid = 1
-   `)
-
-    res.json({
-      status: 'success',
-      data: result.rows.map((user) => ({
-        user_id: user.user_id,
-        name: user.name,
-        email: user.email,
-        image: user.image_path,
-        createdAt: user.created_at,
-        online: false,
-      })),
-    })
-  } catch (error) {
-    console.error('獲取使用者列表錯誤:', error)
-    res.status(500).json({
-      status: 'error',
-      message: '獲取使用者列表失敗',
-    })
-  }
-})
-
-// 獲取單一使用者
-router.get('/chat/users/:userId', authenticate, async function (req, res) {
-  try {
-    const { userId } = req.params
-    const result = await db.query(
-      'SELECT user_id, name, email, image_path, created_at FROM users WHERE user_id = $1 AND valid = 1',
-      [userId]
-    )
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({
-        status: 'error',
-        message: '找不到該使用者',
-      })
-    }
-
-    const user = result.rows[0]
-    res.json({
-      status: 'success',
-      data: {
-        id: user.user_id,
-        name: user.name,
-        email: user.email,
-        image: user.image_path,
-        created_at: user.created_at,
-      },
-    })
-  } catch (error) {
-    console.error('獲取使用者資料錯誤:', error)
-    res.status(500).json({
-      status: 'error',
-      message: '獲取使用者資料失敗',
-    })
-  }
-})
-
-// 獲取使用者在線狀態
-router.get('/chat/users/status', authenticate, async function (req, res) {
-  try {
-    res.json({
-      status: 'success',
-      data: {},
-    })
-  } catch (error) {
-    console.error('獲取使用者在線狀態錯誤:', error)
-    res.status(500).json({
-      status: 'error',
-      message: '獲取使用者在線狀態失敗',
-    })
-  }
-})
 
 export default router
