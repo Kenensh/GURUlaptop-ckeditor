@@ -211,7 +211,7 @@ export default function MyApp({ Component, pageProps }) {
         wakeUpBackend()
 
         // 設定每 14 分鐘執行一次
-        const interval = setInterval(wakeUpBackend, 1 * 60 * 1000)
+        const interval = setInterval(wakeUpBackend, 10 * 60 * 1000)
 
         // 清理函數
         return () => {
