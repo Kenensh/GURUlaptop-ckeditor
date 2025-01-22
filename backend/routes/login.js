@@ -154,4 +154,4 @@ router.post('/status', async (req, res) => {
   }
 })
 
-
+export default router
