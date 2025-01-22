@@ -8,8 +8,8 @@ const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET
 const router = express.Router()
 const isProduction = process.env.NODE_ENV === 'production'
 
-// 統一的 Cookie 設定
-const cookieConfig = {
+// 統一的 Cookie 設定 (只保留一個定義)
+const loginCookieConfig = {
   httpOnly: true,
   secure: isProduction,
   sameSite: isProduction ? 'none' : 'lax',
@@ -18,18 +18,7 @@ const cookieConfig = {
   maxAge: 2 * 24 * 60 * 60 * 1000, // 2 days
 }
 
-// 移除 upload.none() 因為我們接收 JSON
-// Cookie 設定
-const cookieConfig = {
-  httpOnly: true,
-  secure: isProduction,
-  sameSite: isProduction ? 'none' : 'lax',
-  path: '/',
-  domain: isProduction ? '.onrender.com' : 'localhost',
-  maxAge: 2 * 24 * 60 * 60 * 1000, // 2 days
-}
-
-// 移除 multer，改用 express.json()
+// 登入路由
 router.post('/', express.json(), async (req, res) => {
   const requestId = Math.random().toString(36).substring(7)
   console.log(`[${requestId}] 開始處理登入請求`, {
@@ -38,7 +27,7 @@ router.post('/', express.json(), async (req, res) => {
   })
 
   try {
-    const { email, password } = req.body || {}  // 添加預設值防止解構錯誤
+    const { email, password } = req.body || {} // 添加預設值防止解構錯誤
 
     if (!email || !password) {
       return res.status(400).json({
@@ -82,7 +71,7 @@ router.post('/', express.json(), async (req, res) => {
       { expiresIn: '2d' }
     )
 
-    res.cookie('accessToken', token, cookieConfig)
+    res.cookie('accessToken', token, loginCookieConfig) // 使用重命名的設定
 
     const userData = { ...user }
     delete userData.password
@@ -106,12 +95,13 @@ router.post('/', express.json(), async (req, res) => {
   }
 })
 
+// 登出路由
 router.post('/logout', authenticate, (req, res) => {
   const requestId = Math.random().toString(36).substring(7)
   console.log(`[${requestId}] 處理登出請求`)
 
   try {
-    res.clearCookie('accessToken', cookieConfig)
+    res.clearCookie('accessToken', loginCookieConfig) // 使用重命名的設定
     console.log(`[${requestId}] 登出成功`)
     res.json({ status: 'success', data: null })
   } catch (error) {
@@ -124,6 +114,7 @@ router.post('/logout', authenticate, (req, res) => {
   }
 })
 
+// 狀態檢查路由
 router.post('/status', async (req, res) => {
   const requestId = Math.random().toString(36).substring(7)
   console.log(`[${requestId}] 檢查登入狀態`)
