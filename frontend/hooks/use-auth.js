@@ -115,7 +115,7 @@ export const AuthProvider = ({ children }) => {
 
     try {
       // 呼叫登出 API
-      const response = await fetch(`${BACKEND_URL}/api/logout`, {
+      const response = await fetch(`${BACKEND_URL}/api/auth/logout`, {
         method: 'POST',
         credentials: 'include',
         headers: {
