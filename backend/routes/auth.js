@@ -9,10 +9,25 @@ import { compareHash, generateHash } from '../db-helpers/password-hash.js'
 
 const upload = multer()
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET
+const isProduction = process.env.NODE_ENV === 'production'
+
+// Cookie 設定
+const cookieConfig = {
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: isProduction ? 'none' : 'lax',
+  path: '/',
+  domain: isProduction ? 'onrender.com' : 'localhost',
+  maxAge: 3 * 24 * 60 * 60 * 1000, // 3 days
+}
 
 router.get('/check', authenticate, async (req, res) => {
+  const requestId = Math.random().toString(36).substring(7)
+  console.log(`[${requestId}] 開始驗證用戶狀態`)
+
   try {
     if (!req.user?.user_id) {
+      console.log(`[${requestId}] 驗證失敗：未提供用戶ID`)
       return res.status(401).json({ status: 'error', message: '未授權' })
     }
 
@@ -25,52 +40,83 @@ router.get('/check', authenticate, async (req, res) => {
     )
 
     if (!result.rows[0]) {
+      console.log(`[${requestId}] 驗證失敗：找不到用戶 ID ${req.user.user_id}`)
       return res.status(404).json({ status: 'error', message: '找不到用戶' })
     }
 
+    console.log(`[${requestId}] 驗證成功：用戶 ID ${req.user.user_id}`)
     return res.json({
       status: 'success',
       data: { user: result.rows[0] },
     })
   } catch (error) {
-    console.error('Auth check error:', error)
-    return res.status(500).json({ status: 'error', message: '系統錯誤' })
+    console.error(`[${requestId}] 驗證過程發生錯誤:`, error)
+    return res.status(500).json({
+      status: 'error',
+      message: '系統錯誤',
+      details: isProduction ? null : error.message,
+    })
   }
 })
 
 router.post('/login', upload.none(), async (req, res) => {
-  console.log('開始處理登入請求...')
+  const requestId = Math.random().toString(36).substring(7)
+  console.log(`[${requestId}] 開始處理登入請求`)
+
   const { email, password } = req.body
 
+  console.log(`[${requestId}] 登入資訊:`, {
+    email: email ? '已提供' : '未提供',
+    password: password ? '已提供' : '未提供',
+    headers: {
+      'content-type': req.get('content-type'),
+      origin: req.get('origin'),
+    },
+  })
+
   if (!email || !password) {
-    console.log('登入失敗：缺少必要資料')
-    return res.status(400).json({ status: 'error', message: '缺少必要資料' })
+    console.log(`[${requestId}] 登入失敗：缺少必要資料`)
+    return res.status(400).json({
+      status: 'error',
+      message: '請提供完整的登入資訊',
+      details: {
+        email: !email ? '請提供電子郵件' : null,
+        password: !password ? '請提供密碼' : null,
+      },
+    })
   }
 
   try {
-    console.log('查詢用戶資料...')
+    console.log(`[${requestId}] 查詢用戶資料：${email}`)
     const result = await pool.query('SELECT * FROM users WHERE email = $1', [
       email,
     ])
 
+    console.log(`[${requestId}] 查詢結果:`, {
+      found: result.rows.length > 0,
+      rowCount: result.rows.length,
+    })
+
     if (result.rows.length === 0) {
-      console.log('登入失敗：找不到用戶')
-      return res
-        .status(401)
-        .json({ status: 'error', message: '帳號或密碼錯誤' })
+      console.log(`[${requestId}] 登入失敗：找不到用戶 ${email}`)
+      return res.status(401).json({
+        status: 'error',
+        message: '帳號或密碼錯誤',
+      })
     }
 
     const user = result.rows[0]
     const passwordMatch = await compareHash(password, user.password)
 
     if (!passwordMatch) {
-      console.log('登入失敗：密碼錯誤')
-      return res
-        .status(401)
-        .json({ status: 'error', message: '帳號或密碼錯誤' })
+      console.log(`[${requestId}] 登入失敗：密碼錯誤 ${email}`)
+      return res.status(401).json({
+        status: 'error',
+        message: '帳號或密碼錯誤',
+      })
     }
 
-    console.log('生成 token...')
+    console.log(`[${requestId}] 生成 token...`)
     const tokenData = {
       user_id: user.user_id,
       email: user.email,
@@ -81,46 +127,60 @@ router.post('/login', upload.none(), async (req, res) => {
       expiresIn: '3d',
     })
 
-    console.log('設置 cookie...')
-    // 設置 no-cache header
-    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private')
+    console.log(`[${requestId}] 設置 cookie 和 headers...`)
 
-    // 更新 cookie 設定
-    res.cookie('accessToken', accessToken, {
-      httpOnly: true,
-      secure: true, // 在生產環境總是使用 secure
-      sameSite: 'none', // 跨站請求需要
-      path: '/',
-      maxAge: 3 * 24 * 60 * 60 * 1000,
-      domain:
-        process.env.NODE_ENV === 'production'
-          ? 'onrender.com' // 移除前導點
-          : 'localhost',
+    // 設置安全相關的 headers
+    res.set({
+      'Cache-Control': 'no-store, no-cache, must-revalidate, private',
+      Pragma: 'no-cache',
+      Expires: '0',
     })
+
+    // 設置 cookie
+    res.cookie('accessToken', accessToken, cookieConfig)
 
     // 準備回傳的用戶資料
     const userData = { ...user }
     delete userData.password
 
-    console.log('登入成功')
+    console.log(`[${requestId}] 登入成功：${email}`)
     return res.json({
       status: 'success',
-      data: { user: userData },
+      data: {
+        user: userData,
+        token: isProduction ? undefined : accessToken, // 開發環境才回傳 token
+      },
     })
   } catch (error) {
-    console.error('登入失敗:', error)
-    return res.status(500).json({ status: 'error', message: '系統錯誤' })
+    console.error(`[${requestId}] 登入過程發生錯誤:`, error)
+    return res.status(500).json({
+      status: 'error',
+      message: '系統錯誤',
+      details: isProduction ? null : error.message,
+    })
   }
 })
 
 router.post('/logout', authenticate, (req, res) => {
-  res.clearCookie('accessToken', {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-  })
-  return res.json({ status: 'success', message: '登出成功' })
+  const requestId = Math.random().toString(36).substring(7)
+  console.log(`[${requestId}] 處理登出請求`)
+
+  try {
+    res.clearCookie('accessToken', {
+      ...cookieConfig,
+      maxAge: 0,
+    })
+
+    console.log(`[${requestId}] 登出成功`)
+    return res.json({ status: 'success', message: '登出成功' })
+  } catch (error) {
+    console.error(`[${requestId}] 登出過程發生錯誤:`, error)
+    return res.status(500).json({
+      status: 'error',
+      message: '登出失敗',
+      details: isProduction ? null : error.message,
+    })
+  }
 })
 
-// 只匯出路由器
 export { router as default }

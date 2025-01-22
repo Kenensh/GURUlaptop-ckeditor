@@ -159,48 +159,69 @@ export default function MyApp({ Component, pageProps }) {
   // 後端喚醒機制
   useEffect(() => {
     const wakeUpBackend = async () => {
-      console.log('Wake up process starting...')
-      console.log('Current BACKEND_URL:', BACKEND_URL)
-      console.log('Environment:', process.env.NODE_ENV)
+      const requestId = Math.random().toString(36).substring(7)
+      console.log(`[${requestId}] Wake up process starting...`)
+      console.log(`[${requestId}] Backend URL:`, BACKEND_URL)
+      console.log(`[${requestId}] Environment:`, process.env.NODE_ENV)
 
       try {
-        console.log('Attempting to wake up backend...')
-        const response = await fetch(`${BACKEND_URL}/health`, {
+        // 直接使用完整的 URL，避免 URL 轉換邏輯
+        const healthUrl = `${BACKEND_URL}/health`
+        console.log(`[${requestId}] Sending health check to:`, healthUrl)
+
+        const response = await fetch(healthUrl, {
           method: 'GET',
           credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
             Accept: 'application/json',
-            Origin: window.location.origin,
+            'Cache-Control': 'no-cache',
+            Origin: typeof window !== 'undefined' ? window.location.origin : '',
           },
         })
 
-        console.log('Response status:', response.status)
+        console.log(`[${requestId}] Health check response:`, {
+          status: response.status,
+          ok: response.ok,
+        })
 
         if (response.ok) {
           const data = await response.json()
-          console.log('Backend is awake! Data:', data)
+          console.log(`[${requestId}] Backend health data:`, data)
         } else {
-          console.log('Backend response not ok:', response.statusText)
-          console.log('Full response:', response)
+          throw new Error(`Health check failed with status: ${response.status}`)
         }
       } catch (error) {
-        console.error('Backend wake-up attempt failed:', {
-          error: error,
-          message: error.message,
+        console.error(`[${requestId}] Backend wake-up failed:`, {
+          error: error.message,
           stack: error.stack,
-          type: error.name,
+          type: error.constructor.name,
         })
+
+        // 可以在這裡添加重試邏輯
+        setTimeout(wakeUpBackend, 5000) // 5 秒後重試
       }
     }
 
     if (isClient) {
       console.log('Initializing wake up mechanism...')
-      // 立即執行一次
-      wakeUpBackend()
-      // 設定每 14 分鐘執行一次
-      const interval = setInterval(wakeUpBackend, 14 * 60 * 1000)
-      return () => clearInterval(interval)
+
+      // 初始延遲 2 秒後再執行第一次喚醒
+      const initialTimeout = setTimeout(() => {
+        wakeUpBackend()
+
+        // 設定每 14 分鐘執行一次
+        const interval = setInterval(wakeUpBackend, 14 * 60 * 1000)
+
+        // 清理函數
+        return () => {
+          clearInterval(interval)
+          clearTimeout(initialTimeout)
+        }
+      }, 2000)
+
+      // 清理函數
+      return () => clearTimeout(initialTimeout)
     }
   }, [])
 

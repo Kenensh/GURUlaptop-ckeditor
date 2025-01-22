@@ -197,31 +197,85 @@ app.set('view engine', 'pug')
 
 // 增強的 Health check 路由
 app.get('/health', async (req, res) => {
+  const requestId = Math.random().toString(36).substring(7)
   const startTime = Date.now()
 
+  console.log(`[${requestId}] Health check started`)
+
+  // 設置回應標頭
+  res.set({
+    'Cache-Control': 'no-store, no-cache, must-revalidate, private',
+    Pragma: 'no-cache',
+    Expires: '0',
+    'Access-Control-Allow-Credentials': 'true',
+    'Access-Control-Allow-Origin':
+      process.env.NODE_ENV === 'production'
+        ? 'https://gurulaptop-ckeditor-frontend.onrender.com'
+        : 'http://localhost:3000',
+  })
+
   const health = {
+    requestId,
     uptime: process.uptime(),
     timestamp: new Date().toISOString(),
     status: 'ok',
     environment: process.env.NODE_ENV,
-    memoryUsage: process.memoryUsage(),
+    memoryUsage: {
+      heap: Math.round(process.memoryUsage().heapUsed / 1024 / 1024) + 'MB',
+      total: Math.round(process.memoryUsage().rss / 1024 / 1024) + 'MB',
+    },
+    nodejs: {
+      version: process.version,
+      pid: process.pid,
+    },
   }
 
   try {
-    await db.query('SELECT 1')
-    health.database = 'connected'
+    console.log(`[${requestId}] Checking database connection...`)
+    const dbStartTime = Date.now()
+
+    const result = await db.query('SELECT 1')
+
+    health.database = {
+      status: 'connected',
+      responseTime: `${Date.now() - dbStartTime}ms`,
+    }
+
     health.responseTime = `${Date.now() - startTime}ms`
-    logger.info('Health check passed', health)
-    res.json(health)
+
+    console.log(`[${requestId}] Health check passed:`, health)
+    logger.info(`Health check passed [${requestId}]`, health)
+
+    return res.json(health)
   } catch (err) {
-    health.status = 'error'
-    health.database = 'disconnected'
-    health.error =
-      process.env.NODE_ENV === 'production'
-        ? 'Database connection failed'
-        : err.message
-    logger.error('Health check failed', { error: err, health })
-    res.status(503).json(health)
+    const errorResponse = {
+      ...health,
+      status: 'error',
+      database: {
+        status: 'disconnected',
+        error:
+          process.env.NODE_ENV === 'production'
+            ? 'Database connection failed'
+            : err.message,
+      },
+      responseTime: `${Date.now() - startTime}ms`,
+    }
+
+    console.error(`[${requestId}] Health check failed:`, {
+      error: err.message,
+      stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
+    })
+
+    logger.error(`Health check failed [${requestId}]`, {
+      error: err,
+      health: errorResponse,
+    })
+
+    return res.status(503).json(errorResponse)
+  } finally {
+    console.log(
+      `[${requestId}] Health check completed in ${Date.now() - startTime}ms`
+    )
   }
 })
 
