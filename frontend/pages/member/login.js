@@ -93,7 +93,7 @@ export default function LogIn() {
       console.log(`[${requestId}] 開始登入流程:`, { email: formData.email })
 
       // 發送登入請求
-      const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
+      const response = await fetch(`${BACKEND_URL}/api/login`, {
         method: 'POST',
         credentials: 'include',
         headers: {
