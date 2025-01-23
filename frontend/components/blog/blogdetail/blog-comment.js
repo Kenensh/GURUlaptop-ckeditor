@@ -3,105 +3,84 @@ import { useRouter } from 'next/router'
 import { useAuth } from '@/hooks/use-auth'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
-const isClient = typeof window !== 'undefined'
+
+const BACKEND_URL =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3005'
+    : 'https://gurulaptop-ckeditor.onrender.com'
+
 const MySwal = withReactContent(Swal)
 
 export default function BlogComment({ blog_id }) {
   const [blogComment, setBlogComment] = useState([])
   const [newComment, setNewComment] = useState('')
   const [isLoading, setIsLoading] = useState(true)
-  const router = useRouter()
-
   const { auth } = useAuth()
-  const { userData, isAuth } = auth || {}
-  const user_id = userData?.user_id
+  const { userData, isAuth } = auth
 
-  function getTimestamp() {
-    const now = new Date()
-    const year = now.getFullYear()
-    const month = String(now.getMonth() + 1).padStart(2, '0')
-    const day = String(now.getDate()).padStart(2, '0')
-    const hours = String(now.getHours()).padStart(2, '0')
-    const minutes = String(now.getMinutes()).padStart(2, '0')
-    const seconds = String(now.getSeconds()).padStart(2, '0')
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
-  }
-
-  // 獲取評論
   useEffect(() => {
     if (blog_id) {
       setIsLoading(true)
-      fetch(`http://localhost:3005/api/blog/blog-comment/${blog_id}`)
+      fetch(`${BACKEND_URL}/api/blog/blog-comment/${blog_id}`, {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          'Cache-Control': 'no-cache',
+        },
+      })
         .then((response) => response.json())
         .then((data) => {
-          console.log('評論資料:', data)
           if (data.status === 'success' && Array.isArray(data.data)) {
             setBlogComment(data.data)
-          } else {
-            setBlogComment([])
           }
         })
-        .catch((error) => {
-          console.error('獲取評論失敗:', error)
-          setBlogComment([])
-        })
+        .catch((error) => console.error('獲取評論失敗:', error))
         .finally(() => setIsLoading(false))
     }
   }, [blog_id])
 
-  // 提交評論
   const handleSubmit = async () => {
-    if (!newComment.trim()) {
+    if (!newComment.trim() || !isAuth) {
       MySwal.fire({
         icon: 'warning',
-        title: '請輸入留言內容',
+        title: !isAuth ? '請先登入' : '請輸入留言內容',
         showConfirmButton: false,
         timer: 1500,
       })
       return
-    }
-
-    if (!isAuth) {
-      MySwal.fire({
-        icon: 'warning',
-        title: '請先登入',
-        showConfirmButton: false,
-        timer: 1500,
-      })
-      return
-    }
-
-    const commentData = {
-      user_id,
-      blog_content: newComment,
-      blog_created_date: getTimestamp(),
     }
 
     try {
       const response = await fetch(
-        `http://localhost:3005/api/blog/blog-comment/${blog_id}`,
+        `${BACKEND_URL}/api/blog/blog-comment/${blog_id}`,
         {
           method: 'POST',
+          credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
+            Accept: 'application/json',
+            'Cache-Control': 'no-cache',
           },
-          body: JSON.stringify(commentData),
+          body: JSON.stringify({
+            user_id: userData?.user_id,
+            blog_content: newComment,
+            blog_created_date: new Date().toISOString(),
+          }),
         }
       )
 
       const result = await response.json()
 
       if (response.ok && result.status === 'success') {
-        setBlogComment((prevComments) => [...prevComments, result.data])
+        setBlogComment((prev) => [...prev, result.data])
         setNewComment('')
-        if (isClient) {
-          MySwal.fire({
-            icon: 'success',
-            title: '留言新增成功',
-            showConfirmButton: false,
-            timer: 1500,
-          })
-        }
+        MySwal.fire({
+          icon: 'success',
+          title: '留言新增成功',
+          showConfirmButton: false,
+          timer: 1500,
+        })
       } else {
         throw new Error(result.message || '留言新增失敗')
       }

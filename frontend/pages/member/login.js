@@ -41,6 +41,27 @@ export default function LogIn() {
     e.preventDefault()
     const requestId = Math.random().toString(36).substring(7)
 
+    const validateForm = () => {
+      const newErrors = {}
+
+      // 驗證 email
+      if (!formData.email) {
+        newErrors.email = '請輸入電子郵件'
+      } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+        newErrors.email = '請輸入有效的電子郵件地址'
+      }
+
+      // 驗證密碼
+      if (!formData.password) {
+        newErrors.password = '請輸入密碼'
+      } else if (formData.password.length < 6) {
+        newErrors.password = '密碼必須至少包含6個字符'
+      }
+
+      setErrors(newErrors)
+      return Object.keys(newErrors).length === 0 // 若無錯誤則返回 true
+    }
+
     if (!validateForm()) return
 
     setIsSubmitting(true)
@@ -86,6 +107,14 @@ export default function LogIn() {
       setIsSubmitting(false)
       hideLoader()
     }
+  }
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }))
   }
 
   // 密碼顯示切換
