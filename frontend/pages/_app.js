@@ -162,14 +162,17 @@ export default function MyApp({ Component, pageProps }) {
       console.log(`[${requestId}] Wake up process starting...`)
 
       try {
-        const healthUrl = `${BACKEND_URL}/health`
-        const response = await fetch(healthUrl, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Cache-Control': 'no-cache',
-          },
-        })
+        const response = await fetch(
+          'https://gurulaptop-ckeditor.onrender.com/health',
+          {
+            method: 'GET',
+            mode: 'cors',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        )
 
         if (!response.ok) {
           throw new Error(`Health check failed: ${response.status}`)
