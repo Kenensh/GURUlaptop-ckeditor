@@ -339,6 +339,3 @@ const testConnection = async () => {
   }
 }
 
-testConnection()
-
-export default app
