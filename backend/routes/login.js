@@ -26,8 +26,16 @@ router.post('/', express.json(), async (req, res) => {
     headers: req.headers,
   })
 
+  res.set({
+    'Access-Control-Allow-Credentials': 'true',
+    'Access-Control-Allow-Origin':
+      process.env.NODE_ENV === 'production'
+        ? 'https://gurulaptop-ckeditor-frontend.onrender.com'
+        : 'http://localhost:3000',
+  })
+
   try {
-    const { email, password } = req.body || {} // 添加預設值防止解構錯誤
+    const { email, password } = req.body || {}
 
     if (!email || !password) {
       return res.status(400).json({
@@ -97,8 +105,13 @@ router.post('/', express.json(), async (req, res) => {
 
 // 登出路由
 router.post('/logout', authenticate, (req, res) => {
-  const requestId = Math.random().toString(36).substring(7)
-  console.log(`[${requestId}] 處理登出請求`)
+  res.set({
+    'Access-Control-Allow-Credentials': 'true',
+    'Access-Control-Allow-Origin':
+      process.env.NODE_ENV === 'production'
+        ? 'https://gurulaptop-ckeditor-frontend.onrender.com'
+        : 'http://localhost:3000',
+  })
 
   try {
     res.clearCookie('accessToken', loginCookieConfig) // 使用重命名的設定
@@ -116,6 +129,13 @@ router.post('/logout', authenticate, (req, res) => {
 
 // 狀態檢查路由
 router.post('/status', async (req, res) => {
+  res.set({
+    'Access-Control-Allow-Credentials': 'true',
+    'Access-Control-Allow-Origin':
+      process.env.NODE_ENV === 'production'
+        ? 'https://gurulaptop-ckeditor-frontend.onrender.com'
+        : 'http://localhost:3000',
+  })
   const requestId = Math.random().toString(36).substring(7)
   console.log(`[${requestId}] 檢查登入狀態`)
 

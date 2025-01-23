@@ -44,13 +44,24 @@ const allowedOrigins = [
 
 // CORS 配置優化
 const corsOptions = {
-  origin: allowedOrigins,
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  exposedHeaders: ['Set-Cookie'],
-  optionsSuccessStatus: 204,
-  preflightContinue: false,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'Accept',
+    'Cache-Control',
+    'X-Requested-With',
+  ],
+  exposedHeaders: ['set-cookie'],
+  maxAge: 86400,
 }
 
 // 建立 Winston Logger
@@ -191,17 +202,6 @@ app.get('/health', async (req, res) => {
 
   console.log(`[${requestId}] Health check started`)
 
-  res.set({
-    'Cache-Control': 'no-store, no-cache, must-revalidate, private',
-    Pragma: 'no-cache',
-    Expires: '0',
-    'Access-Control-Allow-Credentials': 'true',
-    'Access-Control-Allow-Origin':
-      process.env.NODE_ENV === 'production'
-        ? 'https://gurulaptop-ckeditor-frontend.onrender.com'
-        : 'http://localhost:3000',
-  })
-
   const health = {
     requestId,
     uptime: process.uptime(),
@@ -235,10 +235,9 @@ app.get('/health', async (req, res) => {
       status: 'error',
       database: {
         status: 'disconnected',
-        error:
-          process.env.NODE_ENV === 'production'
-            ? 'Database connection failed'
-            : err.message,
+        error: process.env.NODE_ENV === 'production'
+          ? 'Database connection failed'
+          : err.message,
       },
       responseTime: `${Date.now() - startTime}ms`,
     })
