@@ -3,17 +3,15 @@ const path = require('path')
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
-  swcMinify: true, // 啟用 SWC 壓縮，但保留 console.log
+  swcMinify: true,
   compiler: {
-    styledComponents: true, // 支援 styled-components
-  // 加入資產前綴配置
+    styledComponents: true,
+  },
   assetPrefix:
     process.env.NODE_ENV === 'production'
       ? 'https://gurulaptop-ckeditor-frontend.onrender.com'
       : '',
-  // 加入公共路徑配置
   basePath: '',
-  // images 設定保持不變
   images: {
     remotePatterns: [
       {
@@ -35,20 +33,17 @@ const nextConfig = {
     ],
     unoptimized: true,
   },
-  // 處理建構時的檢查
   eslint: {
     ignoreDuringBuilds: true,
   },
   typescript: {
     ignoreBuildErrors: true,
   },
-  // webpack 配置增加 source-map
   webpack: (config, { isServer, dev }) => {
     config.resolve.alias['@'] = path.resolve(__dirname)
     if (!dev && isServer) {
       config.devtool = 'source-map'
     }
-    // 加入公共路徑配置
     if (!isServer) {
       config.output.publicPath =
         process.env.NODE_ENV === 'production'
@@ -57,7 +52,6 @@ const nextConfig = {
     }
     return config
   },
-  // redirects 配置保持不變
   async redirects() {
     return [
       {
