@@ -56,35 +56,35 @@ export const AuthProvider = ({ children }) => {
   // 登入處理
   const login = async (userData) => {
     if (!userData) throw new Error('No user data provided')
-    
+
     await Promise.all([
       localStorage.setItem('isAuthenticated', 'true'),
-      localStorage.setItem('userData', JSON.stringify(userData))
+      localStorage.setItem('userData', JSON.stringify(userData)),
     ])
-    
+
     setAuth({
       isAuth: true,
-      userData: { ...initUserData, ...userData }
+      userData: { ...initUserData, ...userData },
     })
-    
+
     return { status: 'success', message: '登入成功' }
   }
-  
+
   const handleCheckAuth = async () => {
     if (!isClient || !router.isReady) return
-    
+
     try {
       const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true'
       if (!isAuthenticated) throw new Error('Not authenticated')
-  
+
       const res = await checkAuth()
       if (res?.data?.status === 'success' && res?.data?.data?.user) {
         await Promise.all([
           setAuth({
             isAuth: true,
-            userData: { ...initUserData, ...res.data.data.user }
+            userData: { ...initUserData, ...res.data.data.user },
           }),
-          localStorage.setItem('userData', JSON.stringify(res.data.data.user))
+          localStorage.setItem('userData', JSON.stringify(res.data.data.user)),
         ])
       }
     } catch (error) {
@@ -95,95 +95,39 @@ export const AuthProvider = ({ children }) => {
   }
 
   // 登出處理
-const logout = async () => {
-  const requestId = Math.random().toString(36).substring(7)
-  
-  try {
-    const response = await fetch(`${BACKEND_URL}/api/auth/logout`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Cache-Control': 'no-cache',
-      }
-    })
-
-    if (!response.ok) throw new Error('Logout request failed')
-    
-    await Promise.all([
-      new Promise(resolve => {
-        setAuth({ isAuth: false, userData: initUserData })
-        setTimeout(resolve, 100)
-      }),
-      localStorage.removeItem('isAuthenticated'),
-      localStorage.removeItem('userData')
-    ])
-
-    await router.replace('/member/login')
-    return { status: 'success', message: '登出成功' }
-  } catch (error) {
-    console.error(`[${requestId}] Logout error:`, error)
-    return {
-      status: 'error',
-      message: error?.message || '登出失敗'
-    }
-  }
-}
-
-  // 認證檢查
-  const handleCheckAuth = async () => {
+  const logout = async () => {
     const requestId = Math.random().toString(36).substring(7)
-    if (!isClient || !router.isReady) return
-
-    console.log(`[${requestId}] Checking auth for path:`, router.pathname)
-    const needsAuth = protectedRoutes.some((route) =>
-      router.pathname.startsWith(route)
-    )
-
-    if (!needsAuth) {
-      setIsLoading(false)
-      return
-    }
 
     try {
-      const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true'
-      console.log(`[${requestId}] Local auth status:`, isAuthenticated)
-
-      if (!isAuthenticated) {
-        throw new Error('Not authenticated')
-      }
-
-      const res = await checkAuth()
-      console.log(`[${requestId}] Auth check response:`, res)
-
-      if (res?.data?.status === 'success' && res?.data?.data?.user) {
-        await Promise.all([
-          new Promise((resolve) => {
-            setAuth({
-              isAuth: true,
-              userData: { ...initUserData, ...res.data.data.user },
-            })
-            setTimeout(resolve, 100)
-          }),
-          localStorage.setItem('userData', JSON.stringify(res.data.data.user)),
-        ])
-      } else {
-        throw new Error('Auth check failed')
-      }
-    } catch (error) {
-      console.error(`[${requestId}] Auth check error:`, error)
-
-      // 清除本地狀態
-      localStorage.removeItem('isAuthenticated')
-      localStorage.removeItem('userData')
-
-      await router.replace({
-        pathname: '/member/login',
-        query: { returnUrl: router.asPath },
+      const response = await fetch(`${BACKEND_URL}/api/auth/logout`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          'Cache-Control': 'no-cache',
+        },
       })
-    } finally {
-      setIsLoading(false)
+
+      if (!response.ok) throw new Error('Logout request failed')
+
+      await Promise.all([
+        new Promise((resolve) => {
+          setAuth({ isAuth: false, userData: initUserData })
+          setTimeout(resolve, 100)
+        }),
+        localStorage.removeItem('isAuthenticated'),
+        localStorage.removeItem('userData'),
+      ])
+
+      await router.replace('/member/login')
+      return { status: 'success', message: '登出成功' }
+    } catch (error) {
+      console.error(`[${requestId}] Logout error:`, error)
+      return {
+        status: 'error',
+        message: error?.message || '登出失敗',
+      }
     }
   }
 

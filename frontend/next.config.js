@@ -3,6 +3,9 @@ const path = require('path')
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
+  swcMinify: true, // 啟用 SWC 壓縮，但保留 console.log
+  compiler: {
+    styledComponents: true, // 支援 styled-components
   // 加入資產前綴配置
   assetPrefix:
     process.env.NODE_ENV === 'production'
