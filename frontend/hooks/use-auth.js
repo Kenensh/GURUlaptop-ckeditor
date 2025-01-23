@@ -55,52 +55,42 @@ export const AuthProvider = ({ children }) => {
 
   // 登入處理
   const login = async (userData) => {
-    const requestId = Math.random().toString(36).substring(7)
-    console.log(`[${requestId}] Login function called with userData:`, userData)
-
-    if (!isClient) {
-      console.error(`[${requestId}] Cannot login on server side`)
-      return { status: 'error', message: 'Cannot login on server side' }
-    }
-
+    if (!userData) throw new Error('No user data provided')
+    
+    await Promise.all([
+      localStorage.setItem('isAuthenticated', 'true'),
+      localStorage.setItem('userData', JSON.stringify(userData))
+    ])
+    
+    setAuth({
+      isAuth: true,
+      userData: { ...initUserData, ...userData }
+    })
+    
+    return { status: 'success', message: '登入成功' }
+  }
+  
+  const handleCheckAuth = async () => {
+    if (!isClient || !router.isReady) return
+    
     try {
-      if (!userData) {
-        throw new Error('No user data provided')
+      const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true'
+      if (!isAuthenticated) throw new Error('Not authenticated')
+  
+      const res = await checkAuth()
+      if (res?.data?.status === 'success' && res?.data?.data?.user) {
+        await Promise.all([
+          setAuth({
+            isAuth: true,
+            userData: { ...initUserData, ...res.data.data.user }
+          }),
+          localStorage.setItem('userData', JSON.stringify(res.data.data.user))
+        ])
       }
-
-      // 使用 Promise.all 確保狀態更新和本地存儲同步
-      await Promise.all([
-        new Promise((resolve) => {
-          setAuth((prevAuth) => {
-            console.log(`[${requestId}] Updating auth state:`, {
-              from: prevAuth,
-              to: {
-                isAuth: true,
-                userData: { ...initUserData, ...userData },
-              },
-            })
-            return {
-              isAuth: true,
-              userData: { ...initUserData, ...userData },
-            }
-          })
-          setTimeout(resolve, 300)
-        }),
-        localStorage.setItem('isAuthenticated', 'true'),
-        localStorage.setItem('userData', JSON.stringify(userData)),
-      ])
-
-      console.log(`[${requestId}] Auth state updated successfully`)
-      return { status: 'success', message: '登入成功' }
     } catch (error) {
-      console.error(`[${requestId}] Login error:`, error)
-      setAuth({ isAuth: false, userData: initUserData })
       localStorage.removeItem('isAuthenticated')
       localStorage.removeItem('userData')
-      return {
-        status: 'error',
-        message: error?.message || '登入失敗',
-      }
+      await router.replace('/member/login')
     }
   }
 

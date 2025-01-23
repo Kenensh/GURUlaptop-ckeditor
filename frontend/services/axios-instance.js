@@ -12,19 +12,19 @@ const axiosInstance = axios.create({
   withCredentials: true,
 })
 
-axiosInstance.interceptors.request.use(
-  (config) => {
-    config.headers = {
-      ...config.headers,
-      Origin: typeof window !== 'undefined' ? window.location.origin : '',
-    }
-    return config
-  },
-  (error) => {
-    console.error('Request error:', error)
-    return Promise.reject(error)
+axiosInstance.interceptors.request.use((config) => {
+  const accessToken = document.cookie
+    .split('; ')
+    .find((row) => row.startsWith('accessToken='))
+    ?.split('=')[1]
+
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`
   }
-)
+  config.headers.Origin =
+    typeof window !== 'undefined' ? window.location.origin : ''
+  return config
+})
 
 axiosInstance.interceptors.response.use(
   (response) => response,

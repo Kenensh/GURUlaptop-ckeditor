@@ -37,30 +37,27 @@ export default function LogIn() {
     }
   }, [auth.isAuth, router])
 
+  const validateForm = () => {
+    const newErrors = {}
+    if (!formData.email) {
+      newErrors.email = '請輸入電子郵件'
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = '請輸入有效的電子郵件地址'
+    }
+
+    if (!formData.password) {
+      newErrors.password = '請輸入密碼'
+    } else if (formData.password.length < 6) {
+      newErrors.password = '密碼必須至少包含6個字符'
+    }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     const requestId = Math.random().toString(36).substring(7)
-
-    const validateForm = () => {
-      const newErrors = {}
-
-      // 驗證 email
-      if (!formData.email) {
-        newErrors.email = '請輸入電子郵件'
-      } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-        newErrors.email = '請輸入有效的電子郵件地址'
-      }
-
-      // 驗證密碼
-      if (!formData.password) {
-        newErrors.password = '請輸入密碼'
-      } else if (formData.password.length < 6) {
-        newErrors.password = '密碼必須至少包含6個字符'
-      }
-
-      setErrors(newErrors)
-      return Object.keys(newErrors).length === 0 // 若無錯誤則返回 true
-    }
 
     if (!validateForm()) return
 
@@ -77,18 +74,22 @@ export default function LogIn() {
           'Content-Type': 'application/json',
           Accept: 'application/json',
           'Cache-Control': 'no-cache',
+          Origin: typeof window !== 'undefined' ? window.location.origin : '',
         },
         body: JSON.stringify(formData),
       })
 
-      if (!response.ok) {
-        throw new Error(`登入失敗: ${response.status}`)
-      }
-
       const result = await response.json()
       console.log(`[${requestId}] 登入響應:`, result)
 
+      if (!response.ok) {
+        throw new Error(result.message || `登入失敗: ${response.status}`)
+      }
+
       if (result.status === 'success' && result.data?.user) {
+        // 保存 token 到 cookie
+        document.cookie = `accessToken=${result.data.token}; path=/; secure; samesite=none`
+
         const loginResult = await login(result.data.user)
         if (loginResult.status === 'success') {
           await router.replace(router.query.returnUrl || '/dashboard')
@@ -111,10 +112,16 @@ export default function LogIn() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
-    setFormData((prevData) => ({
-      ...prevData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: value,
     }))
+    if (errors[name]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: '',
+      }))
+    }
   }
 
   // 密碼顯示切換
