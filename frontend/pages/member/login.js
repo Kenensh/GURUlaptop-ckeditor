@@ -19,7 +19,6 @@ const BACKEND_URL =
     : 'https://gurulaptop-ckeditor.onrender.com')
 
 export default function LogIn() {
-  // 狀態管理
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -28,63 +27,21 @@ export default function LogIn() {
   const [errors, setErrors] = useState({})
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  // Hooks
   const router = useRouter()
   const { login, auth } = useAuth()
   const { showLoader, hideLoader } = useLoader()
 
-  // 檢查是否已登入
   useEffect(() => {
     if (auth.isAuth) {
       router.replace('/dashboard')
     }
   }, [auth.isAuth, router])
 
-  // 表單輸入處理
-  const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }))
-
-    if (errors[name]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: '',
-      }))
-    }
-  }
-
-  // 表單驗證
-  const validateForm = () => {
-    const newErrors = {}
-
-    if (!formData.email) {
-      newErrors.email = '請輸入電子郵件'
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = '請輸入有效的電子郵件地址'
-    }
-
-    if (!formData.password) {
-      newErrors.password = '請輸入密碼'
-    } else if (formData.password.length < 6) {
-      newErrors.password = '密碼長度至少需要6個字元'
-    }
-
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
-
-  // 表單提交處理
   const handleSubmit = async (e) => {
     e.preventDefault()
     const requestId = Math.random().toString(36).substring(7)
 
-    if (!validateForm()) {
-      console.log(`[${requestId}] 表單驗證失敗:`, errors)
-      return
-    }
+    if (!validateForm()) return
 
     setIsSubmitting(true)
     showLoader()
@@ -92,39 +49,30 @@ export default function LogIn() {
     try {
       console.log(`[${requestId}] 開始登入流程:`, { email: formData.email })
 
-      // 發送登入請求
       const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
         method: 'POST',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
+          Accept: 'application/json',
           'Cache-Control': 'no-cache',
         },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-        }),
+        body: JSON.stringify(formData),
       })
-
-      console.log(`[${requestId}] 登入響應狀態:`, response.status)
 
       if (!response.ok) {
         throw new Error(`登入失敗: ${response.status}`)
       }
 
       const result = await response.json()
-      console.log(`[${requestId}] 登入響應內容:`, result)
+      console.log(`[${requestId}] 登入響應:`, result)
 
       if (result.status === 'success' && result.data?.user) {
-        console.log(`[${requestId}] 開始更新 auth context`)
         const loginResult = await login(result.data.user)
-
         if (loginResult.status === 'success') {
-          console.log(`[${requestId}] 登入成功，準備跳轉`)
-          const returnUrl = router.query.returnUrl || '/dashboard'
-          await router.replace(returnUrl)
+          await router.replace(router.query.returnUrl || '/dashboard')
         } else {
-          throw new Error(loginResult.message || '登入失敗')
+          throw new Error(loginResult.message)
         }
       } else {
         throw new Error(result.message || '登入失敗')
@@ -132,7 +80,7 @@ export default function LogIn() {
     } catch (error) {
       console.error(`[${requestId}] 登入錯誤:`, error)
       setErrors({
-        general: error.message || '登入過程發生錯誤，請稍後再試',
+        general: error.message || '登入失敗，請稍後再試',
       })
     } finally {
       setIsSubmitting(false)

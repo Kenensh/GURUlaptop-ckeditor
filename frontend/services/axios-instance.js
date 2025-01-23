@@ -6,13 +6,18 @@ const axiosInstance = axios.create({
   baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
+    Accept: 'application/json',
+    'Cache-Control': 'no-cache',
   },
   withCredentials: true,
 })
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    // 移除 localStorage token 檢查，只依賴 cookie
+    config.headers = {
+      ...config.headers,
+      Origin: typeof window !== 'undefined' ? window.location.origin : '',
+    }
     return config
   },
   (error) => {
@@ -25,25 +30,26 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // 未授權時重定向到登入頁
       window.location.href = '/member/login'
     }
     return Promise.reject(error)
   }
 )
 
-// 簡化 fetcher
 export const fetcher = async (url) => {
   const response = await axiosInstance.get(url)
   return response.data
 }
 
-// 基本 API 函數
 export const api = {
-  get: (url, config = {}) => axiosInstance.get(url, config),
-  post: (url, data = {}, config = {}) => axiosInstance.post(url, data, config),
-  put: (url, data = {}, config = {}) => axiosInstance.put(url, data, config),
-  delete: (url, config = {}) => axiosInstance.delete(url, config),
+  get: (url, config = {}) =>
+    axiosInstance.get(url, { ...config, withCredentials: true }),
+  post: (url, data = {}, config = {}) =>
+    axiosInstance.post(url, data, { ...config, withCredentials: true }),
+  put: (url, data = {}, config = {}) =>
+    axiosInstance.put(url, data, { ...config, withCredentials: true }),
+  delete: (url, config = {}) =>
+    axiosInstance.delete(url, { ...config, withCredentials: true }),
 }
 
 export default axiosInstance

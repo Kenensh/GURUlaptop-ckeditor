@@ -105,50 +105,41 @@ export const AuthProvider = ({ children }) => {
   }
 
   // 登出處理
-  const logout = async () => {
-    const requestId = Math.random().toString(36).substring(7)
-    console.log(`[${requestId}] Logout function called`)
-
-    if (!isClient) {
-      return { status: 'error', message: 'Cannot logout on server side' }
-    }
-
-    try {
-      // 呼叫登出 API
-      const response = await fetch(`${BACKEND_URL}/api/auth/logout`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-
-      if (!response.ok) {
-        throw new Error('Logout request failed')
+const logout = async () => {
+  const requestId = Math.random().toString(36).substring(7)
+  
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/auth/logout`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Cache-Control': 'no-cache',
       }
+    })
 
-      // 清除本地狀態
-      await Promise.all([
-        new Promise((resolve) => {
-          setAuth({ isAuth: false, userData: initUserData })
-          setTimeout(resolve, 100)
-        }),
-        localStorage.removeItem('isAuthenticated'),
-        localStorage.removeItem('userData'),
-      ])
+    if (!response.ok) throw new Error('Logout request failed')
+    
+    await Promise.all([
+      new Promise(resolve => {
+        setAuth({ isAuth: false, userData: initUserData })
+        setTimeout(resolve, 100)
+      }),
+      localStorage.removeItem('isAuthenticated'),
+      localStorage.removeItem('userData')
+    ])
 
-      console.log(`[${requestId}] Redirecting to login page`)
-      await router.replace('/member/login')
-
-      return { status: 'success', message: '登出成功' }
-    } catch (error) {
-      console.error(`[${requestId}] Logout error:`, error)
-      return {
-        status: 'error',
-        message: error?.message || '登出失敗',
-      }
+    await router.replace('/member/login')
+    return { status: 'success', message: '登出成功' }
+  } catch (error) {
+    console.error(`[${requestId}] Logout error:`, error)
+    return {
+      status: 'error',
+      message: error?.message || '登出失敗'
     }
   }
+}
 
   // 認證檢查
   const handleCheckAuth = async () => {
