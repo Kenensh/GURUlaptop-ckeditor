@@ -24,16 +24,24 @@ const fetchApi = async (endpoint, options = {}) => {
 // 主要的認證函數
 export const checkAuth = async () => {
   try {
+    console.log('Request headers:', {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      Origin: 'https://gurulaptop-ckeditor-frontend.onrender.com',
+    })
+
     const data = await fetchApi('/api/auth/check', {
       method: 'GET',
       credentials: 'include',
     })
+    console.log('Auth response:', data)
     return data
   } catch (error) {
-    console.error('Auth check failed:', error)
+    console.error('Auth error:', error)
     throw error
   }
 }
+
 export const login = (loginData) =>
   fetchApi('/api/auth/login', {
     method: 'POST',
