@@ -75,22 +75,19 @@ export const AuthProvider = ({ children }) => {
 
     try {
       const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true'
-      if (!isAuthenticated) throw new Error('Not authenticated')
+      if (!isAuthenticated) return
 
       const res = await checkAuth()
-      if (res?.data?.status === 'success' && res?.data?.data?.user) {
-        await Promise.all([
-          setAuth({
-            isAuth: true,
-            userData: { ...initUserData, ...res.data.data.user },
-          }),
-          localStorage.setItem('userData', JSON.stringify(res.data.data.user)),
-        ])
+      if (res?.status === 'success' && res?.data?.user) {
+        setAuth({
+          isAuth: true,
+          userData: { ...initUserData, ...res.data.user },
+        })
+        localStorage.setItem('userData', JSON.stringify(res.data.user))
       }
     } catch (error) {
-      localStorage.removeItem('isAuthenticated')
-      localStorage.removeItem('userData')
-      await router.replace('/member/login')
+      console.error('Auth check failed:', error)
+      await handleLogout()
     }
   }
 
@@ -131,32 +128,40 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  // 初始化認證狀態
   useEffect(() => {
     if (isClient) {
-      const initAuth = () => {
+      const initAuth = async () => {
         const isAuthenticated =
           localStorage.getItem('isAuthenticated') === 'true'
-        const storedUserData = localStorage.getItem('userData')
+        if (!isAuthenticated) return
 
-        if (isAuthenticated && storedUserData) {
-          try {
-            const userData = JSON.parse(storedUserData)
+        try {
+          const storedUserData = localStorage.getItem('userData')
+          const userData = storedUserData ? JSON.parse(storedUserData) : null
+
+          if (userData) {
             setAuth({
               isAuth: true,
               userData: { ...initUserData, ...userData },
             })
-          } catch (error) {
-            console.error('Failed to parse stored user data:', error)
-            localStorage.removeItem('isAuthenticated')
-            localStorage.removeItem('userData')
+            await handleCheckAuth()
           }
+        } catch (error) {
+          console.error('Init auth failed:', error)
+          await handleLogout()
         }
       }
-
       initAuth()
     }
   }, [])
+
+  // 添加 handleLogout
+  const handleLogout = async () => {
+    localStorage.removeItem('isAuthenticated')
+    localStorage.removeItem('userData')
+    setAuth({ isAuth: false, userData: initUserData })
+    await router.replace('/member/login')
+  }
 
   // 監控路由變化
   useEffect(() => {

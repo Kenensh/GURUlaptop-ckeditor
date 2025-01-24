@@ -1,125 +1,90 @@
-import axiosInstance, { fetcher } from './axios-instance'
 import useSWR from 'swr'
 
-export const checkAuth = async () => {
-  try {
-    const response = await axiosInstance.get('/api/auth/check', {
-      withCredentials: true,
-      headers: {
-        Accept: 'application/json',
-        'Cache-Control': 'no-cache',
-      },
-    })
-    console.log('驗證檢查回應:', response)
-    return response
-  } catch (error) {
-    console.error('驗證檢查錯誤:', error)
-    return {
-      data: {
-        status: 'error',
-        message: error.response?.data?.message || '驗證檢查失敗',
-      },
-    }
-  }
-}
+const BACKEND_URL =
+  process.env.NEXT_PUBLIC_BACKEND_URL ||
+  'https://gurulaptop-ckeditor.onrender.com'
 
-export const login = async (loginData = {}) => {
-  return await axiosInstance.post('/api/auth/login', loginData, {
+const fetchApi = async (endpoint, options = {}) => {
+  const response = await fetch(`${BACKEND_URL}${endpoint}`, {
+    ...options,
+    credentials: 'include',
     headers: {
+      'Content-Type': 'application/json',
       Accept: 'application/json',
-      'Cache-Control': 'no-cache',
+      ...options.headers,
     },
   })
+
+  const data = await response.json()
+  if (!response.ok) throw new Error(data.message)
+  return data
 }
 
-export const logout = async () => {
-  return await axiosInstance.post(
-    '/api/auth/logout',
-    {},
-    {
-      headers: {
-        Accept: 'application/json',
-        'Cache-Control': 'no-cache',
-      },
-    }
-  )
-}
-
-export const getUserById = async (id = 0) => {
-  return await axiosInstance.get(`/api/users/${id}`)
-}
-/**
- * 忘記密碼/OTP 要求一次性密碼
- */
-export const requestOtpToken = async (email = '') => {
-  return await axiosInstance.post('/reset-password/otp', { email })
-}
-/**
- * 忘記密碼/OTP 重設密碼
- */
-export const resetPassword = async (email = '', password = '', token = '') => {
-  return await axiosInstance.post('/reset-password/reset', {
-    email,
-    token,
-    password,
+// 主要的認證函數
+export const checkAuth = () => fetchApi('/api/auth/check')
+export const login = (loginData) =>
+  fetchApi('/api/auth/login', {
+    method: 'POST',
+    body: JSON.stringify(loginData),
   })
-}
-/**
- * 註冊用
- */
-export const register = async (user = {}) => {
-  return await axiosInstance.post('/users', user)
-}
-/**
- * 修改會員一般資料用(排除password, username, email)
- */
-export const updateProfile = async (id = 0, user = {}) => {
-  return await axiosInstance.put(`/users/${id}/profile`, user)
-}
-/**
- * 修改會員頭像用，需要用FormData
- */
+export const logout = () => fetchApi('/api/auth/logout', { method: 'POST' })
+
+// 用戶相關的函數
+export const getUserById = (id) => fetchApi(`/api/users/${id}`)
+export const register = (user) =>
+  fetchApi('/users', {
+    method: 'POST',
+    body: JSON.stringify(user),
+  })
+export const updateProfile = (id, user) =>
+  fetchApi(`/users/${id}/profile`, {
+    method: 'PUT',
+    body: JSON.stringify(user),
+  })
+
+// 檔案上傳需要特殊處理
 export const updateProfileAvatar = async (formData) => {
-  return await axiosInstance.post(`/users/upload-avatar`, formData)
-}
-/**
- * 修改會員密碼專用, password = { originPassword, newPassword }
- */
-export const updatePassword = async (id = 0, password = {}) => {
-  return await axiosInstance.put(`/users/${id}/password`, password)
-}
-/**
- * 獲得會員有加在我的最愛的商品id，回傳為id陣列
- */
-// export const getFavs = async () => {
-//   return await axiosInstance.get('/favorites')
-// }
-/**
- * 新增商品id在該會員的我的最愛清單中的
- */
-export const addFav = async (pid) => {
-  return await axiosInstance.put(`/favorites/${pid}`)
-}
-/**
- * 移除商品id在該會員的我的最愛清單中的
- */
-export const removeFav = async (pid) => {
-  return await axiosInstance.delete(`/favorites/${pid}`)
+  const response = await fetch(`${BACKEND_URL}/users/upload-avatar`, {
+    method: 'POST',
+    credentials: 'include',
+    body: formData,
+  })
+  return response.json()
 }
 
+// 密碼重設相關
+export const requestOtpToken = (email) =>
+  fetchApi('/reset-password/otp', {
+    method: 'POST',
+    body: JSON.stringify({ email }),
+  })
+export const resetPassword = (email, password, token) =>
+  fetchApi('/reset-password/reset', {
+    method: 'POST',
+    body: JSON.stringify({ email, password, token }),
+  })
+
+// 收藏相關
+export const addFav = (pid) => fetchApi(`/favorites/${pid}`, { method: 'PUT' })
+export const removeFav = (pid) =>
+  fetchApi(`/favorites/${pid}`, { method: 'DELETE' })
+
+// Hooks
 export const useUser = (id) => {
-  const { data, error, isLoading } = useSWR(`/users/${id}`, fetcher)
-
-  return {
-    data,
-    isLoading,
-    isError: error,
-  }
+  const { data, error, isLoading } = useSWR(
+    id ? `/users/${id}` : null,
+    fetchApi
+  )
+  return { data, isLoading, isError: error }
 }
 
-// 解析accessToken用的函式
+// JWT解析
 export const parseJwt = (token) => {
-  const base64Payload = token.split('.')[1]
-  const payload = Buffer.from(base64Payload, 'base64')
-  return JSON.parse(payload.toString())
+  try {
+    const base64Payload = token.split('.')[1]
+    const payload = Buffer.from(base64Payload, 'base64')
+    return JSON.parse(payload.toString())
+  } catch (error) {
+    return null
+  }
 }
