@@ -53,30 +53,24 @@ export const AuthProvider = ({ children }) => {
   }
 
   const handleCheckAuth = async () => {
-    if (!isClient || !router.isReady || router.pathname === '/member/login')
-      return
+    if (!isClient || !router.isReady) return
 
+    setIsLoading(true)
     try {
-      const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true'
-      if (!isAuthenticated) {
-        if (protectedRoutes.includes(router.pathname)) {
-          await router.replace('/member/login')
-        }
-        return
-      }
-
       const res = await checkAuth()
       if (res?.status === 'success' && res?.data?.user) {
         setAuth({
           isAuth: true,
-          userData: { ...initUserData, ...res.data.user },
+          userData: res.data.user,
         })
+      } else {
+        throw new Error('驗證失敗')
       }
     } catch (error) {
       console.error('Auth check failed:', error)
-      if (protectedRoutes.includes(router.pathname)) {
-        await handleLogout()
-      }
+      await handleLogout()
+    } finally {
+      setIsLoading(false)
     }
   }
 

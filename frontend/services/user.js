@@ -17,11 +17,23 @@ const fetchApi = async (endpoint, options = {}) => {
   })
 
   const data = await response.json()
+  if (!response.ok) throw new Error(data.message || '請求失敗')
   return data
 }
 
 // 主要的認證函數
-export const checkAuth = () => fetchApi('/api/auth/check', { method: 'GET' })
+export const checkAuth = async () => {
+  try {
+    const data = await fetchApi('/api/auth/check', {
+      method: 'GET',
+      credentials: 'include',
+    })
+    return data
+  } catch (error) {
+    console.error('Auth check failed:', error)
+    throw error
+  }
+}
 export const login = (loginData) =>
   fetchApi('/api/auth/login', {
     method: 'POST',
