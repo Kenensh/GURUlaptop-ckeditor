@@ -8,6 +8,26 @@ import dynamic from 'next/dynamic'
 
 const isClient = typeof window !== 'undefined'
 
+// 添加 BACKEND_URL
+const BACKEND_URL =
+  process.env.NEXT_PUBLIC_BACKEND_URL ||
+  'https://gurulaptop-ckeditor.onrender.com'
+
+// fetch API 的包裝函數
+const fetchApi = async (endpoint, options = {}) => {
+  const response = await fetch(`${BACKEND_URL}${endpoint}`, {
+    ...options,
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      Origin: 'https://gurulaptop-ckeditor-frontend.onrender.com',
+      ...options.headers,
+    },
+  })
+  return response.json()
+}
+
 export default function Header() {
   const { auth, logout } = useAuth()
   const { isAuth, userData } = auth
@@ -97,20 +117,14 @@ export default function Header() {
     return () => window.removeEventListener('resize', checkIfMobile)
   }, [])
 
-  // 處理 user_id 和頭像相關
+  // useEffect 中的 fetch 改為
   useEffect(() => {
     if (!isClient || !user_id) return
 
-    fetch(`http://localhost:3005/api/header`, {
+    fetchApi('/api/header', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        user_id: user_id,
-      }),
+      body: JSON.stringify({ user_id }),
     })
-      .then((res) => res.json())
       .then((data) => {
         setImagePath(data?.image_path || getDefaultImage(data?.gender))
       })
