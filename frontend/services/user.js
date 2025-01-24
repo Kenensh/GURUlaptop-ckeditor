@@ -11,17 +11,17 @@ const fetchApi = async (endpoint, options = {}) => {
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
+      Origin: 'https://gurulaptop-ckeditor-frontend.onrender.com',
       ...options.headers,
     },
   })
 
   const data = await response.json()
-  if (!response.ok) throw new Error(data.message)
   return data
 }
 
 // 主要的認證函數
-export const checkAuth = () => fetchApi('/api/auth/check')
+export const checkAuth = () => fetchApi('/api/auth/check', { method: 'GET' })
 export const login = (loginData) =>
   fetchApi('/api/auth/login', {
     method: 'POST',
