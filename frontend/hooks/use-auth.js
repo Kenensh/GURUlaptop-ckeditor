@@ -34,15 +34,7 @@ const defaultContextValue = {
 }
 
 export const AuthProvider = ({ children }) => {
-  // 狀態管理
-  const [auth, setAuth] = useState({
-    isAuth: false,
-    userData: initUserData,
-  })
-  const [isLoading, setIsLoading] = useState(true)
-  const router = useRouter()
-
-  // 受保護的路由
+  // 添加 protectedRoutes 定義
   const protectedRoutes = [
     '/dashboard',
     '/coupon/coupon-user',
@@ -53,29 +45,40 @@ export const AuthProvider = ({ children }) => {
     '/blog/edit',
   ]
 
-  // 登入處理
+  // 添加 login 函數
   const login = async (userData) => {
     if (!userData) throw new Error('No user data provided')
-
-    await Promise.all([
-      localStorage.setItem('isAuthenticated', 'true'),
-      localStorage.setItem('userData', JSON.stringify(userData)),
-    ])
 
     setAuth({
       isAuth: true,
       userData: { ...initUserData, ...userData },
     })
+    localStorage.setItem('isAuthenticated', 'true')
+    localStorage.setItem('userData', JSON.stringify(userData))
 
     return { status: 'success', message: '登入成功' }
   }
+
+  const [auth, setAuth] = useState({
+    isAuth: false,
+    userData: initUserData,
+  })
+  const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
 
   const handleCheckAuth = async () => {
     if (!isClient || !router.isReady) return
 
     try {
+      if (router.pathname === '/member/login') return
+
       const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true'
-      if (!isAuthenticated) return
+      if (!isAuthenticated) {
+        if (protectedRoutes.includes(router.pathname)) {
+          await router.replace('/member/login')
+        }
+        return
+      }
 
       const res = await checkAuth()
       if (res?.status === 'success' && res?.data?.user) {
@@ -83,11 +86,12 @@ export const AuthProvider = ({ children }) => {
           isAuth: true,
           userData: { ...initUserData, ...res.data.user },
         })
-        localStorage.setItem('userData', JSON.stringify(res.data.user))
       }
     } catch (error) {
       console.error('Auth check failed:', error)
-      await handleLogout()
+      if (protectedRoutes.includes(router.pathname)) {
+        await handleLogout()
+      }
     }
   }
 
