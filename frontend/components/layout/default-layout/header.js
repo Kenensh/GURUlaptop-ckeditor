@@ -178,10 +178,8 @@ export default function Header() {
 
   const UserAvatar = dynamic(
     () =>
-      Promise.resolve(({ auth, getDefaultImage }) => {
-        if (!isClient) {
-          return <div className="user-avatar-placeholder" />
-        }
+      function UserAvatar() {
+        if (!isClient) return <div className="user-avatar-placeholder" />
 
         return (
           <img
@@ -192,7 +190,7 @@ export default function Header() {
             alt="User"
           />
         )
-      }),
+      },
     { ssr: false }
   )
 
