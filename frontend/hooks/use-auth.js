@@ -113,7 +113,7 @@ export const AuthProvider = ({ children }) => {
   }
 
   useEffect(() => {
-    if (isClient && router.isReady && router.pathname !== '/') {
+    if (isClient && router.isReady && auth.isAuth) {
       handleCheckAuth()
     }
   }, [router.isReady, router.pathname])

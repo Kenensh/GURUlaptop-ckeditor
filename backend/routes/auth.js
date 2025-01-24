@@ -79,27 +79,24 @@ router.post('/login', async (req, res) => {
       { expiresIn: '30d' }
     )
 
+    res.cookie('accessToken', token, cookieConfig)
+
     const userData = { ...user.rows[0] }
     delete userData.password
 
-    res.cookie('accessToken', token, cookieConfig)
-
+    // 確保 token 也返回給前端
     return res.json({
       status: 'success',
       data: {
         user: userData,
         token,
+        cookieStatus: true, // 方便調試
       },
     })
   } catch (error) {
     console.error(`[${requestId}] 登入錯誤:`, error)
     return res.status(500).json({ status: 'error', message: '系統錯誤' })
   }
-})
-
-router.post('/logout', authenticate, (req, res) => {
-  res.clearCookie('accessToken', cookieConfig)
-  return res.json({ status: 'success' })
 })
 
 export default router

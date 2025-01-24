@@ -15,7 +15,13 @@ const cookieConfig = {
 
 function authenticate(req, res, next) {
   const requestId = Math.random().toString(36).substring(7)
-  console.log(`[${requestId}] Cookie:`, req.cookies)
+  console.log(`[${requestId}] 認證檢查:`, {
+    cookies: req.cookies,
+    headers: {
+      cookie: req.headers.cookie,
+      authorization: req.headers.authorization,
+    },
+  })
 
   try {
     const token =
