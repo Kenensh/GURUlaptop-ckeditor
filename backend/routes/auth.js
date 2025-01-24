@@ -79,21 +79,21 @@ router.post('/login', async (req, res) => {
       { expiresIn: '30d' }
     )
 
-    res.cookie('accessToken', token, cookieConfig)
-
     const userData = { ...user.rows[0] }
     delete userData.password
 
+    res.cookie('accessToken', token, cookieConfig)
+
     return res.json({
       status: 'success',
-      data: { user: userData },
+      data: {
+        user: userData,
+        token,
+      },
     })
   } catch (error) {
     console.error(`[${requestId}] 登入錯誤:`, error)
-    return res.status(500).json({
-      status: 'error',
-      message: '系統錯誤',
-    })
+    return res.status(500).json({ status: 'error', message: '系統錯誤' })
   }
 })
 

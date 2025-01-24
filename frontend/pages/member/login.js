@@ -65,45 +65,30 @@ export default function LogIn() {
     showLoader()
 
     try {
-      console.log(`[${requestId}] 開始登入流程:`, { email: formData.email })
-
       const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
         method: 'POST',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
-          'Cache-Control': 'no-cache',
-          Origin: typeof window !== 'undefined' ? window.location.origin : '',
+          Origin: 'https://gurulaptop-ckeditor-frontend.onrender.com',
         },
         body: JSON.stringify(formData),
       })
 
       const result = await response.json()
-      console.log(`[${requestId}] 登入響應:`, result)
-
-      if (!response.ok) {
-        throw new Error(result.message || `登入失敗: ${response.status}`)
-      }
+      if (!response.ok) throw new Error(result.message)
 
       if (result.status === 'success' && result.data?.user) {
-        // 保存 token 到 cookie
-        document.cookie = `accessToken=${result.data.token}; path=/; secure; samesite=none`
-
         const loginResult = await login(result.data.user)
         if (loginResult.status === 'success') {
-          await router.replace(router.query.returnUrl || '/dashboard')
+          await router.replace('/dashboard')
         } else {
           throw new Error(loginResult.message)
         }
-      } else {
-        throw new Error(result.message || '登入失敗')
       }
     } catch (error) {
-      console.error(`[${requestId}] 登入錯誤:`, error)
-      setErrors({
-        general: error.message || '登入失敗，請稍後再試',
-      })
+      setErrors({ general: error.message || '登入失敗' })
     } finally {
       setIsSubmitting(false)
       hideLoader()
