@@ -1,9 +1,8 @@
+/** @type {import('next').NextConfig} */
 const path = require('path')
 
-/** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
-  swcMinify: true,
   compiler: {
     styledComponents: true,
   },
@@ -11,7 +10,6 @@ const nextConfig = {
     process.env.NODE_ENV === 'production'
       ? 'https://gurulaptop-ckeditor-frontend.onrender.com'
       : '',
-  basePath: '',
   images: {
     remotePatterns: [
       {
@@ -41,9 +39,6 @@ const nextConfig = {
   },
   webpack: (config, { isServer, dev }) => {
     config.resolve.alias['@'] = path.resolve(__dirname)
-    if (!dev && isServer) {
-      config.devtool = 'source-map'
-    }
     if (!isServer) {
       config.output.publicPath =
         process.env.NODE_ENV === 'production'
@@ -51,15 +46,6 @@ const nextConfig = {
           : '/_next/'
     }
     return config
-  },
-  async redirects() {
-    return [
-      {
-        source: '/chatroom',
-        destination: '/chat',
-        permanent: true,
-      },
-    ]
   },
 }
 
