@@ -28,7 +28,7 @@ router.get('/check', authenticate, async (req, res) => {
     }
 
     const result = await pool.query(
-      `SELECT user_id, email, name, level FROM users WHERE user_id = $1 AND valid = 1`,
+      `SELECT user_id, email, name, level FROM users WHERE user_id = $1 AND valid = true`,
       [req.user.user_id]
     )
 
@@ -55,7 +55,7 @@ router.post('/login', async (req, res) => {
 
   try {
     const user = await pool.query(
-      'SELECT * FROM users WHERE email = $1 AND valid = 1',
+      'SELECT * FROM users WHERE email = $1 AND valid = true',
       [email]
     )
 
