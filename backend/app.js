@@ -195,54 +195,54 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use('/uploads', express.static(uploadDir))
 
 // 6. Health Check 路由
-// app.get('/health', async (req, res) => {
-//   const requestId = Math.random().toString(36).substring(7)
-//   const startTime = Date.now()
+app.get('/health', async (req, res) => {
+  const requestId = Math.random().toString(36).substring(7)
+  const startTime = Date.now()
 
-//   console.log(`[${requestId}] Health check started`)
+  console.log(`[${requestId}] Health check started`)
 
-//   const health = {
-//     requestId,
-//     uptime: process.uptime(),
-//     timestamp: new Date().toISOString(),
-//     status: 'ok',
-//     environment: process.env.NODE_ENV,
-//     memoryUsage: {
-//       heap: Math.round(process.memoryUsage().heapUsed / 1024 / 1024) + 'MB',
-//       total: Math.round(process.memoryUsage().rss / 1024 / 1024) + 'MB',
-//     },
-//     nodejs: {
-//       version: process.version,
-//       pid: process.pid,
-//     },
-//   }
+  const health = {
+    requestId,
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+    status: 'ok',
+    environment: process.env.NODE_ENV,
+    memoryUsage: {
+      heap: Math.round(process.memoryUsage().heapUsed / 1024 / 1024) + 'MB',
+      total: Math.round(process.memoryUsage().rss / 1024 / 1024) + 'MB',
+    },
+    nodejs: {
+      version: process.version,
+      pid: process.pid,
+    },
+  }
 
-//   try {
-//     console.log(`[${requestId}] Checking database connection...`)
-//     const dbStartTime = Date.now()
-//     const result = await db.query('SELECT 1')
-//     health.database = {
-//       status: 'connected',
-//       responseTime: `${Date.now() - dbStartTime}ms`,
-//     }
-//     health.responseTime = `${Date.now() - startTime}ms`
-//     console.log(`[${requestId}] Health check passed:`, health)
-//     return res.json(health)
-//   } catch (err) {
-//     return res.status(503).json({
-//       ...health,
-//       status: 'error',
-//       database: {
-//         status: 'disconnected',
-//         error:
-//           process.env.NODE_ENV === 'production'
-//             ? 'Database connection failed'
-//             : err.message,
-//       },
-//       responseTime: `${Date.now() - startTime}ms`,
-//     })
-//   }
-// })
+  try {
+    console.log(`[${requestId}] Checking database connection...`)
+    const dbStartTime = Date.now()
+    const result = await db.query('SELECT 1')
+    health.database = {
+      status: 'connected',
+      responseTime: `${Date.now() - dbStartTime}ms`,
+    }
+    health.responseTime = `${Date.now() - startTime}ms`
+    console.log(`[${requestId}] Health check passed:`, health)
+    return res.json(health)
+  } catch (err) {
+    return res.status(503).json({
+      ...health,
+      status: 'error',
+      database: {
+        status: 'disconnected',
+        error:
+          process.env.NODE_ENV === 'production'
+            ? 'Database connection failed'
+            : err.message,
+      },
+      responseTime: `${Date.now() - startTime}ms`,
+    })
+  }
+})
 
 // 7. API 路由
 app.use('/api/auth', authRouter)

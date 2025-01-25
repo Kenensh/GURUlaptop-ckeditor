@@ -156,46 +156,46 @@ export default function MyApp({ Component, pageProps }) {
     import('bootstrap/dist/js/bootstrap')
   }, [])
 
-  // useEffect(() => {
-  //   const wakeUpBackend = async () => {
-  //     const requestId = Math.random().toString(36).substring(7)
-  //     console.log(`[${requestId}] Wake up process starting...`)
+  useEffect(() => {
+    const wakeUpBackend = async () => {
+      const requestId = Math.random().toString(36).substring(7)
+      console.log(`[${requestId}] Wake up process starting...`)
 
-  //     try {
-  //       const response = await fetch(
-  //         'https://gurulaptop-ckeditor.onrender.com/health',
-  //         {
-  //           method: 'GET',
-  //           mode: 'cors',
-  //           credentials: 'include',
-  //           headers: {
-  //             'Content-Type': 'application/json',
-  //           },
-  //         }
-  //       )
+      try {
+        const response = await fetch(
+          'https://gurulaptop-ckeditor.onrender.com/health',
+          {
+            method: 'GET',
+            mode: 'cors',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        )
 
-  //       if (!response.ok) {
-  //         throw new Error(`Health check failed: ${response.status}`)
-  //       }
+        if (!response.ok) {
+          throw new Error(`Health check failed: ${response.status}`)
+        }
 
-  //       const data = await response.json()
-  //       console.log(`[${requestId}] Backend health:`, data)
-  //     } catch (error) {
-  //       console.error(`[${requestId}] Wake-up failed:`, error)
-  //       setTimeout(wakeUpBackend, 5000)
-  //     }
-  //   }
+        const data = await response.json()
+        console.log(`[${requestId}] Backend health:`, data)
+      } catch (error) {
+        console.error(`[${requestId}] Wake-up failed:`, error)
+        setTimeout(wakeUpBackend, 5000)
+      }
+    }
 
-  //   if (typeof window !== 'undefined') {
-  //     const initialTimeout = setTimeout(() => {
-  //       wakeUpBackend()
-  //       const interval = setInterval(wakeUpBackend, 5 * 60 * 1000) // 每5分鐘
-  //       return () => clearInterval(interval)
-  //     }, 2000)
+    if (typeof window !== 'undefined') {
+      const initialTimeout = setTimeout(() => {
+        wakeUpBackend()
+        const interval = setInterval(wakeUpBackend, 5 * 60 * 1000) // 每5分鐘
+        return () => clearInterval(interval)
+      }, 2000)
 
-  //     return () => clearTimeout(initialTimeout)
-  //   }
-  // }, [])
+      return () => clearTimeout(initialTimeout)
+    }
+  }, [])
 
   // 取得頁面布局
   const getLayout =
