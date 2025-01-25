@@ -14,6 +14,8 @@ const cookieConfig = {
 }
 
 function authenticate(req, res, next) {
+  res.setHeader('Access-Control-Expose-Headers', 'Set-Cookie')
+  res.setHeader('Cache-Control', 'no-store')
   const requestId = Math.random().toString(36).substring(7)
   console.log(`[${requestId}] 認證檢查:`, {
     cookies: req.cookies,

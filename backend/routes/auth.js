@@ -50,8 +50,6 @@ router.get('/check', authenticate, async (req, res) => {
 })
 
 router.post('/login', async (req, res) => {
-  res.cookie('accessToken', token, cookieConfig)
-  res.setHeader('Cache-Control', 'no-store')
   const requestId = Math.random().toString(36).substring(7)
   const { email, password } = req.body
 
@@ -81,26 +79,19 @@ router.post('/login', async (req, res) => {
       { expiresIn: '30d' }
     )
 
-    const cookieConfig = {
-      maxAge: 30 * 86400000,
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-      domain: '.onrender.com',
-      path: '/',
-    }
     res.cookie('accessToken', token, cookieConfig)
+    res.setHeader('Cache-Control', 'no-store')
+    res.setHeader('Access-Control-Expose-Headers', 'Set-Cookie')
 
     const userData = { ...user.rows[0] }
     delete userData.password
 
-    // 確保 token 也返回給前端
     return res.json({
       status: 'success',
       data: {
         user: userData,
         token,
-        cookieStatus: true, // 方便調試
+        cookieStatus: true,
       },
     })
   } catch (error) {

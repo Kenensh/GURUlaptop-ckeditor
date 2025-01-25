@@ -7,22 +7,12 @@ const axiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
-    'Cache-Control': 'no-cache',
   },
   withCredentials: true,
 })
 
 axiosInstance.interceptors.request.use((config) => {
-  const accessToken = document.cookie
-    .split('; ')
-    .find((row) => row.startsWith('accessToken='))
-    ?.split('=')[1]
-
-  if (accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`
-  }
-  config.headers.Origin =
-    typeof window !== 'undefined' ? window.location.origin : ''
+  config.withCredentials = true
   return config
 })
 
