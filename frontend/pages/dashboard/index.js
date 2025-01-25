@@ -29,15 +29,11 @@ export default function DashboardIndex() {
   useEffect(() => {
     const checkUserAuth = async () => {
       const requestId = Math.random().toString(36).substring(7)
-      console.log(`[${requestId}] 檢查用戶授權狀態`)
-
       try {
-        if (!auth.isAuth) {
-          console.log(`[${requestId}] 用戶未登入`)
+        if (!auth?.isAuth) {
+          window.location.href = '/member/login'
           throw new Error('未授權的存取')
         }
-
-        console.log(`[${requestId}] 用戶已登入:`, auth.userData.email)
       } catch (error) {
         console.error(`[${requestId}] 授權檢查錯誤:`, error)
       } finally {
@@ -46,7 +42,7 @@ export default function DashboardIndex() {
     }
 
     checkUserAuth()
-  }, [auth])
+  }, [auth.isAuth])
 
   // 頁籤配置
   const sideNavConfigs = {
