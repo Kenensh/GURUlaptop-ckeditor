@@ -34,14 +34,24 @@ app.set('trust proxy', 1)
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
+// 目錄設定
+const sessionsDir = path.join(__dirname, 'sessions')
+const logDir = path.join(__dirname, 'logs')
+const uploadDir = path.join(__dirname, 'public', 'uploads')
+
+// 確保目錄存在
+if (!fs.existsSync(sessionsDir)) {
+  fs.mkdirSync(sessionsDir, { recursive: true })
+}
+if (!fs.existsSync(logDir)) {
+  fs.mkdirSync(logDir, { recursive: true })
+}
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true })
+}
+
 // 初始化 FileStore
 const FileStore = sessionFileStore(session)
-
-// 定義允許的來源
-const allowedOrigins = [
-  'http://localhost:3000',
-  'https://gurulaptop-ckeditor-frontend.onrender.com',
-]
 
 // CORS 配置優化
 const corsOptions = {
@@ -58,7 +68,7 @@ const corsOptions = {
     'Cache-Control',
     'X-Requested-With',
   ],
-  exposedHeaders: ['set-cookie'],
+  exposedHeaders: ['Set-Cookie'],
   maxAge: 86400,
 }
 
@@ -120,23 +130,6 @@ const logger = winston.createLogger({
   ],
 })
 
-// 確保日誌目錄存在
-const logDir = path.join(__dirname, 'logs')
-if (!fs.existsSync(logDir)) {
-  fs.mkdirSync(logDir, { recursive: true })
-}
-
-// Session 目錄設定
-const sessionsDir = path.join(__dirname, 'sessions')
-if (!fs.existsSync(sessionsDir)) {
-  fs.mkdirSync(sessionsDir, { recursive: true })
-}
-
-// Cookie Parser 配置
-app.use(
-  cookieParser(process.env.COOKIE_SECRET || '67f71af4602195de2450faeb6f8856c0')
-)
-
 // 請求記錄中間件
 const requestLogger = (req, res, next) => {
   const startTime = Date.now()
@@ -171,82 +164,23 @@ const requestLogger = (req, res, next) => {
   next()
 }
 
-// 1. 基礎安全中間件
+// 中間件順序
 app.use(cors(corsOptions))
 app.options('*', cors(corsOptions))
-
-// 2. 基本解析中間件
 app.use(express.json({ limit: '20mb' }))
 app.use(express.urlencoded({ extended: false, limit: '20mb' }))
-
-// 3. Session 配置
+app.use(
+  cookieParser(process.env.COOKIE_SECRET || '67f71af4602195de2450faeb6f8856c0')
+)
 app.use(session(sessionConfig))
-
-// 4. Logging 中間件
 app.use(morganLogger('dev'))
 app.use(requestLogger)
 
-// 5. 靜態檔案
-const uploadDir = path.join(__dirname, 'public', 'uploads')
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true })
-}
+// 靜態檔案
 app.use(express.static(path.join(__dirname, 'public')))
 app.use('/uploads', express.static(uploadDir))
 
-// 6. Health Check 路由
-app.get('/health', async (req, res) => {
-  const requestId = Math.random().toString(36).substring(7)
-  const startTime = Date.now()
-
-  console.log(`[${requestId}] Health check started`)
-
-  const health = {
-    requestId,
-    uptime: process.uptime(),
-    timestamp: new Date().toISOString(),
-    status: 'ok',
-    environment: process.env.NODE_ENV,
-    memoryUsage: {
-      heap: Math.round(process.memoryUsage().heapUsed / 1024 / 1024) + 'MB',
-      total: Math.round(process.memoryUsage().rss / 1024 / 1024) + 'MB',
-    },
-    nodejs: {
-      version: process.version,
-      pid: process.pid,
-    },
-  }
-
-  try {
-    console.log(`[${requestId}] Checking database connection...`)
-    const dbStartTime = Date.now()
-    const result = await db.query('SELECT 1')
-    health.database = {
-      status: 'connected',
-      responseTime: `${Date.now() - dbStartTime}ms`,
-    }
-    health.responseTime = `${Date.now() - startTime}ms`
-    console.log(`[${requestId}] Health check passed:`, health)
-    return res.json(health)
-  } catch (err) {
-    return res.status(503).json({
-      ...health,
-      status: 'error',
-      database: {
-        status: 'disconnected',
-        error:
-          process.env.NODE_ENV === 'production'
-            ? 'Database connection failed'
-            : err.message,
-      },
-      responseTime: `${Date.now() - startTime}ms`,
-    })
-  }
-})
-
-// 7. API 路由
-app.use('/api/auth', authRouter)
-app.use('/api/auth/login', loginRouter)
+// API 路由順序
 app.use('/api/auth', authRouter)
 app.use('/api/blog', blogRouter)
 app.use('/api/dashboard', dashboardRouter)
@@ -258,7 +192,7 @@ app.use('/api/coupon-user', couponUserRouter)
 app.use('/api/chat', chatRoutes)
 app.use('/api', GroupRequests)
 
-// 8. 404 處理
+// 404 處理
 app.use((req, res, next) => {
   const err = createError(404)
   logger.warn('Route not found', {
@@ -269,7 +203,7 @@ app.use((req, res, next) => {
   next(err)
 })
 
-// 9. 錯誤處理
+// 錯誤處理
 app.use((err, req, res, next) => {
   const errorResponse = {
     status: 'error',
@@ -307,7 +241,7 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).json(errorResponse)
 })
 
-// 10. 未捕獲錯誤處理
+// 未捕獲錯誤處理
 process.on('unhandledRejection', (reason, promise) => {
   logger.error('Unhandled Rejection at:', {
     promise: promise,
