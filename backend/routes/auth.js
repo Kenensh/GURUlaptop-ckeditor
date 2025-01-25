@@ -11,11 +11,11 @@ const isProduction = process.env.NODE_ENV === 'production'
 
 const cookieConfig = {
   httpOnly: true,
-  secure: isProduction,
-  sameSite: isProduction ? 'none' : 'lax',
+  secure: true, // 永遠為 true，因為 render 用 HTTPS
+  sameSite: 'none', // 永遠為 none，因為跨域
+  domain: '.onrender.com',
   path: '/',
-  domain: isProduction ? '.onrender.com' : undefined,
-  maxAge: 30 * 24 * 60 * 60 * 1000, // 30天
+  maxAge: 30 * 24 * 60 * 60 * 1000,
 }
 
 router.get('/check', authenticate, async (req, res) => {

@@ -44,13 +44,10 @@ const allowedOrigins = [
 
 // CORS 配置優化
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true)
-    } else {
-      callback(new Error('Not allowed by CORS'))
-    }
-  },
+  origin:
+    process.env.NODE_ENV === 'production'
+      ? 'https://gurulaptop-ckeditor-frontend.onrender.com'
+      : 'http://localhost:3000',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: [
@@ -125,8 +122,8 @@ const sessionConfig = {
   cookie: {
     maxAge: 30 * 86400000,
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    secure: true, // 永遠為 true，因為 render 用 HTTPS
+    sameSite: 'none', // 永遠為 none，因為跨域
     domain: process.env.NODE_ENV === 'production' ? '.onrender.com' : undefined,
     path: '/',
   },
@@ -134,6 +131,11 @@ const sessionConfig = {
   saveUninitialized: false,
   rolling: true,
 }
+
+// Cookie Parser 配置
+app.use(
+  cookieParser(process.env.COOKIE_SECRET || '67f71af4602195de2450faeb6f8856c0')
+)
 
 // 請求記錄中間件
 const requestLogger = (req, res, next) => {
@@ -235,9 +237,10 @@ app.get('/health', async (req, res) => {
       status: 'error',
       database: {
         status: 'disconnected',
-        error: process.env.NODE_ENV === 'production'
-          ? 'Database connection failed'
-          : err.message,
+        error:
+          process.env.NODE_ENV === 'production'
+            ? 'Database connection failed'
+            : err.message,
       },
       responseTime: `${Date.now() - startTime}ms`,
     })
