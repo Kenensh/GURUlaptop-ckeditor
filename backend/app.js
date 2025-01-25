@@ -28,6 +28,7 @@ import blogRouter from './routes/blog.js'
 import forgotPasswordRouter from './routes/forgot-password.js'
 
 const app = express()
+app.set('trust proxy', 1)
 
 // ESM __dirname fix
 const __filename = fileURLToPath(import.meta.url)
@@ -114,22 +115,21 @@ if (!fs.existsSync(sessionsDir)) {
 const sessionConfig = {
   store: new FileStore({
     path: sessionsDir,
-    logFn: function () {},
     ttl: 86400,
   }),
+  proxy: true, // 新增
   name: 'SESSION_ID',
   secret: process.env.SESSION_SECRET || '67f71af4602195de2450faeb6f8856c0',
   cookie: {
     maxAge: 30 * 86400000,
     httpOnly: true,
-    secure: true, // 永遠為 true，因為 render 用 HTTPS
-    sameSite: 'none', // 永遠為 none，因為跨域
+    secure: true,
+    sameSite: 'none',
     domain: process.env.NODE_ENV === 'production' ? '.onrender.com' : undefined,
     path: '/',
   },
-  resave: false,
-  saveUninitialized: false,
-  rolling: true,
+  resave: true, // 改為 true
+  saveUninitialized: true, // 改為 true
 }
 
 // Cookie Parser 配置
@@ -178,9 +178,6 @@ app.options('*', cors(corsOptions))
 // 2. 基本解析中間件
 app.use(express.json({ limit: '20mb' }))
 app.use(express.urlencoded({ extended: false, limit: '20mb' }))
-app.use(
-  cookieParser(process.env.COOKIE_SECRET || '67f71af4602195de2450faeb6f8856c0')
-)
 
 // 3. Session 配置
 app.use(session(sessionConfig))

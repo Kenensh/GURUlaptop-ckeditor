@@ -79,6 +79,14 @@ router.post('/login', async (req, res) => {
       { expiresIn: '30d' }
     )
 
+    const cookieConfig = {
+      maxAge: 30 * 86400000,
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      domain: '.onrender.com',
+      path: '/',
+    }
     res.cookie('accessToken', token, cookieConfig)
 
     const userData = { ...user.rows[0] }
