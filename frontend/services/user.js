@@ -11,7 +11,7 @@ const fetchApi = async (endpoint, options = {}) => {
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
-      Origin: 'https://gurulaptop-ckeditor-frontend.onrender.com',
+      'Cache-Control': 'no-cache',
       ...options.headers,
     },
   })
@@ -21,23 +21,13 @@ const fetchApi = async (endpoint, options = {}) => {
   return data
 }
 
-// 主要的認證函數
 export const checkAuth = async () => {
   try {
-    console.log('Request headers:', {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-      Origin: 'https://gurulaptop-ckeditor-frontend.onrender.com',
-    })
-
-    const data = await fetchApi('/api/auth/check', {
+    return await fetchApi('/api/auth/check', {
       method: 'GET',
       credentials: 'include',
     })
-    console.log('Auth response:', data)
-    return data
   } catch (error) {
-    console.error('Auth error:', error)
     throw error
   }
 }

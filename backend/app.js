@@ -62,6 +62,27 @@ const corsOptions = {
   maxAge: 86400,
 }
 
+// Session 配置
+const sessionConfig = {
+  store: new FileStore({
+    path: sessionsDir,
+    ttl: 86400,
+  }),
+  name: 'SESSION_ID',
+  secret: process.env.SESSION_SECRET || '67f71af4602195de2450faeb6f8856c0',
+  proxy: true,
+  cookie: {
+    maxAge: 30 * 86400000,
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+    domain: '.onrender.com',
+    path: '/',
+  },
+  resave: true,
+  saveUninitialized: true,
+}
+
 // 建立 Winston Logger
 const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || 'info',
@@ -109,27 +130,6 @@ if (!fs.existsSync(logDir)) {
 const sessionsDir = path.join(__dirname, 'sessions')
 if (!fs.existsSync(sessionsDir)) {
   fs.mkdirSync(sessionsDir, { recursive: true })
-}
-
-// Session 配置
-const sessionConfig = {
-  store: new FileStore({
-    path: sessionsDir,
-    ttl: 86400,
-  }),
-  name: 'SESSION_ID',
-  secret: process.env.SESSION_SECRET || '67f71af4602195de2450faeb6f8856c0',
-  proxy: true,
-  cookie: {
-    maxAge: 30 * 86400000,
-    httpOnly: true,
-    secure: true,
-    sameSite: 'none',
-    domain: '.onrender.com',
-    path: '/',
-  },
-  resave: true,
-  saveUninitialized: true,
 }
 
 // Cookie Parser 配置
@@ -245,6 +245,7 @@ app.use('/uploads', express.static(uploadDir))
 // })
 
 // 7. API 路由
+app.use('/api/auth', authRouter)
 app.use('/api/auth/login', loginRouter)
 app.use('/api/auth', authRouter)
 app.use('/api/blog', blogRouter)
