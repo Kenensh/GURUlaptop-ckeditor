@@ -149,6 +149,41 @@ const requestLogger = (req, res, next) => {
     },
   })
 
+  // 在 API 路由前添加
+  app.get('/health', async (req, res) => {
+    const startTime = Date.now()
+    const requestId = Math.random().toString(36).substring(7)
+
+    const health = {
+      requestId,
+      status: 'ok',
+      uptime: process.uptime(),
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV,
+    }
+
+    try {
+      const result = await db.query('SELECT 1')
+      health.database = {
+        status: 'connected',
+        responseTime: `${Date.now() - startTime}ms`,
+      }
+      return res.json(health)
+    } catch (err) {
+      return res.status(503).json({
+        ...health,
+        status: 'error',
+        database: {
+          status: 'disconnected',
+          error:
+            process.env.NODE_ENV === 'production'
+              ? 'Database connection failed'
+              : err.message,
+        },
+      })
+    }
+  })
+
   res.on('finish', () => {
     const duration = Date.now() - startTime
     logger.info(`Request completed [${requestId}]`, {
