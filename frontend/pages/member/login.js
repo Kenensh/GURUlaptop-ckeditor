@@ -71,7 +71,6 @@ export default function LogIn() {
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
-          Origin: 'https://gurulaptop-ckeditor-frontend.onrender.com',
         },
         body: JSON.stringify(formData),
       })

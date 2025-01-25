@@ -10,12 +10,12 @@ const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET
 const isProduction = process.env.NODE_ENV === 'production'
 
 const cookieConfig = {
+  maxAge: 30 * 86400000,
   httpOnly: true,
-  secure: true, // 永遠為 true，因為 render 用 HTTPS
-  sameSite: 'none', // 永遠為 none，因為跨域
-  domain: '.onrender.com',
+  secure: true,
+  sameSite: 'none',
+  domain: process.env.NODE_ENV === 'production' ? '.onrender.com' : undefined,
   path: '/',
-  maxAge: 30 * 24 * 60 * 60 * 1000,
 }
 
 router.get('/check', authenticate, async (req, res) => {
@@ -50,6 +50,8 @@ router.get('/check', authenticate, async (req, res) => {
 })
 
 router.post('/login', async (req, res) => {
+  res.cookie('accessToken', token, cookieConfig)
+  res.setHeader('Cache-Control', 'no-store')
   const requestId = Math.random().toString(36).substring(7)
   const { email, password } = req.body
 

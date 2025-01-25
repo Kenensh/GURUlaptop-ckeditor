@@ -117,19 +117,19 @@ const sessionConfig = {
     path: sessionsDir,
     ttl: 86400,
   }),
-  proxy: true, // 新增
   name: 'SESSION_ID',
   secret: process.env.SESSION_SECRET || '67f71af4602195de2450faeb6f8856c0',
+  proxy: true,
   cookie: {
     maxAge: 30 * 86400000,
     httpOnly: true,
     secure: true,
     sameSite: 'none',
-    domain: process.env.NODE_ENV === 'production' ? '.onrender.com' : undefined,
+    domain: '.onrender.com',
     path: '/',
   },
-  resave: true, // 改為 true
-  saveUninitialized: true, // 改為 true
+  resave: true,
+  saveUninitialized: true,
 }
 
 // Cookie Parser 配置
