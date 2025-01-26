@@ -45,11 +45,9 @@ export const AuthProvider = ({ children }) => {
   const router = useRouter()
 
   const login = async (userData) => {
-    if (!userData) throw new Error('No user data provided')
-    setAuth({ isAuth: true, userData: { ...initUserData, ...userData } })
-    localStorage.setItem('isAuthenticated', 'true')
+    localStorage.setItem('token', userData.token)
     localStorage.setItem('userData', JSON.stringify(userData))
-    return { status: 'success', message: '登入成功' }
+    setAuth({ isAuth: true, userData: userData })
   }
 
   const handleCheckAuth = async () => {
@@ -75,25 +73,9 @@ export const AuthProvider = ({ children }) => {
   }
 
   const logout = async () => {
-    try {
-      await fetch(`${BACKEND_URL}/api/auth/logout`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          'Cache-Control': 'no-store',
-        },
-      })
-
-      setAuth({ isAuth: false, userData: initUserData })
-      localStorage.removeItem('isAuthenticated')
-      localStorage.removeItem('userData')
-
-      return { status: 'success', message: '登出成功' }
-    } catch (error) {
-      console.error('Logout error:', error)
-      return { status: 'error', message: '登出失敗' }
-    }
+    localStorage.removeItem('token')
+    localStorage.removeItem('userData')
+    setAuth({ isAuth: false, userData: null })
   }
 
   const handleLogout = async () => {

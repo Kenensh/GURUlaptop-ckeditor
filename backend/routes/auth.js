@@ -49,10 +49,6 @@ router.post('/login', async (req, res) => {
   const { email, password } = req.body
 
   console.log(`[${requestId}] 登入請求: ${email}`)
-  console.log(`[${requestId}] Cookie設定:`, {
-    cookie: res.getHeader('Set-Cookie'),
-    config: cookieConfig,
-  })
 
   try {
     const user = await pool.query(
@@ -80,17 +76,14 @@ router.post('/login', async (req, res) => {
       { expiresIn: '30d' }
     )
 
-    res.cookie('accessToken', token, cookieConfig)
-    console.log(`[${requestId}] 設定cookie後:`, res.getHeader('Set-Cookie'))
-
     const userData = { ...user.rows[0] }
     delete userData.password
 
     return res.json({
       status: 'success',
       data: {
-        user: userData,
         token,
+        user: userData,
       },
     })
   } catch (error) {

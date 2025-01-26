@@ -15,17 +15,15 @@ const BACKEND_URL =
 
 // fetch API 的包裝函數
 const fetchApi = async (endpoint, options = {}) => {
-  const response = await fetch(`${BACKEND_URL}${endpoint}`, {
+  const token = localStorage.getItem('token')
+  return fetch(`${BACKEND_URL}${endpoint}`, {
     ...options,
-    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
-      Accept: 'application/json',
-      Origin: 'https://gurulaptop-ckeditor-frontend.onrender.com',
+      Authorization: `Bearer ${token}`,
       ...options.headers,
     },
   })
-  return response.json()
 }
 
 export default function Header() {
