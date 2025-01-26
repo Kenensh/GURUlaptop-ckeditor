@@ -82,7 +82,7 @@ const cookieConfig = {
   httpOnly: false, // 改為 false 讓前端可以存取
   secure: true,
   sameSite: 'none',
-  domain: process.env.NODE_ENV === 'production' ? '.onrender.com' : undefined,
+  domain: '.onrender.com', // 生產環境下固定 domain
   path: '/',
 }
 
@@ -234,6 +234,15 @@ app.use('/api/coupon', couponRouter)
 app.use('/api/coupon-user', couponUserRouter)
 app.use('/api/chat', chatRoutes)
 app.use('/api', GroupRequests)
+
+// 添加主域名判斷
+app.use((req, res, next) => {
+  const origin = req.headers.origin
+  if (origin && origin.includes('onrender.com')) {
+    res.header('Access-Control-Allow-Origin', origin)
+  }
+  next()
+})
 
 // 404 處理
 app.use((req, res, next) => {
