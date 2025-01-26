@@ -60,9 +60,18 @@ const corsOptions = {
       : 'http://localhost:3000',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['*'],
-  exposedHeaders: ['*'],
-  preflightContinue: true,
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'Cache-Control',
+    'Access-Control-Allow-Headers',
+    'Access-Control-Allow-Credentials',
+  ],
+  exposedHeaders: [
+    'Set-Cookie',
+    'Access-Control-Allow-Origin',
+    'Access-Control-Allow-Credentials',
+  ],
   maxAge: 86400,
 }
 
@@ -228,6 +237,10 @@ app.use('/api', GroupRequests)
 
 // 404 處理
 app.use((req, res, next) => {
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Content-Type, Authorization, Cache-Control'
+  )
   res.header('Access-Control-Allow-Credentials', 'true')
   const err = createError(404)
   logger.warn('Route not found', {
