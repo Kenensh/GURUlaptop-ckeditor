@@ -58,30 +58,23 @@ if (typeof window !== 'undefined') {
       }
 
       if (url.startsWith('/') || url.includes('gurulaptop-ckeditor')) {
-        const baseUrl =
-          process.env.NODE_ENV === 'development'
-            ? 'http://localhost:3005'
-            : 'https://gurulaptop-ckeditor.onrender.com'
+        const finalUrl = url.startsWith('/') ? `${BACKEND_URL}${url}` : url
 
-        const finalUrl = url.startsWith('/') ? `${baseUrl}${url}` : url
-
-        const response = await originalFetch(finalUrl, {
-          ...options,
-          credentials: 'include',
-          headers: {
-            ...defaultHeaders,
-            ...options.headers,
-            Origin: window.location.origin,
-          },
-        })
-
-        if (!response.ok) {
-          console.warn('Response error:', {
-            url: finalUrl,
-            status: response.status,
-          })
+        // 針對非 OPTIONS 請求添加必要的 headers
+        if (options.method !== 'OPTIONS') {
+          options = {
+            ...options,
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
+              'Cache-Control': 'no-store',
+              ...options.headers,
+            },
+          }
         }
 
+        const response = await originalFetch(finalUrl, options)
         return response
       }
 

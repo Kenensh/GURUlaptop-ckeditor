@@ -162,8 +162,18 @@ const requestLogger = (req, res, next) => {
 }
 
 // 中間件順序
-app.use(cors(corsOptions))
-app.options('*', cors(corsOptions))
+app.use(
+  cors({
+    origin:
+      process.env.NODE_ENV === 'production'
+        ? 'https://gurulaptop-ckeditor-frontend.onrender.com'
+        : 'http://localhost:3000',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control'],
+    exposedHeaders: ['Set-Cookie'],
+  })
+)
 app.use(express.json({ limit: '20mb' }))
 app.use(express.urlencoded({ extended: false, limit: '20mb' }))
 app.use(
