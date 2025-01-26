@@ -63,6 +63,7 @@ export default function LogIn() {
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache',
         },
         body: JSON.stringify(formData),
       })

@@ -53,18 +53,18 @@ if (!fs.existsSync(uploadDir)) {
 // 初始化 FileStore
 const FileStore = sessionFileStore(session)
 
-// CORS 配置優化
-const corsOptions = {
-  origin:
-    process.env.NODE_ENV === 'production'
-      ? 'https://gurulaptop-ckeditor-frontend.onrender.com'
-      : 'http://localhost:3000',
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  exposedHeaders: ['Set-Cookie'],
-  maxAge: 86400,
-}
+app.use(
+  cors({
+    origin:
+      process.env.NODE_ENV === 'production'
+        ? 'https://gurulaptop-ckeditor-frontend.onrender.com'
+        : 'http://localhost:3000',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control'],
+    exposedHeaders: ['Set-Cookie'],
+  })
+)
 
 // Cookie 配置統一
 const cookieConfig = {
