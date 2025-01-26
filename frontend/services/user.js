@@ -10,7 +10,7 @@ const fetchApi = async (endpoint, options = {}) => {
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
-      'Cache-Control': 'no-cache',
+      'Cache-Control': 'no-store',
     },
   })
 

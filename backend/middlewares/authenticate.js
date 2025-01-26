@@ -17,18 +17,12 @@ function authenticate(req, res, next) {
   const requestId = Math.random().toString(36).substring(7)
 
   try {
-    // 統一響應頭
-    res.setHeader('Access-Control-Expose-Headers', 'Set-Cookie')
-    res.setHeader('Cache-Control', 'no-store')
-
-    // 獲取 token
     const token =
       req.cookies.accessToken || req.headers.authorization?.split(' ')[1]
     if (!token) {
       return res.status(401).json({ status: 'error', message: '請先登入' })
     }
 
-    // 驗證 token
     try {
       const decoded = jsonwebtoken.verify(token, accessTokenSecret)
       if (!decoded.user_id) {
@@ -37,14 +31,12 @@ function authenticate(req, res, next) {
           .json({ status: 'error', message: '無效的認證資訊' })
       }
 
-      // 設置用戶資訊
       req.user = {
         user_id: decoded.user_id,
         email: decoded.email,
         level: decoded.level,
       }
 
-      // Token 刷新判斷
       const timeLeft = decoded.exp - Math.floor(Date.now() / 1000)
       const tokenAge = decoded.exp - decoded.iat
 

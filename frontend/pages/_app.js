@@ -50,81 +50,44 @@ if (typeof window !== 'undefined') {
   const originalFetch = window.fetch
   window.fetch = async (url, options = {}) => {
     try {
-      console.log('Starting fetch request:', {
-        url,
-        method: options.method || 'GET',
-        environment: process.env.NODE_ENV,
-      })
-
-      // 記錄請求開始時間
       const startTime = Date.now()
+      const defaultHeaders = {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'Cache-Control': 'no-store',
+      }
 
-      if (
-        url.startsWith('/') ||
-        url.startsWith('https://gurulaptop-ckeditor.onrender.com')
-      ) {
-        const newUrl = url.startsWith('/') ? `${BACKEND_URL}${url}` : url
-        const finalUrl =
+      if (url.startsWith('/') || url.includes('gurulaptop-ckeditor')) {
+        const baseUrl =
           process.env.NODE_ENV === 'development'
-            ? newUrl.replace(
-                'https://gurulaptop-ckeditor.onrender.com',
-                'http://localhost:3005'
-              )
-            : newUrl
+            ? 'http://localhost:3005'
+            : 'https://gurulaptop-ckeditor.onrender.com'
 
-        console.log('URL transformation:', {
-          originalUrl: url,
-          finalUrl,
-          transformationTime: Date.now() - startTime,
+        const finalUrl = url.startsWith('/') ? `${baseUrl}${url}` : url
+
+        const response = await originalFetch(finalUrl, {
+          ...options,
+          credentials: 'include',
+          headers: {
+            ...defaultHeaders,
+            ...options.headers,
+            Origin: window.location.origin,
+          },
         })
 
-        try {
-          const response = await originalFetch(finalUrl, {
-            ...options,
-            credentials: 'include',
-            headers: {
-              ...options.headers,
-              'Content-Type': 'application/json',
-              Accept: 'application/json',
-              Origin:
-                typeof window !== 'undefined' ? window.location.origin : '',
-            },
-          })
-
-          console.log('Fetch response received:', {
+        if (!response.ok) {
+          console.warn('Response error:', {
             url: finalUrl,
             status: response.status,
-            statusText: response.statusText,
-            responseTime: Date.now() - startTime,
           })
-
-          if (!response.ok) {
-            console.warn('Non-OK response:', {
-              url: finalUrl,
-              status: response.status,
-              statusText: response.statusText,
-            })
-          }
-
-          return response
-        } catch (networkError) {
-          console.error('Network error:', {
-            url: finalUrl,
-            error: networkError.message,
-            stack: networkError.stack,
-          })
-          throw networkError
         }
+
+        return response
       }
 
       return originalFetch(url, options)
     } catch (error) {
-      console.error('Fetch interceptor error:', {
-        url,
-        error: error.message,
-        stack: error.stack,
-        options,
-      })
+      console.error('Fetch error:', { url, error: error.message })
       throw error
     }
   }

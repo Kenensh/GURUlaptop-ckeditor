@@ -76,32 +76,23 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/auth/logout`, {
+      await fetch(`${BACKEND_URL}/api/auth/logout`, {
         method: 'POST',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
-          Accept: 'application/json',
-          'Cache-Control': 'no-cache',
+          'Cache-Control': 'no-store',
         },
       })
 
-      if (!response.ok) throw new Error('Logout request failed')
+      setAuth({ isAuth: false, userData: initUserData })
+      localStorage.removeItem('isAuthenticated')
+      localStorage.removeItem('userData')
 
-      await Promise.all([
-        new Promise((resolve) => {
-          setAuth({ isAuth: false, userData: initUserData })
-          setTimeout(resolve, 100)
-        }),
-        localStorage.removeItem('isAuthenticated'),
-        localStorage.removeItem('userData'),
-      ])
-
-      await router.replace('/member/login')
       return { status: 'success', message: '登出成功' }
     } catch (error) {
       console.error('Logout error:', error)
-      return { status: 'error', message: error?.message || '登出失敗' }
+      return { status: 'error', message: '登出失敗' }
     }
   }
 

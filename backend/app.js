@@ -61,15 +61,19 @@ const corsOptions = {
       : 'http://localhost:3000',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: [
-    'Content-Type',
-    'Authorization',
-    'Accept',
-    'Cache-Control',
-    'X-Requested-With',
-  ],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   exposedHeaders: ['Set-Cookie'],
   maxAge: 86400,
+}
+
+// Cookie 配置統一
+const cookieConfig = {
+  httpOnly: true,
+  secure: true,
+  sameSite: 'none',
+  domain: process.env.NODE_ENV === 'production' ? '.onrender.com' : undefined,
+  path: '/',
+  maxAge: 30 * 24 * 60 * 60 * 1000,
 }
 
 // Session 配置
@@ -81,14 +85,7 @@ const sessionConfig = {
   name: 'SESSION_ID',
   secret: process.env.SESSION_SECRET || '67f71af4602195de2450faeb6f8856c0',
   proxy: true,
-  cookie: {
-    maxAge: 30 * 86400000,
-    httpOnly: true,
-    secure: true,
-    sameSite: 'none',
-    domain: '.onrender.com',
-    path: '/',
-  },
+  cookie: cookieConfig,
   resave: true,
   saveUninitialized: true,
 }
