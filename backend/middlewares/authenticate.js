@@ -19,7 +19,9 @@ function authenticate(req, res, next) {
   try {
     const token =
       req.cookies.accessToken || req.headers.authorization?.split(' ')[1]
+    // middlewares/authenticate.js
     if (!token) {
+      res.setHeader('WWW-Authenticate', 'Bearer')
       return res.status(401).json({ status: 'error', message: '請先登入' })
     }
 

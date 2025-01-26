@@ -218,6 +218,10 @@ app.get('/health', async (req, res) => {
   }
 })
 
+app.get('/', (req, res) => {
+  res.json({ status: 'ok', message: 'API is running' })
+})
+
 // 靜態檔案
 app.use(express.static(path.join(__dirname, 'public')))
 app.use('/uploads', express.static(uploadDir))
