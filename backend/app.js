@@ -53,18 +53,21 @@ if (!fs.existsSync(uploadDir)) {
 // 初始化 FileStore
 const FileStore = sessionFileStore(session)
 
-app.use(
-  cors({
-    origin:
-      process.env.NODE_ENV === 'production'
-        ? 'https://gurulaptop-ckeditor-frontend.onrender.com'
-        : 'http://localhost:3000',
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control'],
-    exposedHeaders: ['Set-Cookie'],
-  })
-)
+const corsOptions = {
+  origin:
+    process.env.NODE_ENV === 'production'
+      ? 'https://gurulaptop-ckeditor-frontend.onrender.com'
+      : 'http://localhost:3000',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['*'],
+  exposedHeaders: ['*'],
+  preflightContinue: true,
+  maxAge: 86400,
+}
+
+app.use(cors(corsOptions))
+app.options('*', cors(corsOptions))
 
 // Cookie 配置統一
 const cookieConfig = {
@@ -162,23 +165,23 @@ const requestLogger = (req, res, next) => {
 }
 
 // 中間件順序
-app.use(
-  cors({
-    origin:
-      process.env.NODE_ENV === 'production'
-        ? 'https://gurulaptop-ckeditor-frontend.onrender.com'
-        : 'http://localhost:3000',
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control'],
-    exposedHeaders: ['Set-Cookie'],
-  })
-)
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production'
+    ? 'https://gurulaptop-ckeditor-frontend.onrender.com'
+    : 'http://localhost:3000',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['*'],
+  exposedHeaders: ['*'],
+  preflightContinue: true,
+  maxAge: 86400
+}
+
+app.use(cors(corsOptions))
+app.options('*', cors(corsOptions))
 app.use(express.json({ limit: '20mb' }))
 app.use(express.urlencoded({ extended: false, limit: '20mb' }))
-app.use(
-  cookieParser(process.env.COOKIE_SECRET || '67f71af4602195de2450faeb6f8856c0')
-)
+app.use(cookieParser(process.env.COOKIE_SECRET || '67f71af4602195de2450faeb6f8856c0'))
 app.use(session(sessionConfig))
 app.use(morganLogger('dev'))
 app.use(requestLogger)
