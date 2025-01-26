@@ -69,14 +69,12 @@ const corsOptions = {
 app.use(cors(corsOptions))
 app.options('*', cors(corsOptions))
 
-// Cookie 配置統一
 const cookieConfig = {
-  httpOnly: true,
+  httpOnly: false, // 改為 false 讓前端可以存取
   secure: true,
   sameSite: 'none',
   domain: process.env.NODE_ENV === 'production' ? '.onrender.com' : undefined,
   path: '/',
-  maxAge: 30 * 24 * 60 * 60 * 1000,
 }
 
 // Session 配置
@@ -164,24 +162,11 @@ const requestLogger = (req, res, next) => {
   next()
 }
 
-// 中間件順序
-const corsOptions = {
-  origin: process.env.NODE_ENV === 'production'
-    ? 'https://gurulaptop-ckeditor-frontend.onrender.com'
-    : 'http://localhost:3000',
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['*'],
-  exposedHeaders: ['*'],
-  preflightContinue: true,
-  maxAge: 86400
-}
-
-app.use(cors(corsOptions))
-app.options('*', cors(corsOptions))
 app.use(express.json({ limit: '20mb' }))
 app.use(express.urlencoded({ extended: false, limit: '20mb' }))
-app.use(cookieParser(process.env.COOKIE_SECRET || '67f71af4602195de2450faeb6f8856c0'))
+app.use(
+  cookieParser(process.env.COOKIE_SECRET || '67f71af4602195de2450faeb6f8856c0')
+)
 app.use(session(sessionConfig))
 app.use(morganLogger('dev'))
 app.use(requestLogger)
@@ -243,6 +228,7 @@ app.use('/api', GroupRequests)
 
 // 404 處理
 app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Credentials', 'true')
   const err = createError(404)
   logger.warn('Route not found', {
     method: req.method,
