@@ -46,7 +46,10 @@ router.get('/check', authenticate, async (req, res) => {
 
 router.post('/login', async (req, res) => {
   const requestId = Math.random().toString(36).substring(7)
-  const { email, password } = req.body
+  console.log(`[${requestId}] Cookie設定:`, {
+    cookie: res.getHeader('Set-Cookie'),
+    config: cookieConfig,
+  })
 
   try {
     const user = await pool.query(
@@ -75,6 +78,7 @@ router.post('/login', async (req, res) => {
     )
 
     res.cookie('accessToken', token, cookieConfig)
+    console.log(`[${requestId}] 設定cookie後:`, res.getHeader('Set-Cookie'))
 
     const userData = { ...user.rows[0] }
     delete userData.password
