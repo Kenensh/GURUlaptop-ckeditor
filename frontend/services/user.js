@@ -3,7 +3,6 @@ import useSWR from 'swr'
 const BACKEND_URL =
   process.env.NEXT_PUBLIC_BACKEND_URL ||
   'https://gurulaptop-ckeditor.onrender.com'
-
 const fetchApi = async (endpoint, options = {}) => {
   const response = await fetch(`${BACKEND_URL}${endpoint}`, {
     ...options,
@@ -12,7 +11,6 @@ const fetchApi = async (endpoint, options = {}) => {
       'Content-Type': 'application/json',
       Accept: 'application/json',
       'Cache-Control': 'no-cache',
-      ...options.headers,
     },
   })
 

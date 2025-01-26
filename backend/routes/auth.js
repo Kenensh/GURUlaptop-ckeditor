@@ -14,7 +14,7 @@ const cookieConfig = {
   httpOnly: true,
   secure: true,
   sameSite: 'none',
-  domain: process.env.NODE_ENV === 'production' ? '.onrender.com' : undefined,
+  domain: '.onrender.com',
   path: '/',
 }
 

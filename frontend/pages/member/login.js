@@ -57,20 +57,12 @@ export default function LogIn() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const requestId = Math.random().toString(36).substring(7)
-
-    if (!validateForm()) return
-
-    setIsSubmitting(true)
-    showLoader()
-
     try {
       const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
         method: 'POST',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
-          Accept: 'application/json',
         },
         body: JSON.stringify(formData),
       })

@@ -8,29 +8,27 @@ const cookieConfig = {
   httpOnly: true,
   secure: true,
   sameSite: 'none',
-  path: '/',
   domain: isProduction ? '.onrender.com' : undefined,
+  path: '/',
   maxAge: 30 * 24 * 60 * 60 * 1000,
 }
 
 function authenticate(req, res, next) {
-  res.setHeader('Access-Control-Expose-Headers', 'Set-Cookie')
-  res.setHeader('Cache-Control', 'no-store')
   const requestId = Math.random().toString(36).substring(7)
-  console.log(`[${requestId}] 認證檢查:`, {
-    cookies: req.cookies,
-    headers: {
-      cookie: req.headers.cookie,
-      authorization: req.headers.authorization,
-    },
-  })
 
   try {
+    // 統一響應頭
+    res.setHeader('Access-Control-Expose-Headers', 'Set-Cookie')
+    res.setHeader('Cache-Control', 'no-store')
+
+    // 獲取 token
     const token =
       req.cookies.accessToken || req.headers.authorization?.split(' ')[1]
-    if (!token)
+    if (!token) {
       return res.status(401).json({ status: 'error', message: '請先登入' })
+    }
 
+    // 驗證 token
     try {
       const decoded = jsonwebtoken.verify(token, accessTokenSecret)
       if (!decoded.user_id) {
@@ -39,15 +37,16 @@ function authenticate(req, res, next) {
           .json({ status: 'error', message: '無效的認證資訊' })
       }
 
+      // 設置用戶資訊
       req.user = {
         user_id: decoded.user_id,
         email: decoded.email,
         level: decoded.level,
       }
 
-      // Token 刷新
-      const tokenAge = decoded.exp - decoded.iat
+      // Token 刷新判斷
       const timeLeft = decoded.exp - Math.floor(Date.now() / 1000)
+      const tokenAge = decoded.exp - decoded.iat
 
       if (timeLeft < tokenAge * 0.25) {
         const newToken = jsonwebtoken.sign(
@@ -64,15 +63,14 @@ function authenticate(req, res, next) {
 
       next()
     } catch (jwtError) {
-      if (jwtError.name === 'TokenExpiredError') {
-        return res.status(401).json({ status: 'error', message: '登入已過期' })
-      }
-      return res.status(401).json({ status: 'error', message: '認證失敗' })
+      const errorMessage =
+        jwtError.name === 'TokenExpiredError' ? '登入已過期' : '認證失敗'
+      return res.status(401).json({ status: 'error', message: errorMessage })
     }
   } catch (error) {
+    console.error(`[${requestId}] 認證錯誤:`, error)
     return res.status(500).json({ status: 'error', message: '系統錯誤' })
   }
 }
 
-// 匯出兩個版本
 export { authenticate as default, authenticate as checkAuth }
