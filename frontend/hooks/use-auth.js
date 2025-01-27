@@ -50,16 +50,30 @@ export const AuthProvider = ({ children }) => {
     return { isAuth: false, userData: initUserData }
   })
 
+  AuthProvider.displayName = 'AuthProvider'
+
   const login = async (userData) => {
     try {
-      localStorage.setItem('token', userData.token)
-      localStorage.setItem('userData', JSON.stringify(userData))
+      const token = userData.token
+      const user = userData.user // API 返回的 user 資料在這
+
+      if (!token) {
+        throw new Error('Invalid login data')
+      }
+
+      // 儲存正確的資料結構
+      localStorage.setItem('token', token)
+      localStorage.setItem('userData', JSON.stringify(user))
+
+      // 設置正確的 auth 狀態
       setAuth({
         isAuth: true,
-        userData,
+        userData: user,
       })
+
       return { status: 'success' }
     } catch (error) {
+      console.error('Login error:', error)
       return { status: 'error', message: error.message }
     }
   }
