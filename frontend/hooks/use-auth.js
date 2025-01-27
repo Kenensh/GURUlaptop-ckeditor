@@ -50,25 +50,32 @@ export const AuthProvider = ({ children }) => {
     return { isAuth: false, userData: initUserData }
   })
 
-  AuthProvider.displayName = 'AuthProvider'
+  useEffect(() => {
+    console.log('AuthProvider mounted/updated', auth)
+  }, [auth])
 
-  const login = async (userData) => {
+  const login = async (result) => {
     try {
-      const token = userData.token
-      const user = userData.user // API 返回的 user 資料在這
-
-      if (!token) {
-        throw new Error('Invalid login data')
+      if (!result) {
+        throw new Error('Login data is required')
       }
 
-      // 儲存正確的資料結構
-      localStorage.setItem('token', token)
-      localStorage.setItem('userData', JSON.stringify(user))
+      // API 返回的資料結構處理
+      console.log('Login data received:', result)
 
-      // 設置正確的 auth 狀態
+      // 存儲 token 和使用者資料
+      localStorage.setItem('token', result.token)
+      localStorage.setItem('userData', JSON.stringify(result))
+
+      // 更新 auth 狀態
       setAuth({
         isAuth: true,
-        userData: user,
+        userData: result,
+      })
+
+      console.log('Auth state after login:', {
+        isAuth: true,
+        userData: result,
       })
 
       return { status: 'success' }
@@ -84,7 +91,12 @@ export const AuthProvider = ({ children }) => {
     setAuth({ isAuth: false, userData: initUserData })
   }
 
-  // 移除所有不必要的路由檢查和狀態判斷
+  useEffect(() => {
+    console.log('Auth state changed:', auth)
+  }, [auth])
+
+  AuthProvider.displayName = 'AuthProvider'
+
   return (
     <AuthContext.Provider value={{ auth, login, logout, setAuth }}>
       {children}
