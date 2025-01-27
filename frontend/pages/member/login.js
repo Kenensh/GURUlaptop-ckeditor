@@ -32,6 +32,7 @@ export default function LogIn() {
   const { showLoader, hideLoader } = useLoader()
 
   useEffect(() => {
+    console.log('Auth state changed:', auth) // 監視 auth 狀態變化
     if (auth.isAuth) {
       router.replace('/dashboard')
     }
@@ -59,6 +60,7 @@ export default function LogIn() {
     e.preventDefault()
     setIsSubmitting(true)
     showLoader()
+    console.log('Starting login process...') // 開始登入流程
 
     try {
       const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
@@ -74,14 +76,15 @@ export default function LogIn() {
       if (!response.ok) throw new Error(result.message || '登入失敗')
 
       if (result.status === 'success') {
-        const loginResult = await login(result.data) // 注意這裡改為傳入整個 data 物件
+        console.log('API Response data:', result.data) // 看API回傳了什麼
+        const loginResult = await login(result.data)
+        console.log('Login Result:', loginResult) // 看 login 函數的返回
+        console.log('Current Auth State:', auth) // 看當前 auth 狀態
         if (loginResult.status === 'success') {
           await router.replace('/dashboard')
         } else {
           throw new Error(loginResult.message || '登入失敗')
         }
-      } else {
-        throw new Error(result.message || '登入失敗')
       }
     } catch (error) {
       console.error('Login error:', error)
