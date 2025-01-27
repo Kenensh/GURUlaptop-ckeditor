@@ -35,17 +35,30 @@ export const AuthProvider = ({ children }) => {
       try {
         const token = localStorage.getItem('token')
         const userDataStr = localStorage.getItem('userData')
+
+        // 增加更嚴格的驗證
         if (token && userDataStr) {
-          const userData = JSON.parse(userDataStr)
-          return {
-            isAuth: true,
-            userData,
+          try {
+            const userData = JSON.parse(userDataStr)
+            // 確保 userData 是有效的對象
+            if (userData && typeof userData === 'object') {
+              return {
+                isAuth: true,
+                userData,
+              }
+            }
+          } catch (error) {
+            // JSON 解析錯誤，清除無效數據
+            localStorage.removeItem('token')
+            localStorage.removeItem('userData')
+            console.error('Invalid userData in localStorage:', error)
           }
         }
       } catch (error) {
-        console.error('Error initializing auth state:', error)
+        console.error('Error checking auth state:', error)
       }
     }
+    // 如果任何檢查失敗，返回初始狀態
     return { isAuth: false, userData: initUserData }
   })
   const [isLoading, setIsLoading] = useState(false)
@@ -75,28 +88,27 @@ export const AuthProvider = ({ children }) => {
   const handleCheckAuth = async () => {
     if (!isClient || !router.isReady) return
 
-    const token = localStorage.getItem('token')
-    if (!token) {
-      await handleLogout()
-      return
-    }
-
-    setIsLoading(true)
     try {
-      const res = await checkAuth()
-      if (res?.status === 'success' && res?.data?.user) {
+      const token = localStorage.getItem('token')
+      if (!token) {
+        throw new Error('No token found')
+      }
+
+      const response = await checkAuth()
+      if (response?.status === 'success' && response?.data?.user) {
         setAuth({
           isAuth: true,
-          userData: res.data.user,
+          userData: response.data.user,
         })
       } else {
-        throw new Error('驗證失敗')
+        throw new Error('Invalid auth response')
       }
     } catch (error) {
       console.error('Auth check failed:', error)
-      await handleLogout()
-    } finally {
-      setIsLoading(false)
+      // 清除所有認證相關數據
+      localStorage.removeItem('token')
+      localStorage.removeItem('userData')
+      setAuth({ isAuth: false, userData: initUserData })
     }
   }
 
@@ -112,13 +124,16 @@ export const AuthProvider = ({ children }) => {
   }
 
   useEffect(() => {
-    if (isClient && router.isReady && auth.isAuth) {
+    if (isClient && router.isReady) {
       const token = localStorage.getItem('token')
-      if (!token) {
-        handleLogout()
+      if (token) {
+        handleCheckAuth()
+      } else if (auth.isAuth) {
+        // 如果沒有 token 但 isAuth 為 true，重置狀態
+        setAuth({ isAuth: false, userData: initUserData })
       }
     }
-  }, [router.isReady, router.pathname])
+  }, [router.isReady])
 
   if (!isClient) {
     return (
