@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Nav, Tab } from 'react-bootstrap'
 import { useAuth } from '@/hooks/use-auth'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 
 // 組件導入
 import UserProfile from '@/components/dashboard/userInfoEdit'
@@ -16,11 +17,28 @@ import Favorites from '@/components/product/favorites'
 import BlogUserOverview from '@/components/blog/bloguseroverview'
 
 export default function DashboardIndex() {
-  // 狀態管理
   const [activeKey, setActiveKey] = useState('home')
   const [couponActiveKey, setCouponActiveKey] = useState('available')
   const [subActiveKey, setSubActiveKey] = useState('profile')
   const [isLoading, setIsLoading] = useState(true)
+  const router = useRouter()
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        if (!auth.isAuth) {
+          await router.replace('/member/login')
+          return
+        }
+        setIsLoading(false)
+      } catch (error) {
+        console.error('Dashboard auth check failed:', error)
+        await router.replace('/member/login')
+      }
+    }
+
+    checkAuth()
+  }, [auth.isAuth, router])
 
   // Auth Hook
   const { auth } = useAuth()
