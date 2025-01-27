@@ -57,29 +57,34 @@ export default function LogIn() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setIsSubmitting(true)
+    showLoader()
+
     try {
       const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
         method: 'POST',
-        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
-          'Cache-Control': 'no-cache',
         },
         body: JSON.stringify(formData),
       })
 
       const result = await response.json()
-      if (!response.ok) throw new Error(result.message)
 
-      if (result.status === 'success' && result.data?.user) {
-        const loginResult = await login(result.data.user)
+      if (!response.ok) throw new Error(result.message || '登入失敗')
+
+      if (result.status === 'success') {
+        const loginResult = await login(result.data) // 注意這裡改為傳入整個 data 物件
         if (loginResult.status === 'success') {
           await router.replace('/dashboard')
         } else {
-          throw new Error(loginResult.message)
+          throw new Error(loginResult.message || '登入失敗')
         }
+      } else {
+        throw new Error(result.message || '登入失敗')
       }
     } catch (error) {
+      console.error('Login error:', error)
       setErrors({ general: error.message || '登入失敗' })
     } finally {
       setIsSubmitting(false)
