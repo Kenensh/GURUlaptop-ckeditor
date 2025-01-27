@@ -27,8 +27,10 @@ const fetchApi = async (endpoint, options = {}) => {
 }
 
 export default function Header() {
+  // 修改後 - 更安全的寫法
   const { auth, logout } = useAuth()
-  const { isAuth, userData } = auth
+  const isAuth = auth?.isAuth ?? false
+  const userData = auth?.userData || null
   const [user_id, setUserId] = useState('')
   const router = useRouter()
   const [bodyPadding, setBodyPadding] = useState('75px')
@@ -177,15 +179,22 @@ export default function Header() {
   const UserAvatar = dynamic(
     () =>
       function UserAvatar() {
-        if (!isClient) return <div className="user-avatar-placeholder" />
+        // 加入防護機制
+        if (!isClient || !auth?.userData) {
+          return <div className="user-avatar-placeholder" />
+        }
+
+        const imagePath =
+          auth?.userData?.image_path ||
+          getDefaultImage(auth?.userData?.gender || 'undisclosed')
 
         return (
           <img
-            src={
-              auth?.userData?.image_path ||
-              getDefaultImage(auth?.userData?.gender)
-            }
+            src={imagePath}
             alt="User"
+            onError={(e) => {
+              e.target.src = getDefaultImage('undisclosed')
+            }}
           />
         )
       },

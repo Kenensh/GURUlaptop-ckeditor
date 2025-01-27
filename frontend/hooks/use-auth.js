@@ -32,13 +32,18 @@ const defaultContextValue = {
 export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState(() => {
     if (isClient) {
-      const token = localStorage.getItem('token')
-      const userData = localStorage.getItem('userData')
-      if (token && userData) {
-        return {
-          isAuth: true,
-          userData: JSON.parse(userData),
+      try {
+        const token = localStorage.getItem('token')
+        const userDataStr = localStorage.getItem('userData')
+        if (token && userDataStr) {
+          const userData = JSON.parse(userDataStr)
+          return {
+            isAuth: true,
+            userData,
+          }
         }
+      } catch (error) {
+        console.error('Error initializing auth state:', error)
       }
     }
     return { isAuth: false, userData: initUserData }
