@@ -36,9 +36,10 @@ export const AuthProvider = ({ children }) => {
       const userDataStr = localStorage.getItem('userData')
       if (token && userDataStr) {
         try {
+          const userData = JSON.parse(userDataStr)
           return {
             isAuth: true,
-            userData: JSON.parse(userDataStr),
+            userData,
           }
         } catch {
           localStorage.removeItem('token')
@@ -51,32 +52,25 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (userData) => {
     try {
-      if (!userData || !userData.token) {
-        throw new Error('Invalid login data')
-      }
-
-      // 儲存並更新登入狀態
       localStorage.setItem('token', userData.token)
       localStorage.setItem('userData', JSON.stringify(userData))
       setAuth({
         isAuth: true,
         userData,
       })
-
       return { status: 'success' }
     } catch (error) {
-      console.error('Login error:', error)
       return { status: 'error', message: error.message }
     }
   }
 
-  const logout = async () => {
+  const logout = () => {
     localStorage.removeItem('token')
     localStorage.removeItem('userData')
     setAuth({ isAuth: false, userData: initUserData })
   }
 
-  // 移除多餘的判斷，讓它保持簡單
+  // 移除所有不必要的路由檢查和狀態判斷
   return (
     <AuthContext.Provider value={{ auth, login, logout, setAuth }}>
       {children}
