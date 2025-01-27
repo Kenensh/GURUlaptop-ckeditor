@@ -30,22 +30,17 @@ const defaultContextValue = {
 }
 
 export const AuthProvider = ({ children }) => {
-  // 初始化時檢查 localStorage
   const [auth, setAuth] = useState(() => {
     if (isClient) {
       const token = localStorage.getItem('token')
       const userDataStr = localStorage.getItem('userData')
       if (token && userDataStr) {
         try {
-          const userData = JSON.parse(userDataStr)
-          // 有登入資料就直接設為登入狀態
           return {
             isAuth: true,
-            userData,
+            userData: JSON.parse(userDataStr),
           }
-        } catch (error) {
-          console.error('Parse userData error:', error)
-          // 資料解析錯誤才清除
+        } catch {
           localStorage.removeItem('token')
           localStorage.removeItem('userData')
         }
