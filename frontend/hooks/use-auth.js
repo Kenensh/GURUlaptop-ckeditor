@@ -30,9 +30,6 @@ const defaultContextValue = {
 }
 
 export const AuthProvider = ({ children }) => {
-  const router = useRouter()
-  const [isLoading, setIsLoading] = useState(true)
-
   // 初始化時檢查 localStorage
   const [auth, setAuth] = useState(() => {
     if (isClient) {
@@ -41,11 +38,14 @@ export const AuthProvider = ({ children }) => {
       if (token && userDataStr) {
         try {
           const userData = JSON.parse(userDataStr)
+          // 有登入資料就直接設為登入狀態
           return {
             isAuth: true,
             userData,
           }
         } catch (error) {
+          console.error('Parse userData error:', error)
+          // 資料解析錯誤才清除
           localStorage.removeItem('token')
           localStorage.removeItem('userData')
         }
@@ -60,9 +60,9 @@ export const AuthProvider = ({ children }) => {
         throw new Error('Invalid login data')
       }
 
+      // 儲存並更新登入狀態
       localStorage.setItem('token', userData.token)
       localStorage.setItem('userData', JSON.stringify(userData))
-
       setAuth({
         isAuth: true,
         userData,
@@ -75,55 +75,15 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  const handleLogout = async () => {
-    try {
-      localStorage.removeItem('token')
-      localStorage.removeItem('userData')
-      setAuth({ isAuth: false, userData: initUserData })
-      await router.replace('/member/login')
-    } catch (error) {
-      console.error('Logout error:', error)
-    }
+  const logout = async () => {
+    localStorage.removeItem('token')
+    localStorage.removeItem('userData')
+    setAuth({ isAuth: false, userData: initUserData })
   }
 
-  useEffect(() => {
-    if (!isClient || !router.isReady) return
-
-    const protectedRoutes = ['/dashboard', '/member/profile', '/cart/checkout']
-    const currentPath = router.pathname
-
-    const isProtectedRoute = protectedRoutes.some((route) =>
-      currentPath.startsWith(route)
-    )
-
-    if (isProtectedRoute) {
-      const token = localStorage.getItem('token')
-      if (!token) {
-        router.replace('/member/login')
-      }
-    }
-
-    setIsLoading(false)
-  }, [router.isReady, router.pathname])
-
-  if (!isClient) {
-    return (
-      <AuthContext.Provider value={defaultContextValue}>
-        {children}
-      </AuthContext.Provider>
-    )
-  }
-
+  // 移除多餘的判斷，讓它保持簡單
   return (
-    <AuthContext.Provider
-      value={{
-        auth,
-        login,
-        logout: handleLogout,
-        setAuth,
-        isLoading,
-      }}
-    >
+    <AuthContext.Provider value={{ auth, login, logout, setAuth }}>
       {children}
     </AuthContext.Provider>
   )
