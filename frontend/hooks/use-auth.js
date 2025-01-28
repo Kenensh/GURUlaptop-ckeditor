@@ -1,114 +1,132 @@
-import React, {
-  useState,
-  useContext,
-  createContext,
-  useEffect,
-  useCallback,
-} from 'react'
+import React, { useState, useContext, createContext, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { checkAuth } from '@/services/user'
 
-const isClient = typeof window !== 'undefined'
 const AuthContext = createContext(null)
-const BACKEND_URL =
-  process.env.NEXT_PUBLIC_BACKEND_URL ||
-  (process.env.NODE_ENV === 'development'
-    ? 'http://localhost:3005'
-    : 'https://gurulaptop-ckeditor.onrender.com')
 
+// 初始化會員狀態
 export const initUserData = {
-  id: 0,
-  email: '',
+  user_id: 0,
   name: '',
-  nickname: '',
-  birthday: '',
-  mobile: '',
-  address: '',
-  credit_card: '',
-}
-
-const defaultContextValue = {
-  auth: { isAuth: false, userData: initUserData },
-  login: () => Promise.resolve({ status: 'error', message: 'SSR不支援登入' }),
-  logout: () => Promise.resolve({ status: 'error', message: 'SSR不支援登出' }),
-  setAuth: () => {},
-  isLoading: true,
+  password: '',
+  gender: '',
+  birthdate: '',
+  phone: '',
+  email: '',
+  country: '',
+  city: '',
+  district: '',
+  road_name: '',
+  detailed_address: '',
+  image_path: '',
+  remarks: '',
+  level: 0,
 }
 
 export const AuthProvider = ({ children }) => {
-  AuthProvider.displayName = 'AuthProvider'
-
-  const [auth, setAuth] = useState(() => {
-    if (isClient) {
-      try {
-        const token = localStorage.getItem('token')
-        const userDataStr = localStorage.getItem('userData')
-        if (token && userDataStr) {
-          return {
-            isAuth: true,
-            userData: JSON.parse(userDataStr),
-          }
-        }
-      } catch (error) {
-        console.error('Auth init error:', error)
-        localStorage.removeItem('token')
-        localStorage.removeItem('userData')
-      }
-    }
-    return { isAuth: false, userData: initUserData }
+  const [auth, setAuth] = useState({
+    isAuth: false,
+    userData: initUserData,
   })
 
-  const login = async (userData) => {
+  const router = useRouter()
+
+  // 登入頁路由
+  const loginRoute = '/member/login'
+  // 隱私頁面路由
+  const protectedRoutes = ['/dashboard', '/coupon/coupon-user']
+
+  const login = async (email, password) => {
     try {
-      if (!userData || !userData.token) {
-        throw new Error('Invalid login data')
-      }
-
-      localStorage.setItem('token', userData.token)
-      localStorage.setItem('userData', JSON.stringify(userData))
-
-      setAuth({
-        isAuth: true,
-        userData,
+      const response = await fetch('api/login', {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
       })
-
-      return { status: 'success' }
+      const result = await response.json()
+      if (result.status === 'success') {
+        setAuth({
+          isAuth: true,
+          userData: result.data,
+        })
+      }
     } catch (error) {
-      console.error('Login error:', error)
-      return { status: 'error', message: error.message }
+      console.error('登入失敗：', error)
     }
   }
 
   const logout = async () => {
     try {
-      localStorage.removeItem('token')
-      localStorage.removeItem('userData')
-      setAuth({ isAuth: false, userData: initUserData })
+      const response = await fetch('http://localhost:3005/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error('登出失敗')
+      }
+      const result = await response.json()
+
+      if (result.status === 'success') {
+        await Promise.all([
+          router.push('/member/login'),
+          new Promise((resolve) => {
+            setAuth({
+              isAuth: false,
+              userData: initUserData,
+            })
+            resolve()
+          }),
+        ])
+      }
     } catch (error) {
-      console.error('Logout error:', error)
+      console.error('登出錯誤:', error)
     }
   }
 
-  const contextValue = useMemo(
-    () => ({
-      auth,
-      login,
-      logout,
-      setAuth,
-    }),
-    [auth, login]
-  )
+  const handleCheckAuth = async () => {
+    const res = await checkAuth()
+
+    if (res.data.status === 'success') {
+      const dbUser = res.data.data.user
+      const userData = { ...initUserData }
+
+      for (const key in userData) {
+        if (Object.hasOwn(dbUser, key)) {
+          userData[key] = dbUser[key] || ''
+        }
+      }
+      setAuth({ isAuth: true, userData })
+    } else {
+      console.warn(res.data)
+      if (protectedRoutes.includes(router.pathname)) {
+        router.push(loginRoute)
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (router.isReady && !auth.isAuth) {
+      handleCheckAuth()
+    }
+  }, [router.isReady, router.pathname])
 
   return (
-    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
+    <AuthContext.Provider
+      value={{
+        auth,
+        login,
+        logout,
+        setAuth,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
   )
 }
-AuthProvider.displayName = 'AuthProvider'
 
-export const useAuth = () => {
-  const context = useContext(AuthContext)
-  if (!context) throw new Error('useAuth 必須在 AuthProvider 內使用')
-  return context
-}
+export const useAuth = () => useContext(AuthContext)
 
 export default useAuth
