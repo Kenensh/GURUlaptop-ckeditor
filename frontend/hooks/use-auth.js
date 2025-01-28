@@ -30,6 +30,9 @@ const defaultContextValue = {
 }
 
 export const AuthProvider = ({ children }) => {
+  // 在最上方就設置 displayName
+  AuthProvider.displayName = 'AuthProvider'
+
   const [auth, setAuth] = useState(() => {
     if (isClient) {
       const token = localStorage.getItem('token')
@@ -37,6 +40,10 @@ export const AuthProvider = ({ children }) => {
       if (token && userDataStr) {
         try {
           const userData = JSON.parse(userDataStr)
+          console.log('Initial auth state with token:', {
+            isAuth: true,
+            userData,
+          })
           return {
             isAuth: true,
             userData,
@@ -47,52 +54,18 @@ export const AuthProvider = ({ children }) => {
         }
       }
     }
+    console.log('Initial auth state without token:', {
+      isAuth: false,
+      userData: initUserData,
+    })
     return { isAuth: false, userData: initUserData }
   })
 
   useEffect(() => {
-    console.log('AuthProvider mounted/updated', auth)
-  }, [auth])
-
-  const login = async (result) => {
-    try {
-      if (!result) {
-        throw new Error('Login data is required')
-      }
-
-      // API 返回的資料結構處理
-      console.log('Login data received:', result)
-
-      // 存儲 token 和使用者資料
-      localStorage.setItem('token', result.token)
-      localStorage.setItem('userData', JSON.stringify(result))
-
-      // 更新 auth 狀態
-      setAuth({
-        isAuth: true,
-        userData: result,
-      })
-
-      console.log('Auth state after login:', {
-        isAuth: true,
-        userData: result,
-      })
-
-      return { status: 'success' }
-    } catch (error) {
-      console.error('Login error:', error)
-      return { status: 'error', message: error.message }
-    }
-  }
-
-  const logout = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('userData')
-    setAuth({ isAuth: false, userData: initUserData })
-  }
-
-  useEffect(() => {
-    console.log('Auth state changed:', auth)
+    console.log('AuthProvider state:', {
+      hasToken: !!localStorage.getItem('token'),
+      authState: auth,
+    })
   }, [auth])
 
   AuthProvider.displayName = 'AuthProvider'
@@ -103,6 +76,7 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   )
 }
+AuthProvider.displayName = 'AuthProvider'
 
 export const useAuth = () => {
   const context = useContext(AuthContext)

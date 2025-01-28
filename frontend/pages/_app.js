@@ -45,22 +45,14 @@ const BACKEND_URL =
     ? 'http://localhost:3005'
     : 'https://gurulaptop-ckeditor.onrender.com'
 
-// 在 fetch 攔截器部分加強錯誤處理
-if (typeof window !== 'undefined') {
+// Fetch 攔截器設置
+if (isClient) {
   const originalFetch = window.fetch
   window.fetch = async (url, options = {}) => {
     try {
-      const startTime = Date.now()
-      const defaultHeaders = {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        'Cache-Control': 'no-store',
-      }
-
       if (url.startsWith('/') || url.includes('gurulaptop-ckeditor')) {
         const finalUrl = url.startsWith('/') ? `${BACKEND_URL}${url}` : url
 
-        // 針對非 OPTIONS 請求添加必要的 headers
         if (options.method !== 'OPTIONS') {
           options = {
             ...options,
@@ -74,8 +66,7 @@ if (typeof window !== 'undefined') {
           }
         }
 
-        const response = await originalFetch(finalUrl, options)
-        return response
+        return await originalFetch(finalUrl, options)
       }
 
       return originalFetch(url, options)
@@ -86,84 +77,42 @@ if (typeof window !== 'undefined') {
   }
 }
 
-export default function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps }) {
   const router = useRouter()
 
   // 全局錯誤處理
   useEffect(() => {
-    if (isClient) {
-      window.onerror = function (msg, url, lineNo, columnNo, error) {
-        console.log('Global Error:', {
-          message: msg,
-          url: url,
-          lineNo: lineNo,
-          columnNo: columnNo,
-          error: error?.stack,
-        })
-        return false
-      }
+    if (!isClient) return
 
-      window.onunhandledrejection = function (event) {
-        console.log('Unhandled Promise Rejection:', event.reason)
-      }
+    // 錯誤處理設置
+    window.onerror = (msg, url, lineNo, columnNo, error) => {
+      console.log('Global Error:', {
+        message: msg,
+        url: url,
+        lineNo: lineNo,
+        columnNo: columnNo,
+        error: error?.stack,
+      })
+      return false
     }
 
-    // 導入 bootstrap
-    import('bootstrap/dist/js/bootstrap')
+    window.onunhandledrejection = (event) => {
+      console.log('Unhandled Promise Rejection:', event.reason)
+    }
+
+    // 動態導入 bootstrap
+    const loadBootstrap = async () => {
+      await import('bootstrap/dist/js/bootstrap')
+    }
+    loadBootstrap()
   }, [])
-
-  // useEffect(() => {
-  //   const wakeUpBackend = async () => {
-  //     const requestId = Math.random().toString(36).substring(7)
-  //     console.log(`[${requestId}] Wake up process starting...`)
-
-  //     try {
-  //       const response = await fetch(
-  //         'https://gurulaptop-ckeditor.onrender.com/health',
-  //         {
-  //           method: 'GET',
-  //           mode: 'cors',
-  //           credentials: 'include',
-  //           headers: {
-  //             'Content-Type': 'application/json',
-  //           },
-  //         }
-  //       )
-
-  //       if (!response.ok) {
-  //         throw new Error(`Health check failed: ${response.status}`)
-  //       }
-
-  //       const data = await response.json()
-  //       console.log(`[${requestId}] Backend health:`, data)
-  //     } catch (error) {
-  //       console.error(`[${requestId}] Wake-up failed:`, error)
-  //       setTimeout(wakeUpBackend, 5000)
-  //     }
-  //   }
-
-  //   if (typeof window !== 'undefined') {
-  //     const initialTimeout = setTimeout(() => {
-  //       wakeUpBackend()
-  //       const interval = setInterval(wakeUpBackend, 5 * 60 * 1000) // 每5分鐘
-  //       return () => clearInterval(interval)
-  //     }, 2000)
-
-  //     return () => clearTimeout(initialTimeout)
-  //   }
-  // }, [])
 
   // 取得頁面布局
   const getLayout =
     Component.getLayout ||
-    ((page) => {
-      if (!isClient) {
-        return page
-      }
-      return <DefaultLayout>{page}</DefaultLayout>
-    })
+    ((page) => (isClient ? <DefaultLayout>{page}</DefaultLayout> : page))
 
-  // 渲染組件，包含所有必要的 Providers
+  // 渲染組件
   return (
     <AuthProvider>
       <LoadingProviderAnimation close={1} CustomLoader={LoadingAnimation}>
@@ -182,3 +131,5 @@ export default function MyApp({ Component, pageProps }) {
     </AuthProvider>
   )
 }
+
+export default MyApp
