@@ -40,6 +40,14 @@ import { LoadingSpinner } from '@/components/dashboard/loading-spinner'
 
 // 常數定義
 const isClient = typeof window !== 'undefined'
+
+// 加入這段 React hooks 全局處理
+if (typeof window === 'undefined') {
+  const React = require('react')
+  global.React = React
+  global.useCallback = React.useCallback
+}
+
 const BACKEND_URL =
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:3005'

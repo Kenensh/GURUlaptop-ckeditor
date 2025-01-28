@@ -1,4 +1,10 @@
-import React, { useState, useContext, createContext, useEffect } from 'react'
+import React, {
+  useState,
+  useContext,
+  createContext,
+  useEffect,
+  useCallback,
+} from 'react'
 import { useRouter } from 'next/router'
 import { checkAuth } from '@/services/user'
 
@@ -52,7 +58,7 @@ export const AuthProvider = ({ children }) => {
     return { isAuth: false, userData: initUserData }
   })
 
-  const login = useCallback(async (userData) => {
+  const login = async (userData) => {
     try {
       if (!userData || !userData.token) {
         throw new Error('Invalid login data')
@@ -71,7 +77,17 @@ export const AuthProvider = ({ children }) => {
       console.error('Login error:', error)
       return { status: 'error', message: error.message }
     }
-  }, [])
+  }
+
+  const logout = async () => {
+    try {
+      localStorage.removeItem('token')
+      localStorage.removeItem('userData')
+      setAuth({ isAuth: false, userData: initUserData })
+    } catch (error) {
+      console.error('Logout error:', error)
+    }
+  }
 
   const contextValue = useMemo(
     () => ({

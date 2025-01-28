@@ -3,6 +3,10 @@ const path = require('path')
 
 const nextConfig = {
   reactStrictMode: false,
+  // 加入這段
+  experimental: {
+    esmExternals: false,
+  },
   compiler: {
     styledComponents: true,
   },
