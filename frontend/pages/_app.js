@@ -23,6 +23,7 @@ import '@/styles/eventRegistration.scss'
 import '@/styles/group.scss'
 import '@/styles/groupCreat.scss'
 import 'animate.css'
+import React, { useCallback } from 'react'
 
 // 元件導入
 import DefaultLayout from '@/components/layout/default-layout'
@@ -43,9 +44,8 @@ const isClient = typeof window !== 'undefined'
 
 // 加入這段 React hooks 全局處理
 if (typeof window === 'undefined') {
-  const React = require('react')
   global.React = React
-  global.useCallback = React.useCallback
+  global.useCallback = useCallback // 直接使用導入的 useCallback
 }
 
 const BACKEND_URL =

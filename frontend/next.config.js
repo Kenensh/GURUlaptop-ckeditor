@@ -6,6 +6,8 @@ const nextConfig = {
   // 加入這段
   experimental: {
     esmExternals: false,
+    serverComponents: false,
+    forceSwcTransforms: true,
   },
   compiler: {
     styledComponents: true,
