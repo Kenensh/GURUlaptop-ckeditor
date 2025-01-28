@@ -1,54 +1,86 @@
 import express from 'express'
-import { pool } from '##/configs/db.js'
+import { pool } from '../configs/db.js'
 import multer from 'multer'
 const upload = multer()
 const router = express.Router()
-import { generateHash } from '#db-helpers/password-hash.js'
+import { generateHash } from '../db-helpers/password-hash.js'
 
+// 註冊路由
 router.post('/', upload.none(), async (req, res, next) => {
+  // 取得資料庫連線
   const client = await pool.connect()
+
   try {
+    // 解構請求資料
     const { email, password, phone, birthdate, gender } = req.body
 
-    // 看解構後的值
-    console.log('解構後的值:', {
+    // 記錄接收到的資料
+    console.log('接收到的註冊資料:', {
       email,
-      password,
       phone,
       birthdate,
       gender,
     })
 
-    if (!password) {
-      throw new Error('密碼未接收到')
-    }
-
-    // 檢查是否已經有相同的 email
-    const existingResult = await client.query(
-      'SELECT 1 FROM users WHERE email = $1',
-      [email]
-    )
-
-    if (existingResult.rows.length > 0) {
-      return res.json({
+    // 驗證必要欄位
+    if (!email || !password) {
+      return res.status(400).json({
         status: 'error',
-        message: '電子郵件已被註冊!!!請使用其他email',
+        message: '必填欄位未填寫完整',
       })
     }
 
-    // 產生加密密碼
+    // 檢查 email 格式
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        status: 'error',
+        message: '無效的 email 格式',
+      })
+    }
+
+    // 檢查 email 是否已存在
+    const checkEmailQuery = `
+      SELECT 1 FROM users 
+      WHERE email = $1
+    `
+    const existingUser = await client.query(checkEmailQuery, [email])
+
+    if (existingUser.rows.length > 0) {
+      return res.status(400).json({
+        status: 'error',
+        message: '此 email 已被註冊',
+      })
+    }
+
+    // 密碼加密
     const hashedPassword = await generateHash(password)
 
-    // PostgreSQL 插入語句
-    const sql = `
+    // 插入新用戶資料
+    const insertUserQuery = `
       INSERT INTO users (
-        email, password, phone, birthdate, gender,
-        level, valid, created_at,
-        country, city, district, road_name, detailed_address
+        email, 
+        password, 
+        phone, 
+        birthdate, 
+        gender,
+        level, 
+        valid, 
+        created_at,
+        country, 
+        city, 
+        district, 
+        road_name, 
+        detailed_address,
+        name,
+        image_path,
+        google_uid,
+        remarks
       ) VALUES (
         $1, $2, $3, $4, $5,
-        0, true, NOW(),
-        '', '', '', '', ''
+        0, true, CURRENT_TIMESTAMP,
+        '', '', '', '', '',
+        '', NULL, NULL, NULL
       )
       RETURNING user_id
     `
@@ -58,11 +90,12 @@ router.post('/', upload.none(), async (req, res, next) => {
       hashedPassword,
       phone || null,
       birthdate || null,
-      gender === '' ? null : gender,
+      gender || null,
     ]
 
-    const result = await client.query(sql, params)
+    const result = await client.query(insertUserQuery, params)
 
+    // 確認插入成功
     if (result.rows.length > 0) {
       return res.json({
         status: 'success',
@@ -71,26 +104,29 @@ router.post('/', upload.none(), async (req, res, next) => {
           user_id: result.rows[0].user_id,
         },
       })
+    } else {
+      throw new Error('用戶資料插入失敗')
     }
-
-    throw new Error('資料插入失敗')
   } catch (error) {
-    console.error('註冊失敗:', error)
+    console.error('註冊過程發生錯誤:', error)
 
-    // PostgreSQL 的唯一約束違反錯誤代碼
+    // 特定錯誤處理
     if (error.code === '23505') {
       // unique_violation
       return res.status(400).json({
         status: 'error',
-        message: '此 email 已被註冊...',
+        message: '此 email 已被註冊',
       })
     }
 
+    // 其他錯誤
     return res.status(500).json({
       status: 'error',
-      message: '系統錯誤，請稍後再試',
+      message: '註冊失敗，請稍後再試',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined,
     })
   } finally {
+    // 釋放資料庫連線
     client.release()
   }
 })

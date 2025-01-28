@@ -1,51 +1,22 @@
 import React, { useState } from 'react'
 import Image from 'next/image'
-import axios from 'axios'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
+import Swal from 'sweetalert2'
 import Header from '@/components/layout/default-layout/header'
 import MyFooter from '@/components/layout/default-layout/my-footer'
 import styles from '@/styles/signUpForm.module.scss'
-import { useRouter } from 'next/router'
-import Swal from 'sweetalert2'
-import { useJumpingLetters } from '@/hooks/jumping-letters-hook'
 import Head from 'next/head'
-import 'animate.css'
 import GlowingText from '@/components/dashboard/glowing-text/glowing-text'
-import axiosInstance from '@/services/axios-instance'
+
+const BACKEND_URL =
+  process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3005'
+
 export default function Signup() {
-  // 處理失焦
-  // const { renderJumpingText } = useJumpingLetters()
-
-  const isClient = typeof window !== 'undefined'
-
-  const validatePassword = (password) => {
-    //函式內宣告2個變數
-    const rules = {
-      minLength: password.length >= 8,
-      hasUpperCase: /[A-Z]/.test(password), //2
-      hasLowerCase: /[a-z]/.test(password),
-      hasNumber: /\d/.test(password),
-    }
-
-    const messages = {
-      minLength: '密碼至少需要8個字元',
-      hasUpperCase: '需要包含大寫字母', //2
-      hasLowerCase: '需要包含小寫字母',
-      hasNumber: '需要包含數字',
-    }
-
-    // 函式的返回值
-    //  Object.entries() 是產生新的陣列，不會影響到原物件
-    return (
-      Object.entries(rules)
-        .filter(([rule, valid]) => !valid)
-        // !valid 意思是找出值是 false 的規則
-        .map(([rule]) => messages[rule])
-    )
-    // 用 rule 當作 key 去 messages 物件找對應的訊息
-  }
-
   const router = useRouter()
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // 表單資料
   const [user, setUser] = useState({
     email: '',
     password: '',
@@ -56,6 +27,7 @@ export default function Signup() {
     agree: false,
   })
 
+  // 錯誤訊息
   const [errors, setErrors] = useState({
     email: '',
     password: '',
@@ -64,10 +36,33 @@ export default function Signup() {
     agree: '',
   })
 
+  // 密碼顯示控制
   const [showpassword, setShowpassword] = useState(false)
   const [showConfirmpassword, setShowConfirmpassword] = useState(false)
   const [submitError, setSubmitError] = useState('')
 
+  // 密碼驗證規則
+  const validatePassword = (password) => {
+    const rules = {
+      minLength: password.length >= 8,
+      hasUpperCase: /[A-Z]/.test(password),
+      hasLowerCase: /[a-z]/.test(password),
+      hasNumber: /\d/.test(password),
+    }
+
+    const messages = {
+      minLength: '密碼至少需要8個字元',
+      hasUpperCase: '需要包含大寫字母',
+      hasLowerCase: '需要包含小寫字母',
+      hasNumber: '需要包含數字',
+    }
+
+    return Object.entries(rules)
+      .filter(([rule, valid]) => !valid)
+      .map(([rule]) => messages[rule])
+  }
+
+  // 處理輸入變化
   const handleFieldChange = (e) => {
     const { name, value, type, checked } = e.target
     setUser((prev) => ({
@@ -83,24 +78,25 @@ export default function Signup() {
     }
   }
 
+  // 表單驗證
   const validateForm = () => {
     const newErrors = {}
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-    if (!user.email) {
-      newErrors.email = 'Email為必填'
-    } else if (!/\S+@\S+\.\S+/.test(user.email)) {
+    if (!user.email || !emailRegex.test(user.email)) {
       newErrors.email = '請輸入有效的Email格式'
     }
 
     if (!user.password) {
       newErrors.password = '密碼為必填'
-    } else if (user.password.length < 8) {
-      newErrors.password = '密碼長度至少8個字元'
+    } else {
+      const passwordErrors = validatePassword(user.password)
+      if (passwordErrors.length > 0) {
+        newErrors.password = passwordErrors[0]
+      }
     }
 
-    if (!user.confirmpassword) {
-      newErrors.confirmpassword = '確認密碼為必填'
-    } else if (user.password !== user.confirmpassword) {
+    if (user.password !== user.confirmpassword) {
       newErrors.confirmpassword = '密碼與確認密碼不相符'
     }
 
@@ -112,54 +108,56 @@ export default function Signup() {
     return Object.keys(newErrors).length === 0
   }
 
+  // 表單提交
   const handleSubmit = async (e) => {
     e.preventDefault()
-
-    // 加入提交狀態控制
-    const [isSubmitting, setIsSubmitting] = useState(false)
 
     try {
       setSubmitError('')
       setIsSubmitting(true)
 
       if (!validateForm()) {
-        setIsSubmitting(false)
         return
       }
 
-      const response = await axiosInstance.post('/signup', user)
+      const { confirmpassword, agree, ...submitData } = user
 
-      if (response.data.status === 'success') {
-        resetForm()
+      const response = await fetch(`${BACKEND_URL}/api/auth/signup`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(submitData),
+      })
 
-        await showAlert({
+      const result = await response.json()
+
+      if (result.status === 'success') {
+        await Swal.fire({
           title: '註冊成功！',
           text: '歡迎加入我們！',
           icon: 'success',
           confirmButtonText: '前往登入',
+          confirmButtonColor: '#805AF5',
         })
 
         router.push('/member/login')
       } else {
-        await showAlert({
-          title: '註冊失敗',
-          text: response.data.message,
-          icon: 'error',
-        })
-
-        setSubmitError(response.data.message)
+        throw new Error(result.message || '註冊失敗')
       }
     } catch (error) {
-      console.error('註冊請求失敗:', error)
-      const errorMessage = error.response?.data?.message || '註冊過程中發生錯誤'
+      console.error('註冊失敗:', error)
+      const errorMessage = error.message || '註冊過程中發生錯誤'
 
-      await showAlert({
+      setSubmitError(errorMessage)
+
+      await Swal.fire({
         title: '註冊失敗',
         text: errorMessage,
         icon: 'error',
+        confirmButtonText: '確定',
+        confirmButtonColor: '#805AF5',
       })
-
-      setSubmitError(errorMessage)
     } finally {
       setIsSubmitting(false)
     }

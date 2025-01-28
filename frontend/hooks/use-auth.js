@@ -30,50 +30,61 @@ const defaultContextValue = {
 }
 
 export const AuthProvider = ({ children }) => {
-  // 在最上方就設置 displayName
   AuthProvider.displayName = 'AuthProvider'
 
   const [auth, setAuth] = useState(() => {
     if (isClient) {
-      const token = localStorage.getItem('token')
-      const userDataStr = localStorage.getItem('userData')
-      if (token && userDataStr) {
-        try {
-          const userData = JSON.parse(userDataStr)
-          console.log('Initial auth state with token:', {
-            isAuth: true,
-            userData,
-          })
+      try {
+        const token = localStorage.getItem('token')
+        const userDataStr = localStorage.getItem('userData')
+        if (token && userDataStr) {
           return {
             isAuth: true,
-            userData,
+            userData: JSON.parse(userDataStr),
           }
-        } catch {
-          localStorage.removeItem('token')
-          localStorage.removeItem('userData')
         }
+      } catch (error) {
+        console.error('Auth init error:', error)
+        localStorage.removeItem('token')
+        localStorage.removeItem('userData')
       }
     }
-    console.log('Initial auth state without token:', {
-      isAuth: false,
-      userData: initUserData,
-    })
     return { isAuth: false, userData: initUserData }
   })
 
-  useEffect(() => {
-    console.log('AuthProvider state:', {
-      hasToken: !!localStorage.getItem('token'),
-      authState: auth,
-    })
-  }, [auth])
+  const login = useCallback(async (userData) => {
+    try {
+      if (!userData || !userData.token) {
+        throw new Error('Invalid login data')
+      }
 
-  AuthProvider.displayName = 'AuthProvider'
+      localStorage.setItem('token', userData.token)
+      localStorage.setItem('userData', JSON.stringify(userData))
+
+      setAuth({
+        isAuth: true,
+        userData,
+      })
+
+      return { status: 'success' }
+    } catch (error) {
+      console.error('Login error:', error)
+      return { status: 'error', message: error.message }
+    }
+  }, [])
+
+  const contextValue = useMemo(
+    () => ({
+      auth,
+      login,
+      logout,
+      setAuth,
+    }),
+    [auth, login]
+  )
 
   return (
-    <AuthContext.Provider value={{ auth, login, logout, setAuth }}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   )
 }
 AuthProvider.displayName = 'AuthProvider'
