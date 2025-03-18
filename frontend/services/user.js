@@ -146,9 +146,45 @@ export const updateProfileAvatar = async (formData) => {
 // JWT 處理
 export const parseJwt = (token) => {
   try {
-    const base64Payload = token.split('.')[1]
-    const payload = Buffer.from(base64Payload, 'base64')
-    return JSON.parse(payload.toString())
+    if (!token) return null
+
+    // 確保 token 是有效的字符串
+    if (typeof token !== 'string') {
+      console.error('Invalid token format')
+      return null
+    }
+
+    // 檢查 token 是否包含必要的部分
+    const parts = token.split('.')
+    if (parts.length !== 3) {
+      console.error('Invalid JWT format')
+      return null
+    }
+
+    const base64Url = parts[1]
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+
+    // 使用 try-catch 專門處理 atob 部分
+    let decodedData
+    try {
+      decodedData = window.atob(base64)
+    } catch (e) {
+      console.error('Failed to decode base64:', e)
+      return null
+    }
+
+    // 更安全的方式處理 URI 編碼
+    try {
+      const jsonPayload = decodeURIComponent(
+        Array.from(decodedData)
+          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join('')
+      )
+      return JSON.parse(jsonPayload)
+    } catch (e) {
+      console.error('Failed to parse payload:', e)
+      return null
+    }
   } catch (error) {
     console.error('Parse JWT failed:', error)
     return null
