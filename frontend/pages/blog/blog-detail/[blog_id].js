@@ -13,13 +13,9 @@ import Header from '@/components/layout/default-layout/header'
 import MyFooter from '@/components/layout/default-layout/my-footer'
 
 // 定義常量
-const BACKEND_URL =<p 
-  className="fs-5 BlogDetailText text-break"
-  dangerouslySetInnerHTML={{ __html: blogData.blog_content }}
-/>
-  process.env.NODE_ENV === 'development'
-    ? 'http://localhost:3005'
-    : 'https://gurulaptop-ckeditor.onrender.com'
+const BACKEND_URL = process.env.NODE_ENV === 'development'
+  ? 'http://localhost:3005'
+  : 'https://gurulaptop-ckeditor.onrender.com'
 
 export default function BlogDetail() {
   const router = useRouter()
