@@ -7,38 +7,53 @@ import { useAuth } from '@/hooks/use-auth'
 import Header from '@/components/layout/default-layout/header'
 import MyFooter from '@/components/layout/default-layout/my-footer'
 import Head from 'next/head'
+import Swal from 'sweetalert2'
 
 export default function BlogUserDetail() {
   const router = useRouter()
   const { blog_id } = router.query
   const [blogData, setBlogData] = useState(null)
   const { auth } = useAuth()
-  const { userData, isAuth } = auth || {}
-  const [isLoading, setIsLoading] = useState(true) // 新增 loading 狀態
+  const isAuth = auth?.isAuth || false
+  const userData = auth?.userData || {}
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // 等待路由和認證資訊都準備好
-    if (!blog_id || auth === undefined) {
+    // 等待路由參數加載完成
+    if (!blog_id) {
       return
     }
 
-    // 認證檢查
-    if (!isAuth || !userData) {
-      router.push('/blog')
+    // 認證檢查 - 加強檢查邏輯以防止錯誤
+    if (!isAuth || !userData?.user_id) {
+      Swal.fire({
+        icon: 'warning',
+        title: '請先登入',
+        text: '需要登入才能查看此頁面',
+      }).then(() => {
+        router.push('/blog')
+      })
       return
     }
 
     setIsLoading(true)
     fetch(`http://localhost:3005/api/blog/blog-user-detail/${blog_id}`)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`)
+        }
+        return response.json()
+      })
       .then((data) => {
-        const blogUserId = String(data.data.user_id)
-        const currentUserId = String(userData.user_id)
+        if (!data.data) {
+          throw new Error('找不到部落格資料')
+        }
+
+        const blogUserId = String(data.data.user_id || '')
+        const currentUserId = String(userData.user_id || '')
 
         if (blogUserId !== currentUserId) {
-          console.log('用戶ID不匹配')
-          router.push('/blog')
-          return
+          throw new Error('無權限訪問此部落格')
         }
 
         setBlogData(data.data)
@@ -46,19 +61,34 @@ export default function BlogUserDetail() {
       })
       .catch((error) => {
         console.error('Error:', error)
-        router.push('/blog')
+        Swal.fire({
+          icon: 'error',
+          title: '發生錯誤',
+          text: error.message || '無法載入部落格資料',
+        }).then(() => {
+          router.push('/blog')
+        })
       })
-  }, [blog_id, auth, isAuth, userData, router])
+  }, [blog_id, isAuth, userData?.user_id, router])
 
   // 顯示載入狀態
   if (isLoading || !blogData) {
-    return <p>Loading...</p>
+    return (
+      <>
+        <Header />
+        <div className="container d-flex justify-content-center align-items-center" style={{ minHeight: '60vh' }}>
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      </>
+    )
   }
 
   return (
     <>
       <Head>
-        <title>編輯{blogData.blog_title}</title>
+        <title>編輯{blogData.blog_title || '部落格'}</title>
       </Head>
       <Header />
       <BlogDetailMainArea />
@@ -75,35 +105,27 @@ export default function BlogUserDetail() {
         <img
           className="w-50 h-100 ratio"
           src={`http://localhost:3005${blogData.blog_image}`}
-          alt={blogData.blog_title}
+          alt={blogData.blog_title || '部落格圖片'}
+          onError={(e) => {
+            e.target.onerror = null
+            e.target.src = '/default-blog-image.jpg'
+          }}
         />
       </div>
       <section className="container BlogDetailSectionContentArea mt-5">
         <div className="d-flex flex-column">
           <div>
             <p className="mb-5 mt-5 fs-5 fw-bold BlogDetailSectionContentAreaTitle text-break">
-              {blogData.blog_title}
+              {blogData.blog_title || '無標題'}
             </p>
           </div>
-          {/* <div className="mb-5 mt-5 d-flex flex-column gap-5"> */}
-          {/* <p className="fs-5 fw-bold">部落格分類：{blogData.blog_type}</p> */}
         </div>
-        {/* <div className="mb-5 mt-5 d-flex flex-column gap-5 fw-bold"> */}
-        {/* <p className="fs-5 fw-bold">品牌：{blogData.blog_brand}</p> */}
-        {/* </div> */}
-        {/* <div className="mb-5 mt-5 d-flex flex-column gap-5">
-            <p className="fs-5 fw-bold"> */}
-        {/* 購買機型：{blogData.blog_brand_model} */}
-        {/* </p> */}
-        {/* </div>
-        </div> */}
         <div className="">
           <div className="mb-5 mt-5 d-flex flex-column gap-5 ">
-            {/* <p className="fs-5 BlogDetailText fw-bold">部落格內文</p> */}
             <p className="fs-5 BlogDetailText text-break">
               <div
                 dangerouslySetInnerHTML={{
-                  __html: blogData.blog_content,
+                  __html: blogData.blog_content || '無內容',
                 }}
               />
             </p>
