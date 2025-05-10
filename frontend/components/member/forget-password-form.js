@@ -4,11 +4,17 @@ import { useState } from 'react'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import Image from 'next/image'
+
 const isClient = typeof window !== 'undefined'
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 
+  (isClient && window.location.hostname === 'localhost' ? 
+    'http://localhost:3005' : 
+    'https://gurulaptop-ckeditor.onrender.com')
 
 export default function ForgetPasswordForm() {
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState({
     email: '',
   })
@@ -44,12 +50,21 @@ export default function ForgetPasswordForm() {
         return
       }
 
-      const response = await axios.post(
-        'http://localhost:3005/api/forgot-password/send',
-        { email }
-      )
+      setIsSubmitting(true)
+      console.log(`嘗試發送密碼重置請求到: ${BACKEND_URL}/api/forgot-password/send`)
 
-      if (response.data.status === 'success') {
+      const response = await fetch(`${BACKEND_URL}/api/forgot-password/send`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+        credentials: 'include'
+      })
+
+      const data = await response.json()
+      
+      if (data.status === 'success') {
         setMessage('已發送重設密碼信件到您的信箱')
         if (isClient) {
           Swal.fire({
@@ -63,14 +78,33 @@ export default function ForgetPasswordForm() {
       } else {
         setError((prev) => ({
           ...prev,
-          email: response.data.message || '發送失敗',
+          email: data.message || '發送失敗',
         }))
+        
+        if (isClient) {
+          Swal.fire({
+            title: '發送失敗',
+            text: data.message || '無法發送重設密碼信件，請稍後再試',
+            icon: 'error',
+          })
+        }
       }
     } catch (err) {
+      console.error('密碼重置請求失敗:', err)
       setError((prev) => ({
         ...prev,
-        email: err.response?.data?.message || '發送失敗',
+        email: '系統錯誤，請稍後再試',
       }))
+      
+      if (isClient) {
+        Swal.fire({
+          title: '系統錯誤',
+          text: '無法連接到伺服器，請檢查您的網路連接或稍後再試',
+          icon: 'error',
+        })
+      }
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -126,8 +160,9 @@ export default function ForgetPasswordForm() {
                   className="btn btn-outline-light" // 改用 light 讓按鈕在深色背景更明顯
                   type="button"
                   onClick={getConfirmMail}
+                  disabled={isSubmitting}
                 >
-                  取得新密碼
+                  {isSubmitting ? '處理中...' : '取得新密碼'}
                 </button>
               </div>
             </div>

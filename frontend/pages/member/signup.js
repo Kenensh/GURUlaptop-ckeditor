@@ -9,8 +9,12 @@ import styles from '@/styles/signUpForm.module.scss'
 import Head from 'next/head'
 import GlowingText from '@/components/dashboard/glowing-text/glowing-text'
 
-const BACKEND_URL =
-  process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3005'
+// 確保使用正確的後端 URL
+const isClient = typeof window !== 'undefined'
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 
+  (isClient && window.location.hostname === 'localhost' ? 
+    'http://localhost:3005' : 
+    'https://gurulaptop-ckeditor.onrender.com')
 
 export default function Signup() {
   const router = useRouter()
@@ -117,20 +121,42 @@ export default function Signup() {
       setIsSubmitting(true)
 
       if (!validateForm()) {
+        setIsSubmitting(false)
         return
       }
 
       const { confirmpassword, agree, ...submitData } = user
 
+      console.log(`嘗試發送註冊請求到: ${BACKEND_URL}/api/auth/signup`);
+      
       const response = await fetch(`${BACKEND_URL}/api/auth/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify(submitData),
-      })
+      });
 
-      const result = await response.json()
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('註冊回應錯誤:', {
+          status: response.status,
+          statusText: response.statusText,
+          errorText,
+        });
+        
+        // 嘗試解析錯誤訊息
+        try {
+          const errorData = JSON.parse(errorText);
+          throw new Error(errorData.message || '註冊請求失敗');
+        } catch (parseError) {
+          throw new Error(`註冊請求失敗 (${response.status})`);
+        }
+      }
+
+      const result = await response.json();
 
       if (result.status === 'success') {
         await Swal.fire({
@@ -139,17 +165,17 @@ export default function Signup() {
           icon: 'success',
           confirmButtonText: '前往登入',
           confirmButtonColor: '#805AF5',
-        })
+        });
 
-        router.push('/member/login')
+        router.push('/member/login');
       } else {
-        throw new Error(result.message || '註冊失敗')
+        throw new Error(result.message || '註冊失敗，但伺服器沒有提供具體原因');
       }
     } catch (error) {
-      console.error('註冊失敗:', error)
-      const errorMessage = error.message || '註冊過程中發生錯誤'
+      console.error('註冊處理過程中發生錯誤:', error);
+      const errorMessage = error.message || '註冊過程中發生錯誤';
 
-      setSubmitError(errorMessage)
+      setSubmitError(errorMessage);
 
       await Swal.fire({
         title: '註冊失敗',
@@ -157,11 +183,11 @@ export default function Signup() {
         icon: 'error',
         confirmButtonText: '確定',
         confirmButtonColor: '#805AF5',
-      })
+      });
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <>
@@ -175,8 +201,6 @@ export default function Signup() {
           src="/bgi/signup_bgi.png"
           alt="background"
           layout="fill"
-          // style={{objectFit:'cover'}}
-          // objectFit="cover"
           quality={100}
         />
         <div className="container">
@@ -184,20 +208,6 @@ export default function Signup() {
             <div
               className={`${styles.left} col-sm-12  col-md-6 col-lg-6 col d-flex flex-column justify-content-start`}
             >
-              {/* <i>
-              <h4 className={`text-white  animate__animated animate__zoomIn animate__infinite animate__rubberBand animate__slower	3s ${styles.signup}`}>Sign Up</h4> */}
-              {/* </i> */}
-              {/* <h3 className={`text-white ${styles['guru-laptop']}`}>
-                GURU Laptop </h3>  */}
-              {/* </h3> */}
-              {/* <h4 className={`text-white text-start`}>
-                {/* {renderJumpingText('Welcome to', 'welcome-text')} */}
-              {/* {renderJumpingText('Sign Up to', 'welcome-text')} */}
-              {/* </h4>  */}
-
-              {/* <h3 className={`text-white ${styles['guru-laptop']}`}> */}
-              {/* {renderJumpingText('LaptopGuru', 'company-name')} */}
-              {/* </h3> */}
               <i>
                 <GlowingText
                   text="Sign Up to"
@@ -394,8 +404,9 @@ export default function Signup() {
                   <button
                     type="submit"
                     className="btn btn-primary w-100 text-white"
+                    disabled={isSubmitting}
                   >
-                    送出
+                    {isSubmitting ? '處理中...' : '送出'}
                   </button>
                 </div>
               </form>
