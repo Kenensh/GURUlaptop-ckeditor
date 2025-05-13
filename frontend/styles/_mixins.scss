@@ -1,0 +1,169 @@
+@import './variables';
+
+// 響應式斷點
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == sm {
+    @media (min-width: $breakpoint-sm) { @content; }
+  }
+  @else if $breakpoint == md {
+    @media (min-width: $breakpoint-md) { @content; }
+  }
+  @else if $breakpoint == lg {
+    @media (min-width: $breakpoint-lg) { @content; }
+  }
+  @else if $breakpoint == xl {
+    @media (min-width: $breakpoint-xl) { @content; }
+  }
+  @else if $breakpoint == xxl {
+    @media (min-width: $breakpoint-xxl) { @content; }
+  }
+}
+
+// Flex 配置
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+// 文字截斷
+@mixin text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// 多行文字截斷
+@mixin multi-line-truncate($lines) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// 陰影效果
+@mixin box-shadow-hover {
+  transition: box-shadow 0.3s ease;
+  &:hover {
+    box-shadow: $box-shadow-lg;
+  }
+}
+
+// 按鈕基本樣式
+@mixin button-base {
+  display: inline-block;
+  font-weight: 400;
+  text-align: center;
+  vertical-align: middle;
+  user-select: none;
+  border: 1px solid transparent;
+  padding: $spacing-2 $spacing-3;
+  font-size: $font-size-base;
+  line-height: 1.5;
+  border-radius: $border-radius;
+  transition: all 0.15s ease-in-out;
+  cursor: pointer;
+}
+
+// 主要按鈕樣式
+@mixin button-primary {
+  @include button-base;
+  color: white;
+  background: $primary;
+  border-color: $primary;
+  
+  &:hover, &:focus {
+    background: darken($primary, 10%);
+    border-color: darken($primary, 10%);
+  }
+  
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+}
+
+// 次要按鈕樣式
+@mixin button-secondary {
+  @include button-base;
+  color: white;
+  background: $secondary;
+  border-color: $secondary;
+  
+  &:hover, &:focus {
+    background: darken($secondary, 10%);
+    border-color: darken($secondary, 10%);
+  }
+  
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+}
+
+// 漸變背景
+@mixin gradient-background($gradient) {
+  background: $gradient;
+  background-size: cover;
+  background-position: center;
+}
+
+// 圓形頭像
+@mixin avatar($size) {
+  width: $size;
+  height: $size;
+  border-radius: 50%;
+  object-fit: cover;
+  overflow: hidden;
+}
+
+// 卡片基本樣式
+@mixin card-base {
+  background-color: white;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: $box-shadow-lg;
+  }
+}
+
+// 表單控制項基本樣式
+@mixin form-control {
+  display: block;
+  width: 100%;
+  padding: $spacing-2;
+  font-size: $font-size-base;
+  line-height: 1.5;
+  color: #495057;
+  background-color: white;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: $border-radius;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  
+  &:focus {
+    color: #495057;
+    background-color: white;
+    border-color: $primary;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba($primary, 0.25);
+  }
+}
+
+// 清除浮動
+@mixin clearfix {
+  &::after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}

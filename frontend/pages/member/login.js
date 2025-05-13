@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import styles from '@/styles/signUpForm.module.scss'
+import styles from '@/styles/pages/_login.module.scss'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -11,12 +11,7 @@ import Head from 'next/head'
 import Header from '@/components/layout/default-layout/header'
 import MyFooter from '@/components/layout/default-layout/my-footer'
 import GlowingText from '@/components/dashboard/glowing-text/glowing-text'
-
-const BACKEND_URL =
-  process.env.NEXT_PUBLIC_BACKEND_URL ||
-  (process.env.NODE_ENV === 'development'
-    ? 'http://localhost:3005'
-    : 'https://gurulaptop-ckeditor.onrender.com')
+import api from '@/services/api'
 
 export default function LogIn() {
   const [formData, setFormData] = useState({
@@ -55,31 +50,28 @@ export default function LogIn() {
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
-
   const handleSubmit = async (e) => {
     e.preventDefault()
+    
+    if (!validateForm()) {
+      return
+    }
+    
     setIsSubmitting(true)
     showLoader()
-    console.log('Starting login process...') // 開始登入流程
-
+    
     try {
-      const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      })
-
-      const result = await response.json()
-
-      if (!response.ok) throw new Error(result.message || '登入失敗')
-
+      // 使用 API 服務層進行登入
+      const result = await api.auth.login(formData)
+      
+      if (result.success === false) {
+        throw new Error(result.message || '登入失敗')
+      }
+      
       if (result.status === 'success') {
-        console.log('API Response data:', result.data) // 看API回傳了什麼
+        // 使用 auth context 進行狀態更新
         const loginResult = await login(result.data)
-        console.log('Login Result:', loginResult) // 看 login 函數的返回
-        console.log('Current Auth State:', auth) // 看當前 auth 狀態
+        
         if (loginResult.status === 'success') {
           await router.replace('/dashboard')
         } else {

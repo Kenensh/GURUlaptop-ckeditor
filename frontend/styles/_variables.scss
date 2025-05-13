@@ -1,0 +1,45 @@
+// 顏色
+$primary: #805af5;
+$secondary: #b4b4b4;
+$success: #457db2;
+$danger: #ffeb36;
+$main-color: #805af5;
+
+// 漸層
+$linear-gradient-1: linear-gradient(180deg, #9474f7 0%, #573da7 100%);
+$linear-gradient-2: linear-gradient(180deg, #8770fd 0%, #5848b3 100%);
+$linear-gradient-3: linear-gradient(180deg, #a793e9 0%, #423db0 50%, #2e256a 100%);
+$linear-gradient-4: linear-gradient(180deg, #a660d7 0%, #5b35aa 50%, #281c72 100%);
+$linear-gradient-5: linear-gradient(180deg, #6552c6 0%, #1d1a64 50%, #00013a 100%);
+$linear-gradient-6: linear-gradient(270deg, #8678c9 0%, #00013a 49%, #00013a 100%);
+$linear-gradient-7: linear-gradient(270deg, #a793e9 0%, #5346b6 35%, #34246d 70%, #271948 100%);
+
+// 字體
+$font-family-base: 'Noto Sans TC', sans-serif;
+$font-size-base: 1rem;
+$font-weight-normal: 400;
+$font-weight-bold: 700;
+
+// 斷點
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+$breakpoint-xxl: 1400px;
+
+// 間距
+$spacing-1: 0.25rem;
+$spacing-2: 0.5rem;
+$spacing-3: 1rem;
+$spacing-4: 1.5rem;
+$spacing-5: 3rem;
+
+// 陰影
+$box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+$box-shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+$box-shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+
+// 邊框
+$border-radius: 0.25rem;
+$border-radius-lg: 0.5rem;
+$border-radius-sm: 0.2rem;

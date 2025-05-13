@@ -1,0 +1,149 @@
+/* Typography styles */
+@import '../variables';
+@import '../mixins';
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+  margin-bottom: $spacing-3;
+  font-weight: $font-weight-bold;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: 2.5rem;
+  
+  @include respond-to(md) {
+    font-size: 3rem;
+  }
+}
+
+h2 {
+  font-size: 2rem;
+  
+  @include respond-to(md) {
+    font-size: 2.5rem;
+  }
+}
+
+h3 {
+  font-size: 1.75rem;
+  
+  @include respond-to(md) {
+    font-size: 2rem;
+  }
+}
+
+h4 {
+  font-size: 1.5rem;
+}
+
+h5 {
+  font-size: 1.25rem;
+}
+
+h6 {
+  font-size: 1rem;
+}
+
+/* Paragraphs */
+p {
+  margin-top: 0;
+  margin-bottom: $spacing-3;
+}
+
+/* Links */
+a {
+  color: $primary;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  
+  &:hover {
+    color: darken($primary, 15%);
+    text-decoration: underline;
+  }
+}
+
+/* Lists */
+ul, ol {
+  margin-top: 0;
+  margin-bottom: $spacing-3;
+  padding-left: $spacing-4;
+}
+
+ul {
+  list-style-type: disc;
+}
+
+ol {
+  list-style-type: decimal;
+}
+
+li {
+  margin-bottom: $spacing-1;
+}
+
+/* Blockquotes */
+blockquote {
+  margin: 0 0 $spacing-3;
+  padding: $spacing-3;
+  border-left: 5px solid $primary;
+  background-color: rgba($primary, 0.05);
+  font-style: italic;
+  
+  p:last-child {
+    margin-bottom: 0;
+  }
+}
+
+/* Code */
+pre, code {
+  font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.9em;
+}
+
+code {
+  padding: 0.2em 0.4em;
+  color: #c7254e;
+  background-color: #f9f2f4;
+  border-radius: $border-radius-sm;
+}
+
+pre {
+  display: block;
+  margin-top: 0;
+  margin-bottom: $spacing-3;
+  padding: $spacing-3;
+  overflow: auto;
+  background-color: #f8f9fa;
+  border-radius: $border-radius;
+  
+  code {
+    padding: 0;
+    color: inherit;
+    background-color: transparent;
+    border-radius: 0;
+  }
+}
+
+/* Text utilities */
+.text-primary { color: $primary; }
+.text-secondary { color: $secondary; }
+
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.font-weight-normal { font-weight: $font-weight-normal; }
+.font-weight-bold { font-weight: $font-weight-bold; }
+
+.text-truncate {
+  @include text-truncate;
+}
+
+/* Font sizes */
+.fs-sm { font-size: 0.875rem; }
+.fs-md { font-size: 1rem; }
+.fs-lg { font-size: 1.25rem; }
+.fs-xl { font-size: 1.5rem; }
+.fs-xxl { font-size: 2rem; }
