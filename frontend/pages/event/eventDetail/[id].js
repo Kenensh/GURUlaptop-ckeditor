@@ -4,6 +4,8 @@ import EventButton from '@/components/event/EventButton'
 import axios from 'axios'
 import NextBreadCrumb from '@/components/common/next-breadcrumb'
 import Head from 'next/head'
+import Header from '@/components/layout/default-layout/header'
+import MyFooter from '@/components/layout/default-layout/my-footer'
 
 const EventDetail = () => {
   const router = useRouter()
@@ -11,6 +13,12 @@ const EventDetail = () => {
   const [event, setEvent] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+
+  // 環境變數設置
+  const BACKEND_URL =
+    process.env.NODE_ENV === 'development'
+      ? 'http://localhost:3005'
+      : 'https://gurulaptop-ckeditor.onrender.com'
 
   // 格式化日期時間
   const formatDateTime = (dateString) => {
@@ -38,7 +46,7 @@ const EventDetail = () => {
       try {
         setLoading(true)
         const response = await axios.get(
-          `http://localhost:3005/api/events/${id}`,
+          `${BACKEND_URL}/api/events/${id}`,
           { withCredentials: true }
         )
 
@@ -156,6 +164,7 @@ const EventDetail = () => {
       <Head>
         <title>{event?.name}</title>
       </Head>
+      <Header />
       <div className="eventDetail-wrapper">
         <div className="container">
           <NextBreadCrumb />
@@ -234,8 +243,10 @@ const EventDetail = () => {
           </div>
         </div>
       </div>
+      <MyFooter />
     </>
   )
 }
 
+EventDetail.getLayout = (page) => page
 export default EventDetail

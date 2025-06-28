@@ -44,6 +44,12 @@ export default function CartIndex() {
   // 載入狀態(控制是否顯示載入中的訊息，和伺服器回傳時間點未完成不同步的呈現問題)
   const [isLoading, setIsLoading] = useState(true)
 
+  // 環境變數設置
+  const BACKEND_URL =
+    process.env.NODE_ENV === 'development'
+      ? 'http://localhost:3005'
+      : 'https://gurulaptop-ckeditor.onrender.com'
+
   const handlePaymentMethod = (e) => {
     setPayment_method(+e.target.value)
   }
@@ -94,7 +100,7 @@ export default function CartIndex() {
 
   // 處理7-11選擇
   const { store711, openWindow } = useShip711StoreOpener(
-    'http://localhost:3005/api/shipment/711',
+    `${BACKEND_URL}/api/shipment/711`,
     { autoCloseMins: 3 } // x分鐘沒完成選擇會自動關閉，預設5分鐘。
   )
 
@@ -200,7 +206,7 @@ export default function CartIndex() {
       setAddress('')
       if (isClient) {
         localStorage.removeItem('store711')
-        window.location.href = `http://localhost:3005/api/ecpay-test-only/?orderId=${order_id}&amount=${couponDetails.finalPrice}`
+        window.location.href = `${BACKEND_URL}/api/ecpay-test-only/?orderId=${order_id}&amount=${couponDetails.finalPrice}`
       }
     }
   }
@@ -220,7 +226,7 @@ export default function CartIndex() {
       if (isClient) {
         localStorage.removeItem('store711')
         if (result.isConfirmed) {
-          window.location.href = `http://localhost:3005/api/line-pay/reserve?orderId=${lineOrder.orderId}`
+          window.location.href = `${BACKEND_URL}/api/line-pay/reserve?orderId=${lineOrder.orderId}`
         }
       }
     })

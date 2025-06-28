@@ -5,6 +5,8 @@ import EventNavbar from '@/components/event/EventNavbar'
 import axios from 'axios'
 import EventTabs from '@/components/event/EventTabs'
 import Head from 'next/head'
+import Header from '@/components/layout/default-layout/header'
+import MyFooter from '@/components/layout/default-layout/my-footer'
 
 // 分頁導航組件
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
@@ -95,6 +97,12 @@ export default function Event() {
     search: null,
   })
 
+  // 環境變數設置
+  const BACKEND_URL =
+    process.env.NODE_ENV === 'development'
+      ? 'http://localhost:3005'
+      : 'https://gurulaptop-ckeditor.onrender.com'
+
   // 節流函數
   const throttle = (func, limit) => {
     let inThrottle
@@ -117,7 +125,7 @@ export default function Event() {
       if (showLoading) setLoading(true)
       setError(null)
 
-      const response = await axios.get('http://localhost:3005/api/events', {
+      const response = await axios.get(`${BACKEND_URL}/api/events`, {
         params: {
           page,
           pageSize: 12,
@@ -197,6 +205,7 @@ export default function Event() {
       <Head>
         <title>活動</title>
       </Head>
+      <Header />
       <div className="event-wrapper">
         <Carousel />
         <EventNavbar
@@ -264,7 +273,8 @@ export default function Event() {
           </div>
         </main>
       </div>
+      <MyFooter />
     </>
   )
 }
-// Event.getLayout = (page) => page
+Event.getLayout = (page) => page

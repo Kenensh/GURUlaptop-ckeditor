@@ -23,6 +23,12 @@ export default function List() {
   const tmpSearch = location?.search
   const tmpPrice = location?.price
 
+  // 環境變數設置
+  const BACKEND_URL =
+    process.env.NODE_ENV === 'development'
+      ? 'http://localhost:3005'
+      : 'https://gurulaptop-ckeditor.onrender.com'
+
   // 監聽網址變化並更新查詢內容
   useEffect(() => {
     if (isClient) {
@@ -73,7 +79,7 @@ export default function List() {
     }
 
     const response = await fetch(
-      `http://localhost:3005/api/products/list?${where}`
+      `${BACKEND_URL}/api/products/list?${where}`
     )
     const result = await response.json()
     if (result.status === 'success') {

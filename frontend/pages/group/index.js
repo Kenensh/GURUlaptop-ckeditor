@@ -7,8 +7,16 @@ import GroupDetailModal from '@/components/group/GroupDetailModal'
 import GroupJoin from '@/components/group/GroupJoin'
 import GroupNavbar from '@/components/group/GroupNavbar'
 import Head from 'next/head'
+import Header from '@/components/layout/default-layout/header'
+import MyFooter from '@/components/layout/default-layout/my-footer'
 
 const isClient = typeof window !== 'undefined'
+
+// 環境變數設置
+const BACKEND_URL =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3005'
+    : 'https://gurulaptop-ckeditor.onrender.com'
 
 // body overflow 管理函數
 const setBodyOverflow = (isHidden) => {
@@ -52,7 +60,7 @@ const Group = () => {
 
   const fetchEvents = async () => {
     try {
-      const response = await fetch('http://localhost:3005/api/group/events', {
+      const response = await fetch(`${BACKEND_URL}/api/group/events`, {
         credentials: 'include',
       })
       const data = await response.json()
@@ -66,7 +74,7 @@ const Group = () => {
 
   const fetchGroups = async () => {
     try {
-      const response = await fetch('http://localhost:3005/api/group/all', {
+      const response = await fetch(`${BACKEND_URL}/api/group/all`, {
         credentials: 'include',
       })
       const data = await response.json()
@@ -209,6 +217,7 @@ const Group = () => {
       <Head>
         <title>揪團列表</title>
       </Head>
+      <Header />
       <div className="group-wrapper">
         <div className="group-container">
           {/* 導航區域 */}
@@ -340,8 +349,10 @@ const Group = () => {
           <GroupJoin onClose={handleCloseJoinModal} groupData={selectedGroup} />
         )}
       </div>
+      <MyFooter />
     </>
   )
 }
 
+Group.getLayout = (page) => page
 export default Group

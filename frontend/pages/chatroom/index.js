@@ -10,6 +10,8 @@ import styles from '@/styles/Chat.module.css'
 import { Send, Menu } from 'lucide-react'
 import Swal from 'sweetalert2'
 import Head from 'next/head'
+import Header from '@/components/layout/default-layout/header'  
+import MyFooter from '@/components/layout/default-layout/my-footer'
 const isClient = typeof window !== 'undefined'
 
 export default function Chat() {
@@ -23,13 +25,19 @@ export default function Chat() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const router = useRouter()
 
+  // 環境變數設置
+  const BACKEND_URL =
+    process.env.NODE_ENV === 'development'
+      ? 'http://localhost:3005'
+      : 'https://gurulaptop-ckeditor.onrender.com'
+
   useEffect(() => {
     checkAuth()
   }, [])
 
   const checkAuth = async () => {
     try {
-      const response = await fetch('http://localhost:3005/api/auth/check', {
+      const response = await fetch(`${BACKEND_URL}/api/auth/check`, {
         credentials: 'include',
       })
 
@@ -58,10 +66,10 @@ export default function Chat() {
   const fetchInitialData = async (userId) => {
     try {
       const [groupsResponse, usersResponse] = await Promise.all([
-        fetch('http://localhost:3005/api/chat/user/groups', {
+        fetch(`${BACKEND_URL}/api/chat/user/groups`, {
           credentials: 'include',
         }),
-        fetch('http://localhost:3005/api/chat/users', {
+        fetch(`${BACKEND_URL}/api/chat/users`, {
           credentials: 'include',
         }),
       ])
@@ -132,6 +140,7 @@ export default function Chat() {
       <Head>
         <title>聊天室</title>
       </Head>
+      <Header />
       <Container fluid className={styles.container}>
         <button onClick={toggleSidebar} className={styles.sidebarToggle}>
           <Menu size={24} />
@@ -208,6 +217,9 @@ export default function Chat() {
           currentUser={currentUser}
         />
       </Container>
+      <MyFooter />
     </>
   )
 }
+
+Chat.getLayout = (page) => page
