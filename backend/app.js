@@ -27,6 +27,7 @@ import eventsRouter from './routes/events.js'
 import couponRouter from './routes/coupon.js'
 import couponUserRouter from './routes/coupon-user.js'
 import chatRoutes from './routes/chat.js'
+import groupRouter from './routes/group.js'
 import GroupRequests from './routes/group-request.js'
 import blogRouter from './routes/blog.js'
 import productsRouter from './routes/products.js'
@@ -195,6 +196,7 @@ app.use('/api/forgot-password', forgotPasswordRouter)
 app.use('/api/coupon', couponRouter)
 app.use('/api/coupon-user', couponUserRouter)
 app.use('/api/chat', chatRoutes)
+app.use('/api/group', groupRouter)
 app.use('/api/cart', cartRouter)
 app.use('/api/order', orderRouter)
 app.use('/api/buy-list', buyListRouter)
