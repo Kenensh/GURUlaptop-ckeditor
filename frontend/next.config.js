@@ -3,6 +3,9 @@ const path = require('path')
 
 const nextConfig = {
   reactStrictMode: false,
+  // 確保沒有 assetPrefix 配置導致路徑問題
+  // assetPrefix: '', // 明確設為空
+  
   // 簡化 experimental 設定
   experimental: {
     esmExternals: false,
@@ -10,11 +13,6 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
-  // 移除 assetPrefix 避免開發環境問題
-  // assetPrefix:
-  //   process.env.NODE_ENV === 'production'
-  //     ? 'https://gurulaptop-ckeditor-frontend.onrender.com'
-  //     : '',
   images: {
     remotePatterns: [
       {
@@ -66,11 +64,7 @@ const nextConfig = {
       }
     })
     
-    // 簡化 publicPath 設定，僅在生產環境使用
-    // if (!isServer && process.env.NODE_ENV === 'production') {
-    //   config.output.publicPath = 'https://gurulaptop-ckeditor-frontend.onrender.com/_next/'
-    // }
-    
+    // 確保不設定錯誤的 publicPath
     return config
   },
 }
