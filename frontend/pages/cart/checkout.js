@@ -5,6 +5,12 @@ import withReactContent from 'sweetalert2-react-content'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 
+// 定義常量
+const BACKEND_URL =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3005'
+    : 'https://gurulaptop-ckeditor.onrender.com'
+
 const isClient = typeof window !== 'undefined'
 const MySwal = withReactContent(Swal)
 
@@ -36,7 +42,7 @@ export default function Checkout(props) {
 
   const handleUpdate = async (order_id) => {
     try {
-      const result = await fetch(`http://localhost:3005/api/order`, {
+      const result = await fetch(`${BACKEND_URL}/api/order`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

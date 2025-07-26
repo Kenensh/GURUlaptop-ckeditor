@@ -8,6 +8,13 @@ import { useState } from 'react'
 import { useRouter } from 'next/router'
 import BackToTop2 from '@/components/BackToTop/BackToTop2'
 import Head from 'next/head'
+
+// 定義常量
+const BACKEND_URL =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3005'
+    : 'https://gurulaptop-ckeditor.onrender.com'
+
 export default function Compare() {
   const [compareProduct, setCompareProduct] = useState([])
   const [productDataFirst, setProductDataFirst] = useState([])
@@ -33,18 +40,18 @@ export default function Compare() {
       else if (compareProduct.length === 1) {
         {
           const responseFirst = await fetch(
-            `http://localhost:3005/api/products/${compareProduct[0]}`
+            `${BACKEND_URL}/api/products/${compareProduct[0]}`
           )
           setProductDataFirst((await responseFirst.json()).data.product)
         }
       } else if (compareProduct.length === 2) {
         {
           const responseFirst = await fetch(
-            `http://localhost:3005/api/products/${compareProduct[0]}`
+            `${BACKEND_URL}/api/products/${compareProduct[0]}`
           )
           setProductDataFirst((await responseFirst.json()).data.product)
           const responseSecond = await fetch(
-            `http://localhost:3005/api/products/${compareProduct[1]}`
+            `${BACKEND_URL}/api/products/${compareProduct[1]}`
           )
           setProductDataSecond((await responseSecond.json()).data.product)
         }

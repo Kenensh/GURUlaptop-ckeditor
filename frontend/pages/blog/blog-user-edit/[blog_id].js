@@ -15,6 +15,12 @@ const MySwal = withReactContent(Swal)
 import Head from 'next/head'
 import EditMyeditor from '@/components/blog/blogedit/EditMyeditor'
 
+// 定義常量
+const BACKEND_URL =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3005'
+    : 'https://gurulaptop-ckeditor.onrender.com'
+
 export default function BlogUserEdit() {
   const router = useRouter()
   const { blog_id } = router.query
@@ -46,7 +52,7 @@ export default function BlogUserEdit() {
   // 獲取現有部落格資料
   useEffect(() => {
     if (blog_id) {
-      fetch(`http://localhost:3005/api/blog/blog-user-detail/${blog_id}`)
+      fetch(`${BACKEND_URL}/api/blog/blog-user-detail/${blog_id}`)
         .then((r) => r.json())
         .then((data) => {
           if (data.status === 'success') {
@@ -107,7 +113,7 @@ export default function BlogUserEdit() {
 
     try {
       const response = await fetch(
-        `http://localhost:3005/api/blog/blog-edit/${blog_id}`,
+        `${BACKEND_URL}/api/blog/blog-edit/${blog_id}`,
         {
           method: 'PUT',
           body: formData,

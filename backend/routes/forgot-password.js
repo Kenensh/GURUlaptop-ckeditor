@@ -1,9 +1,9 @@
 import express from 'express'
 const router = express.Router()
-import transporter from '##/configs/mail.js'
-import { pool } from '##/configs/db.js'
+import transporter from '#configs/mail.js'
+import { pool } from '#configs/db.js'
 import 'dotenv/config.js'
-import { generateHash } from '../db-helpers/password-hash.js'
+import { generateHash } from '#db-helpers/password-hash.js'
 
 function generateTempPassword(length = 8) {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'

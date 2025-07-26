@@ -24,7 +24,8 @@ export const getBlogList = async (filters = {}, page = 1, itemsPerPage = 6) => {
     if (filters.types && filters.types.length) queryParams.append('types', filters.types.join(','));
     if (filters.brands && filters.brands.length) queryParams.append('brands', filters.brands.join(','));
     
-    const response = await axiosInstance.get(`/api/blog?${queryParams.toString()}`);
+    // 修正 API 端點，使用 /search 而不是根路由
+    const response = await axiosInstance.get(`/api/blog/search?${queryParams.toString()}`);
     return response.data;
   } catch (error) {
     return handleApiError(error, '獲取部落格列表失敗');

@@ -1,9 +1,15 @@
 export const PORT = 3000
 export const DEV = true
 
+// 定義動態後端 URL
+const BACKEND_URL =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3005'
+    : 'https://gurulaptop-ckeditor.onrender.com'
+
 // express 的位置
-export const apiBaseUrl = 'http://localhost:3005/api'
-export const avatarBaseUrl = 'http://localhost:3005/avatar'
+export const apiBaseUrl = `${BACKEND_URL}/api`
+export const avatarBaseUrl = `${BACKEND_URL}/avatar`
 
 // breadcrumb面包屑使用
 // 用pathname英文對照中文的名稱(類似關聯陣列的物件)

@@ -1,6 +1,12 @@
+// 定義動態後端 URL
+const BACKEND_URL =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3005'
+    : 'https://gurulaptop-ckeditor.onrender.com'
+
 export const getGroupImage = (imagePath) => {
   if (!imagePath || imagePath.trim() === '') {
-    return 'http://localhost:3005/uploads/groups/group-default.png'
+    return `${BACKEND_URL}/uploads/groups/group-default.png`
   }
 
   // 如果已經是完整的 URL，直接返回
@@ -9,5 +15,5 @@ export const getGroupImage = (imagePath) => {
   }
 
   // 確保路徑正確
-  return `http://localhost:3005${imagePath}`
+  return `${BACKEND_URL}${imagePath}`
 }

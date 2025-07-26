@@ -1,13 +1,13 @@
 import express from 'express'
 const router = express.Router()
-import db from '../configs/db.js'
+import { pool } from '../configs/db.js'
 import multer from 'multer'
 
 const upload = multer()
 
 router.get('/', async (req, res) => {
   try {
-    const coupons = await db.query(`
+    const coupons = await pool.query(`
      SELECT 
        coupon_id,
        coupon_code,
@@ -18,6 +18,7 @@ router.get('/', async (req, res) => {
        coupon_end_time,
        valid
      FROM coupon
+     WHERE valid = true
      ORDER BY coupon_id ASC`)
 
     if (coupons.rows.length === 0) {
@@ -49,7 +50,7 @@ router.get('/:coupon_id', async (req, res) => {
   const coupon_id = req.params.coupon_id
 
   try {
-    const coupon = await db.query('SELECT * FROM coupon WHERE coupon_id = $1', [
+    const coupon = await pool.query('SELECT * FROM coupon WHERE coupon_id = $1 AND valid = true', [
       coupon_id,
     ])
 

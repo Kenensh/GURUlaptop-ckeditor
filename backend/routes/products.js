@@ -1,5 +1,5 @@
 import express from 'express'
-import { pool } from '##/configs/db.js'
+import { pool } from '#configs/db.js'
 const router = express.Router()
 
 // 取得單一產品概略資料和圖片路徑
@@ -7,7 +7,7 @@ router.get('/card/:product_id', async (req, res) => {
   const client = await pool.connect()
   try {
     const result = await client.query(
-      'SELECT product_name, model, list_price, product_img_path FROM product LEFT JOIN product_img ON product_id = img_product_id WHERE product_id = $1 AND valid = true',
+      'SELECT p.product_name, p.model, p.list_price, pi.product_img_path FROM product p LEFT JOIN product_img pi ON p.product_id = pi.img_product_id WHERE p.product_id = $1 AND p.valid = true',
       [req.params.product_id]
     )
 
@@ -28,8 +28,8 @@ router.get('/card/:product_id', async (req, res) => {
 router.get('/list', async (req, res) => {
   const client = await pool.connect()
   try {
-    const { page = 1, category, category_value, price, search } = req.query
-    const limit = 12
+    const { page = 1, perpage = 12, category, category_value, price, search } = req.query
+    const limit = parseInt(perpage) || 12
     const offset = (page - 1) * limit
     const where = []
     const params = []

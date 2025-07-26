@@ -8,7 +8,6 @@ import { faDiamond } from '@fortawesome/free-solid-svg-icons'
 // Components
 import BlogDetailMainArea from '@/components/blog/bloghomepage/articlehomepage-mainarea'
 import BlogComment from '@/components/blog/blogdetail/blog-comment'
-import BloghomepageCardgroup from '@/components/blog/bloghomepage/bloghomepage-cardgroup'
 import Header from '@/components/layout/default-layout/header'
 import MyFooter from '@/components/layout/default-layout/my-footer'
 
@@ -123,8 +122,6 @@ export default function BlogDetail() {
           <span>更多熱門文章</span>
         </p>
       </div>
-
-      <BloghomepageCardgroup />
 
       <div className="mb-5"></div>
       <MyFooter />

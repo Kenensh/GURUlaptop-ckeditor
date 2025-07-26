@@ -168,3 +168,4786 @@
 {"duration":"1726ms","level":"info","message":"GET /4 completed","method":"GET","status":304,"timestamp":"2025-01-18 15:52:23","url":"/4"}
 {"duration":"1780ms","level":"info","message":"GET /4 completed","method":"GET","status":304,"timestamp":"2025-01-18 15:52:23","url":"/4"}
 {"level":"info","message":"Database connection successful","timestamp":"2025-01-18 16:10:09"}
+{
+  "timestamp": "2025-07-25 03:48:08.052",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-25 03:48:10.997",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-25 03:49:24.942",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-25 03:49:28.048",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-25 03:50:12.739",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-25 03:50:14.517",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-25 03:50:20.818",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-25 03:50:23.476",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-25 03:51:45.657",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753386705657_wyvn0zjs1",
+    "method": "GET",
+    "url": "/api/health",
+    "userAgent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; zh-TW) WindowsPowerShell/5.1.22621.5697",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 03:51:45.659",
+  "level": "INFO",
+  "message": "ℹ️ Health Check Started",
+  "meta": {
+    "requestId": "req_1753386705657_wyvn0zjs1"
+  }
+}
+{
+  "timestamp": "2025-07-25 03:51:46.371",
+  "level": "INFO",
+  "message": "ℹ️ Database Health Check Passed",
+  "meta": {
+    "requestId": "req_1753386705657_wyvn0zjs1",
+    "responseTime": 712
+  }
+}
+{
+  "timestamp": "2025-07-25 03:51:46.371",
+  "level": "INFO",
+  "message": "ℹ️ Health Check Completed",
+  "meta": {
+    "requestId": "req_1753386705657_wyvn0zjs1",
+    "status": "ok",
+    "responseTime": 712,
+    "checksCount": 3
+  }
+}
+{
+  "timestamp": "2025-07-25 03:51:46.372",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753386705657_wyvn0zjs1",
+    "method": "GET",
+    "url": "/api/health",
+    "statusCode": 200,
+    "duration": "715ms",
+    "success": true
+  }
+}
+{
+  "timestamp": "2025-07-25 03:52:04.102",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-25 03:52:06.071",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-25 03:52:56.706",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-25 03:52:59.658",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-25 03:53:28.406",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-25 03:53:31.019",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-25 03:54:04.988",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753386844988_4skka0bqr",
+    "method": "GET",
+    "url": "/api/health",
+    "userAgent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; zh-TW) WindowsPowerShell/5.1.22621.5697",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 03:54:04.990",
+  "level": "INFO",
+  "message": "ℹ️ Health Check Started",
+  "meta": {
+    "requestId": "req_1753386844988_4skka0bqr"
+  }
+}
+{
+  "timestamp": "2025-07-25 03:54:05.704",
+  "level": "INFO",
+  "message": "ℹ️ Database Health Check Passed",
+  "meta": {
+    "requestId": "req_1753386844988_4skka0bqr",
+    "responseTime": 714
+  }
+}
+{
+  "timestamp": "2025-07-25 03:54:05.704",
+  "level": "INFO",
+  "message": "ℹ️ Health Check Completed",
+  "meta": {
+    "requestId": "req_1753386844988_4skka0bqr",
+    "status": "ok",
+    "responseTime": 714,
+    "checksCount": 3
+  }
+}
+{
+  "timestamp": "2025-07-25 03:54:05.705",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753386844988_4skka0bqr",
+    "method": "GET",
+    "url": "/api/health",
+    "statusCode": 200,
+    "duration": "717ms",
+    "success": true
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:22.313",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:25.049",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-25 03:55:31.412",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753386931411_ha7j6gvms",
+    "method": "GET",
+    "url": "/api/health",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.414",
+  "level": "INFO",
+  "message": "ℹ️ Health Check Started",
+  "meta": {
+    "requestId": "req_1753386931411_ha7j6gvms"
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.467",
+  "level": "INFO",
+  "message": "ℹ️ Database Health Check Passed",
+  "meta": {
+    "requestId": "req_1753386931411_ha7j6gvms",
+    "responseTime": 53
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.468",
+  "level": "INFO",
+  "message": "ℹ️ Health Check Completed",
+  "meta": {
+    "requestId": "req_1753386931411_ha7j6gvms",
+    "status": "ok",
+    "responseTime": 54,
+    "checksCount": 3
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.469",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753386931411_ha7j6gvms",
+    "method": "GET",
+    "url": "/api/health",
+    "statusCode": 200,
+    "duration": "58ms",
+    "success": true
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.481",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753386931481_fnnnacfga",
+    "method": "GET",
+    "url": "/api",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.482",
+  "level": "WARN",
+  "message": "Route not found",
+  "meta": {
+    "method": "GET",
+    "url": "/api",
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "user-agent": "axios/1.7.9",
+      "accept-encoding": "gzip, compress, deflate, br",
+      "host": "localhost:3005",
+      "connection": "keep-alive"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.483",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753386931481_fnnnacfga",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:202:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:192:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/api",
+      "body": {},
+      "query": {},
+      "params": {},
+      "headers": {
+        "userAgent": "axios/1.7.9"
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.484",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753386931481_fnnnacfga",
+    "method": "GET",
+    "url": "/api",
+    "statusCode": 404,
+    "duration": "3ms",
+    "success": false
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.492",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753386931492_uui1m29dj",
+    "method": "GET",
+    "url": "/api/users",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.637",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753386931492_uui1m29dj",
+    "method": "GET",
+    "url": "/api/users",
+    "statusCode": 500,
+    "duration": "145ms",
+    "success": false
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.646",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753386931646_g27ois133",
+    "method": "GET",
+    "url": "/api/products",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.647",
+  "level": "WARN",
+  "message": "Route not found",
+  "meta": {
+    "method": "GET",
+    "url": "/api/products",
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "user-agent": "axios/1.7.9",
+      "accept-encoding": "gzip, compress, deflate, br",
+      "host": "localhost:3005",
+      "connection": "keep-alive"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.647",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753386931646_g27ois133",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:202:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:192:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/api/products",
+      "body": {},
+      "query": {},
+      "params": {},
+      "headers": {
+        "userAgent": "axios/1.7.9"
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.648",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753386931646_g27ois133",
+    "method": "GET",
+    "url": "/api/products",
+    "statusCode": 404,
+    "duration": "2ms",
+    "success": false
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.655",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753386931655_uuta8kwiz",
+    "method": "GET",
+    "url": "/api/blog",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.656",
+  "level": "WARN",
+  "message": "Route not found",
+  "meta": {
+    "method": "GET",
+    "url": "/api/blog",
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "user-agent": "axios/1.7.9",
+      "accept-encoding": "gzip, compress, deflate, br",
+      "host": "localhost:3005",
+      "connection": "keep-alive"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.657",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753386931655_uuta8kwiz",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:202:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:192:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/api/blog",
+      "body": {},
+      "query": {},
+      "params": {},
+      "headers": {
+        "userAgent": "axios/1.7.9"
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.659",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753386931655_uuta8kwiz",
+    "method": "GET",
+    "url": "/api/blog",
+    "statusCode": 404,
+    "duration": "4ms",
+    "success": false
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.666",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753386931666_u59yh8tsi",
+    "method": "GET",
+    "url": "/api/dashboard",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.667",
+  "level": "WARN",
+  "message": "Route not found",
+  "meta": {
+    "method": "GET",
+    "url": "/api/dashboard",
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "user-agent": "axios/1.7.9",
+      "accept-encoding": "gzip, compress, deflate, br",
+      "host": "localhost:3005",
+      "connection": "keep-alive"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.668",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753386931666_u59yh8tsi",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:202:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:192:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/api/dashboard",
+      "body": {},
+      "query": {},
+      "params": {},
+      "headers": {
+        "userAgent": "axios/1.7.9"
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.670",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753386931666_u59yh8tsi",
+    "method": "GET",
+    "url": "/api/dashboard",
+    "statusCode": 404,
+    "duration": "4ms",
+    "success": false
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.680",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753386931680_llxzgiup6",
+    "method": "GET",
+    "url": "/api/events",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.755",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753386931680_llxzgiup6",
+    "method": "GET",
+    "url": "/api/events",
+    "statusCode": 500,
+    "duration": "75ms",
+    "success": false
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.763",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753386931763_33d6nocuw",
+    "method": "GET",
+    "url": "/api/cart",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.764",
+  "level": "WARN",
+  "message": "Route not found",
+  "meta": {
+    "method": "GET",
+    "url": "/api/cart",
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "user-agent": "axios/1.7.9",
+      "accept-encoding": "gzip, compress, deflate, br",
+      "host": "localhost:3005",
+      "connection": "keep-alive"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.764",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753386931763_33d6nocuw",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:202:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:192:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/api/cart",
+      "body": {},
+      "query": {},
+      "params": {},
+      "headers": {
+        "userAgent": "axios/1.7.9"
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.765",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753386931763_33d6nocuw",
+    "method": "GET",
+    "url": "/api/cart",
+    "statusCode": 404,
+    "duration": "2ms",
+    "success": false
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.773",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753386931773_mx9lyb74r",
+    "method": "GET",
+    "url": "/api/order",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.774",
+  "level": "WARN",
+  "message": "Route not found",
+  "meta": {
+    "method": "GET",
+    "url": "/api/order",
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "user-agent": "axios/1.7.9",
+      "accept-encoding": "gzip, compress, deflate, br",
+      "host": "localhost:3005",
+      "connection": "keep-alive"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.774",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753386931773_mx9lyb74r",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:202:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:192:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/api/order",
+      "body": {},
+      "query": {},
+      "params": {},
+      "headers": {
+        "userAgent": "axios/1.7.9"
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.775",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753386931773_mx9lyb74r",
+    "method": "GET",
+    "url": "/api/order",
+    "statusCode": 404,
+    "duration": "2ms",
+    "success": false
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.782",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753386931782_gpskt4s8t",
+    "method": "GET",
+    "url": "/api/coupon",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.851",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753386931782_gpskt4s8t",
+    "method": "GET",
+    "url": "/api/coupon",
+    "statusCode": 500,
+    "duration": "69ms",
+    "success": false
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.859",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753386931859_aa1t19sd9",
+    "method": "GET",
+    "url": "/api/favorites",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.860",
+  "level": "WARN",
+  "message": "Route not found",
+  "meta": {
+    "method": "GET",
+    "url": "/api/favorites",
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "user-agent": "axios/1.7.9",
+      "accept-encoding": "gzip, compress, deflate, br",
+      "host": "localhost:3005",
+      "connection": "keep-alive"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.860",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753386931859_aa1t19sd9",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:202:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:192:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/api/favorites",
+      "body": {},
+      "query": {},
+      "params": {},
+      "headers": {
+        "userAgent": "axios/1.7.9"
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.861",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753386931859_aa1t19sd9",
+    "method": "GET",
+    "url": "/api/favorites",
+    "statusCode": 404,
+    "duration": "2ms",
+    "success": false
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.868",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753386931868_2fbvae3bd",
+    "method": "GET",
+    "url": "/api/shipment",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.869",
+  "level": "WARN",
+  "message": "Route not found",
+  "meta": {
+    "method": "GET",
+    "url": "/api/shipment",
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "user-agent": "axios/1.7.9",
+      "accept-encoding": "gzip, compress, deflate, br",
+      "host": "localhost:3005",
+      "connection": "keep-alive"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.870",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753386931868_2fbvae3bd",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:202:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:192:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/api/shipment",
+      "body": {},
+      "query": {},
+      "params": {},
+      "headers": {
+        "userAgent": "axios/1.7.9"
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.871",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753386931868_2fbvae3bd",
+    "method": "GET",
+    "url": "/api/shipment",
+    "statusCode": 404,
+    "duration": "3ms",
+    "success": false
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.878",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753386931878_nqpx5ms6g",
+    "method": "GET",
+    "url": "/api/membership",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.879",
+  "level": "WARN",
+  "message": "Route not found",
+  "meta": {
+    "method": "GET",
+    "url": "/api/membership",
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "user-agent": "axios/1.7.9",
+      "accept-encoding": "gzip, compress, deflate, br",
+      "host": "localhost:3005",
+      "connection": "keep-alive"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.879",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753386931878_nqpx5ms6g",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:202:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:192:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/api/membership",
+      "body": {},
+      "query": {},
+      "params": {},
+      "headers": {
+        "userAgent": "axios/1.7.9"
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.880",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753386931878_nqpx5ms6g",
+    "method": "GET",
+    "url": "/api/membership",
+    "statusCode": 404,
+    "duration": "2ms",
+    "success": false
+  }
+}
+{
+  "timestamp": "2025-07-25 03:56:22.083",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-25 03:56:24.079",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-25 20:11:21.802",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-25 20:11:24.464",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-25 20:13:40.668",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-25 20:13:43.388",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-25 20:23:02.102",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446182102_qx371dvzq",
+    "method": "GET",
+    "url": "/api/blog/search",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:23:02.104",
+  "level": "INFO",
+  "message": "ℹ️ Blog Search Request Started",
+  "meta": {
+    "requestId": "req_1753446182102_qx371dvzq",
+    "searchParams": {
+      "search": "",
+      "types": "",
+      "brands": "",
+      "page": 1,
+      "limit": 6
+    },
+    "offset": 0
+  }
+}
+{
+  "timestamp": "2025-07-25 20:23:02.105",
+  "level": "DEBUG",
+  "message": "🔍 Building Search Conditions",
+  "meta": {
+    "requestId": "req_1753446182102_qx371dvzq",
+    "initialConditions": [
+      "blog_valid_value = 1"
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-25 20:23:02.106",
+  "level": "DEBUG",
+  "message": "🗃️ Database Query",
+  "meta": {
+    "requestId": "req_1753446182102_qx371dvzq",
+    "operation": "BLOG_SEARCH",
+    "query": "\n        WITH filtered_blogs AS (\n          SELECT * FROM blogoverview \n          WHERE blog_valid_value = 1\n        )\n        SELECT \n          fb.*,\n          COUNT(*) OVER() as total_count\n        FROM filtered_blogs fb\n        ORDER BY blog_created_date DESC\n        LIMIT $1 OFFSET $2\n      ",
+    "params": [
+      6,
+      0
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-25 20:23:02.107",
+  "level": "INFO",
+  "message": "ℹ️ Executing Blog Search Query",
+  "meta": {
+    "requestId": "req_1753446182102_qx371dvzq",
+    "whereClause": "WHERE blog_valid_value = 1",
+    "totalParams": 2,
+    "finalConditions": [
+      "blog_valid_value = 1"
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-25 20:23:02.809",
+  "level": "INFO",
+  "message": "ℹ️ Blog Search Completed Successfully",
+  "meta": {
+    "requestId": "req_1753446182102_qx371dvzq",
+    "resultsFound": 6,
+    "totalCount": "70",
+    "currentPage": 1,
+    "totalPages": 12
+  }
+}
+{
+  "timestamp": "2025-07-25 20:23:02.810",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446182102_qx371dvzq",
+    "method": "GET",
+    "url": "/api/blog/search",
+    "statusCode": 200,
+    "duration": "708ms",
+    "success": true
+  }
+}
+{
+  "timestamp": "2025-07-25 20:23:02.825",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446182825_9227rchuc",
+    "method": "GET",
+    "url": "/api/blog/blog/ckeitor",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:23:03.480",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446182825_9227rchuc",
+    "method": "GET",
+    "url": "/api/blog/blog/ckeitor",
+    "statusCode": 200,
+    "duration": "655ms",
+    "success": true
+  }
+}
+{
+  "timestamp": "2025-07-25 20:23:03.498",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446183498_xuqrvugk7",
+    "method": "GET",
+    "url": "/api/blog/blogcardgroup",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:23:03.552",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446183498_xuqrvugk7",
+    "method": "GET",
+    "url": "/api/blog/blogcardgroup",
+    "statusCode": 200,
+    "duration": "54ms",
+    "success": true
+  }
+}
+{
+  "timestamp": "2025-07-25 20:23:03.560",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446183560_2qozsikhr",
+    "method": "GET",
+    "url": "/api/blog/blog-detail/1",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:23:03.616",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446183560_2qozsikhr",
+    "method": "GET",
+    "url": "/api/blog/blog-detail/1",
+    "statusCode": 200,
+    "duration": "56ms",
+    "success": true
+  }
+}
+{
+  "timestamp": "2025-07-25 20:23:03.624",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446183624_2glw3yw7b",
+    "method": "GET",
+    "url": "/api/blog/blog_user_overview/1",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:23:05.287",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446183624_2glw3yw7b",
+    "method": "GET",
+    "url": "/api/blog/blog_user_overview/1",
+    "statusCode": 200,
+    "duration": "1663ms",
+    "success": true
+  }
+}
+{
+  "timestamp": "2025-07-25 20:23:05.853",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446185853_xzzw530qt",
+    "method": "GET",
+    "url": "/api/blog/blog-comment/1",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:23:06.249",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446185853_xzzw530qt",
+    "method": "GET",
+    "url": "/api/blog/blog-comment/1",
+    "statusCode": 200,
+    "duration": "396ms",
+    "success": true
+  }
+}
+{
+  "timestamp": "2025-07-25 20:23:06.337",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446186337_ospw6bnjo",
+    "method": "POST",
+    "url": "/api/blog/upload-image",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {
+      "contentType": "application/json"
+    },
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:23:06.338",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446186337_ospw6bnjo",
+    "method": "POST",
+    "url": "/api/blog/upload-image",
+    "statusCode": 400,
+    "duration": "1ms",
+    "success": false
+  }
+}
+{
+  "timestamp": "2025-07-25 20:23:06.347",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446186347_kimkmux70",
+    "method": "POST",
+    "url": "/api/blog/upload-blog-image",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {
+      "contentType": "application/json"
+    },
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:23:06.348",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446186347_kimkmux70",
+    "method": "POST",
+    "url": "/api/blog/upload-blog-image",
+    "statusCode": 400,
+    "duration": "1ms",
+    "success": false
+  }
+}
+{
+  "timestamp": "2025-07-25 20:23:27.136",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446207136_28127u52a",
+    "method": "GET",
+    "url": "/api/blog/search",
+    "userAgent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; zh-TW) WindowsPowerShell/5.1.22621.5697",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:23:27.137",
+  "level": "INFO",
+  "message": "ℹ️ Blog Search Request Started",
+  "meta": {
+    "requestId": "req_1753446207136_28127u52a",
+    "searchParams": {
+      "search": "",
+      "types": "",
+      "brands": "",
+      "page": 1,
+      "limit": 6
+    },
+    "offset": 0
+  }
+}
+{
+  "timestamp": "2025-07-25 20:23:27.137",
+  "level": "DEBUG",
+  "message": "🔍 Building Search Conditions",
+  "meta": {
+    "requestId": "req_1753446207136_28127u52a",
+    "initialConditions": [
+      "blog_valid_value = 1"
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-25 20:23:27.138",
+  "level": "DEBUG",
+  "message": "🗃️ Database Query",
+  "meta": {
+    "requestId": "req_1753446207136_28127u52a",
+    "operation": "BLOG_SEARCH",
+    "query": "\n        WITH filtered_blogs AS (\n          SELECT * FROM blogoverview \n          WHERE blog_valid_value = 1\n        )\n        SELECT \n          fb.*,\n          COUNT(*) OVER() as total_count\n        FROM filtered_blogs fb\n        ORDER BY blog_created_date DESC\n        LIMIT $1 OFFSET $2\n      ",
+    "params": [
+      6,
+      0
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-25 20:23:27.138",
+  "level": "INFO",
+  "message": "ℹ️ Executing Blog Search Query",
+  "meta": {
+    "requestId": "req_1753446207136_28127u52a",
+    "whereClause": "WHERE blog_valid_value = 1",
+    "totalParams": 2,
+    "finalConditions": [
+      "blog_valid_value = 1"
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-25 20:23:27.195",
+  "level": "INFO",
+  "message": "ℹ️ Blog Search Completed Successfully",
+  "meta": {
+    "requestId": "req_1753446207136_28127u52a",
+    "resultsFound": 6,
+    "totalCount": "70",
+    "currentPage": 1,
+    "totalPages": 12
+  }
+}
+{
+  "timestamp": "2025-07-25 20:23:27.196",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446207136_28127u52a",
+    "method": "GET",
+    "url": "/api/blog/search",
+    "statusCode": 200,
+    "duration": "60ms",
+    "success": true
+  }
+}
+{
+  "timestamp": "2025-07-25 20:23:35.829",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446215829_il4hp5wh2",
+    "method": "GET",
+    "url": "/api/blog/blogcardgroup",
+    "userAgent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; zh-TW) WindowsPowerShell/5.1.22621.5697",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:23:37.638",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446215829_il4hp5wh2",
+    "method": "GET",
+    "url": "/api/blog/blogcardgroup",
+    "statusCode": 200,
+    "duration": "1809ms",
+    "success": true
+  }
+}
+{
+  "timestamp": "2025-07-25 20:23:54.214",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-25 20:23:55.915",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-25 20:25:45.007",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446345006_e5xmz2upf",
+    "method": "GET",
+    "url": "/api/blog/search",
+    "userAgent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; zh-TW) WindowsPowerShell/5.1.22621.5697",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:25:45.010",
+  "level": "INFO",
+  "message": "ℹ️ Blog Search Request Started",
+  "meta": {
+    "requestId": "req_1753446345006_e5xmz2upf",
+    "searchParams": {
+      "search": "",
+      "types": "",
+      "brands": "",
+      "page": 1,
+      "limit": 6
+    },
+    "offset": 0
+  }
+}
+{
+  "timestamp": "2025-07-25 20:25:45.010",
+  "level": "DEBUG",
+  "message": "🔍 Building Search Conditions",
+  "meta": {
+    "requestId": "req_1753446345006_e5xmz2upf",
+    "initialConditions": [
+      "blog_valid_value = 1"
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-25 20:25:45.011",
+  "level": "DEBUG",
+  "message": "🗃️ Database Query",
+  "meta": {
+    "requestId": "req_1753446345006_e5xmz2upf",
+    "operation": "BLOG_SEARCH",
+    "query": "\n        WITH filtered_blogs AS (\n          SELECT * FROM blogoverview \n          WHERE blog_valid_value = 1\n        )\n        SELECT \n          fb.*,\n          COUNT(*) OVER() as total_count\n        FROM filtered_blogs fb\n        ORDER BY blog_created_date DESC\n        LIMIT $1 OFFSET $2\n      ",
+    "params": [
+      6,
+      0
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-25 20:25:45.011",
+  "level": "INFO",
+  "message": "ℹ️ Executing Blog Search Query",
+  "meta": {
+    "requestId": "req_1753446345006_e5xmz2upf",
+    "whereClause": "WHERE blog_valid_value = 1",
+    "totalParams": 2,
+    "finalConditions": [
+      "blog_valid_value = 1"
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-25 20:25:46.682",
+  "level": "INFO",
+  "message": "ℹ️ Blog Search Completed Successfully",
+  "meta": {
+    "requestId": "req_1753446345006_e5xmz2upf",
+    "resultsFound": 6,
+    "totalCount": "70",
+    "currentPage": 1,
+    "totalPages": 12
+  }
+}
+{
+  "timestamp": "2025-07-25 20:25:46.683",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446345006_e5xmz2upf",
+    "method": "GET",
+    "url": "/api/blog/search",
+    "statusCode": 200,
+    "duration": "1677ms",
+    "success": true
+  }
+}
+{
+  "timestamp": "2025-07-25 20:26:40.856",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-25 20:26:42.525",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-25 20:29:02.280",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446542280_yoloyrgps",
+    "method": "GET",
+    "url": "/api/blog/search?search=test&page=1&limit=5",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {
+      "search": "test",
+      "page": "1",
+      "limit": "5"
+    },
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:02.283",
+  "level": "INFO",
+  "message": "ℹ️ Blog Search Request Started",
+  "meta": {
+    "requestId": "req_1753446542280_yoloyrgps",
+    "searchParams": {
+      "search": "test",
+      "types": "",
+      "brands": "",
+      "page": 1,
+      "limit": 5
+    },
+    "offset": 0
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:02.283",
+  "level": "DEBUG",
+  "message": "🔍 Building Search Conditions",
+  "meta": {
+    "requestId": "req_1753446542280_yoloyrgps",
+    "initialConditions": [
+      "blog_valid_value = 1"
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:02.284",
+  "level": "DEBUG",
+  "message": "🔍 Added Search Text Condition",
+  "meta": {
+    "requestId": "req_1753446542280_yoloyrgps",
+    "searchText": "test",
+    "paramIndex": 1
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:02.285",
+  "level": "DEBUG",
+  "message": "🗃️ Database Query",
+  "meta": {
+    "requestId": "req_1753446542280_yoloyrgps",
+    "operation": "BLOG_SEARCH",
+    "query": "\n        WITH filtered_blogs AS (\n          SELECT * FROM blogoverview \n          WHERE blog_valid_value = 1 AND (blog_content ILIKE $1 OR blog_title ILIKE $1)\n        )\n        SELECT \n          fb.*,\n          COUNT(*) OVER() as total_count\n        FROM filtered_blogs fb\n        ORDER BY blog_created_date DESC\n        LIMIT $2 OFFSET $3\n      ",
+    "params": [
+      "%test%",
+      5,
+      0
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:02.285",
+  "level": "INFO",
+  "message": "ℹ️ Executing Blog Search Query",
+  "meta": {
+    "requestId": "req_1753446542280_yoloyrgps",
+    "whereClause": "WHERE blog_valid_value = 1 AND (blog_content ILIKE $1 OR blog_title ILIKE $1)",
+    "totalParams": 3,
+    "finalConditions": [
+      "blog_valid_value = 1",
+      "(blog_content ILIKE $1 OR blog_title ILIKE $1)"
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:02.957",
+  "level": "INFO",
+  "message": "ℹ️ Blog Search Completed Successfully",
+  "meta": {
+    "requestId": "req_1753446542280_yoloyrgps",
+    "resultsFound": 0,
+    "totalCount": 0,
+    "currentPage": 1,
+    "totalPages": 0
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:02.958",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446542280_yoloyrgps",
+    "method": "GET",
+    "url": "/api/blog/search?search=test&page=1&limit=5",
+    "statusCode": 200,
+    "duration": "678ms",
+    "success": true
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:02.983",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446542983_954u099h8",
+    "method": "GET",
+    "url": "/api/blog/search",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:02.985",
+  "level": "INFO",
+  "message": "ℹ️ Blog Search Request Started",
+  "meta": {
+    "requestId": "req_1753446542983_954u099h8",
+    "searchParams": {
+      "search": "",
+      "types": "",
+      "brands": "",
+      "page": 1,
+      "limit": 6
+    },
+    "offset": 0
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:02.986",
+  "level": "DEBUG",
+  "message": "🔍 Building Search Conditions",
+  "meta": {
+    "requestId": "req_1753446542983_954u099h8",
+    "initialConditions": [
+      "blog_valid_value = 1"
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:02.986",
+  "level": "DEBUG",
+  "message": "🗃️ Database Query",
+  "meta": {
+    "requestId": "req_1753446542983_954u099h8",
+    "operation": "BLOG_SEARCH",
+    "query": "\n        WITH filtered_blogs AS (\n          SELECT * FROM blogoverview \n          WHERE blog_valid_value = 1\n        )\n        SELECT \n          fb.*,\n          COUNT(*) OVER() as total_count\n        FROM filtered_blogs fb\n        ORDER BY blog_created_date DESC\n        LIMIT $1 OFFSET $2\n      ",
+    "params": [
+      6,
+      0
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:02.987",
+  "level": "INFO",
+  "message": "ℹ️ Executing Blog Search Query",
+  "meta": {
+    "requestId": "req_1753446542983_954u099h8",
+    "whereClause": "WHERE blog_valid_value = 1",
+    "totalParams": 2,
+    "finalConditions": [
+      "blog_valid_value = 1"
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:03.042",
+  "level": "INFO",
+  "message": "ℹ️ Blog Search Completed Successfully",
+  "meta": {
+    "requestId": "req_1753446542983_954u099h8",
+    "resultsFound": 6,
+    "totalCount": "70",
+    "currentPage": 1,
+    "totalPages": 12
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:03.042",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446542983_954u099h8",
+    "method": "GET",
+    "url": "/api/blog/search",
+    "statusCode": 200,
+    "duration": "59ms",
+    "success": true
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:03.050",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446543050_yb07p2tvx",
+    "method": "GET",
+    "url": "/api/blog/blog/ckeitor",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:03.700",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446543050_yb07p2tvx",
+    "method": "GET",
+    "url": "/api/blog/blog/ckeitor",
+    "statusCode": 200,
+    "duration": "650ms",
+    "success": true
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:03.708",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446543708_ui4qupyxz",
+    "method": "GET",
+    "url": "/api/blog/blogcardgroup",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:03.764",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446543708_ui4qupyxz",
+    "method": "GET",
+    "url": "/api/blog/blogcardgroup",
+    "statusCode": 200,
+    "duration": "56ms",
+    "success": true
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:03.773",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446543773_jvsf0pjay",
+    "method": "GET",
+    "url": "/api/blog/blog-detail/1",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:03.829",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446543773_jvsf0pjay",
+    "method": "GET",
+    "url": "/api/blog/blog-detail/1",
+    "statusCode": 200,
+    "duration": "56ms",
+    "success": true
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:03.838",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446543838_5ngyx1w22",
+    "method": "GET",
+    "url": "/api/blog/blog-detail/999",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:03.894",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446543838_5ngyx1w22",
+    "method": "GET",
+    "url": "/api/blog/blog-detail/999",
+    "statusCode": 404,
+    "duration": "56ms",
+    "success": false
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:03.904",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446543904_svivzf9ny",
+    "method": "GET",
+    "url": "/api/blog/blog_user_overview/1",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:05.738",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446543904_svivzf9ny",
+    "method": "GET",
+    "url": "/api/blog/blog_user_overview/1",
+    "statusCode": 200,
+    "duration": "1834ms",
+    "success": true
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:05.943",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446545943_nm0sjx2hj",
+    "method": "GET",
+    "url": "/api/blog/blog-comment/1",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:06.437",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446545943_nm0sjx2hj",
+    "method": "GET",
+    "url": "/api/blog/blog-comment/1",
+    "statusCode": 200,
+    "duration": "494ms",
+    "success": true
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:06.477",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446546477_ss78rvs6k",
+    "method": "GET",
+    "url": "/api/blog",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:06.478",
+  "level": "WARN",
+  "message": "Route not found",
+  "meta": {
+    "method": "GET",
+    "url": "/api/blog",
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "user-agent": "axios/1.7.9",
+      "accept-encoding": "gzip, compress, deflate, br",
+      "host": "localhost:3005",
+      "connection": "keep-alive"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:06.479",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753446546477_ss78rvs6k",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:202:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:192:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/api/blog",
+      "body": {},
+      "query": {},
+      "params": {},
+      "headers": {
+        "userAgent": "axios/1.7.9"
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:06.480",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446546477_ss78rvs6k",
+    "method": "GET",
+    "url": "/api/blog",
+    "statusCode": 404,
+    "duration": "3ms",
+    "success": false
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:06.488",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446546488_wiyqqq0gj",
+    "method": "GET",
+    "url": "/api/blog/",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:06.489",
+  "level": "WARN",
+  "message": "Route not found",
+  "meta": {
+    "method": "GET",
+    "url": "/api/blog/",
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "user-agent": "axios/1.7.9",
+      "accept-encoding": "gzip, compress, deflate, br",
+      "host": "localhost:3005",
+      "connection": "keep-alive"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:06.489",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753446546488_wiyqqq0gj",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:202:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:192:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/api/blog/",
+      "body": {},
+      "query": {},
+      "params": {},
+      "headers": {
+        "userAgent": "axios/1.7.9"
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:06.491",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446546488_wiyqqq0gj",
+    "method": "GET",
+    "url": "/api/blog/",
+    "statusCode": 404,
+    "duration": "2ms",
+    "success": false
+  }
+}
+{
+  "timestamp": "2025-07-25 20:30:18.661",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-25 20:30:20.368",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-25 20:30:45.328",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446645328_dxgk66wmi",
+    "method": "GET",
+    "url": "/api/blog",
+    "userAgent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; zh-TW) WindowsPowerShell/5.1.22621.5697",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:30:45.331",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446645328_dxgk66wmi",
+    "method": "GET",
+    "url": "/api/blog",
+    "userAgent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; zh-TW) WindowsPowerShell/5.1.22621.5697",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:30:45.331",
+  "level": "INFO",
+  "message": "ℹ️ Blog API Overview Request",
+  "meta": {
+    "requestId": "req_1753446645328_dxgk66wmi"
+  }
+}
+{
+  "timestamp": "2025-07-25 20:30:45.332",
+  "level": "INFO",
+  "message": "ℹ️ Blog API Overview Completed",
+  "meta": {
+    "requestId": "req_1753446645328_dxgk66wmi",
+    "endpointCount": 12
+  }
+}
+{
+  "timestamp": "2025-07-25 20:30:45.332",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446645328_dxgk66wmi",
+    "duration": "NaNms",
+    "success": false
+  }
+}
+{
+  "timestamp": "2025-07-25 20:30:45.333",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446645328_dxgk66wmi",
+    "method": "GET",
+    "url": "/api/blog",
+    "statusCode": 200,
+    "duration": "5ms",
+    "success": true
+  }
+}
+{
+  "timestamp": "2025-07-25 20:31:30.347",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-25 20:31:32.015",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-25 20:31:39.652",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446699652_cqsnysc61",
+    "method": "GET",
+    "url": "/api/blog",
+    "userAgent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; zh-TW) WindowsPowerShell/5.1.22621.5697",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:31:39.654",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446699652_cqsnysc61",
+    "method": "GET",
+    "url": "/api/blog",
+    "userAgent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; zh-TW) WindowsPowerShell/5.1.22621.5697",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:31:39.655",
+  "level": "INFO",
+  "message": "ℹ️ Blog API Overview Request",
+  "meta": {
+    "requestId": "req_1753446699652_cqsnysc61"
+  }
+}
+{
+  "timestamp": "2025-07-25 20:31:39.655",
+  "level": "INFO",
+  "message": "ℹ️ Blog API Overview Completed",
+  "meta": {
+    "requestId": "req_1753446699652_cqsnysc61",
+    "endpointCount": 12
+  }
+}
+{
+  "timestamp": "2025-07-25 20:31:39.656",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446699652_cqsnysc61",
+    "duration": "NaNms",
+    "success": false
+  }
+}
+{
+  "timestamp": "2025-07-25 20:31:39.656",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446699652_cqsnysc61",
+    "method": "GET",
+    "url": "/api/blog",
+    "statusCode": 200,
+    "duration": "4ms",
+    "success": true
+  }
+}
+{
+  "timestamp": "2025-07-25 20:32:00.496",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-25 20:32:02.239",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-25 20:32:09.082",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446729082_0xp452qds",
+    "method": "GET",
+    "url": "/api/blog",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:32:09.084",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446729082_0xp452qds",
+    "method": "GET",
+    "url": "/api/blog",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:32:09.085",
+  "level": "INFO",
+  "message": "ℹ️ Blog API Overview Request",
+  "meta": {
+    "requestId": "req_1753446729082_0xp452qds"
+  }
+}
+{
+  "timestamp": "2025-07-25 20:32:09.085",
+  "level": "INFO",
+  "message": "ℹ️ Blog API Overview Completed",
+  "meta": {
+    "requestId": "req_1753446729082_0xp452qds",
+    "endpointCount": 12
+  }
+}
+{
+  "timestamp": "2025-07-25 20:32:09.086",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446729082_0xp452qds",
+    "duration": "NaNms",
+    "success": false
+  }
+}
+{
+  "timestamp": "2025-07-25 20:32:09.086",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446729082_0xp452qds",
+    "method": "GET",
+    "url": "/api/blog",
+    "statusCode": 200,
+    "duration": "4ms",
+    "success": true
+  }
+}
+{
+  "timestamp": "2025-07-25 20:32:09.110",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446729110_df6yt49va",
+    "method": "GET",
+    "url": "/api/blog/search?search=test&page=1&limit=3",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {
+      "search": "test",
+      "page": "1",
+      "limit": "3"
+    },
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:32:09.112",
+  "level": "INFO",
+  "message": "ℹ️ Blog Search Request Started",
+  "meta": {
+    "requestId": "req_1753446729110_df6yt49va",
+    "searchParams": {
+      "search": "test",
+      "types": "",
+      "brands": "",
+      "page": 1,
+      "limit": 3
+    },
+    "offset": 0
+  }
+}
+{
+  "timestamp": "2025-07-25 20:32:09.112",
+  "level": "DEBUG",
+  "message": "🔍 Building Search Conditions",
+  "meta": {
+    "requestId": "req_1753446729110_df6yt49va",
+    "initialConditions": [
+      "blog_valid_value = 1"
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-25 20:32:09.112",
+  "level": "DEBUG",
+  "message": "🔍 Added Search Text Condition",
+  "meta": {
+    "requestId": "req_1753446729110_df6yt49va",
+    "searchText": "test",
+    "paramIndex": 1
+  }
+}
+{
+  "timestamp": "2025-07-25 20:32:09.113",
+  "level": "DEBUG",
+  "message": "🗃️ Database Query",
+  "meta": {
+    "requestId": "req_1753446729110_df6yt49va",
+    "operation": "BLOG_SEARCH",
+    "query": "\n        WITH filtered_blogs AS (\n          SELECT * FROM blogoverview \n          WHERE blog_valid_value = 1 AND (blog_content ILIKE $1 OR blog_title ILIKE $1)\n        )\n        SELECT \n          fb.*,\n          COUNT(*) OVER() as total_count\n        FROM filtered_blogs fb\n        ORDER BY blog_created_date DESC\n        LIMIT $2 OFFSET $3\n      ",
+    "params": [
+      "%test%",
+      3,
+      0
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-25 20:32:09.114",
+  "level": "INFO",
+  "message": "ℹ️ Executing Blog Search Query",
+  "meta": {
+    "requestId": "req_1753446729110_df6yt49va",
+    "whereClause": "WHERE blog_valid_value = 1 AND (blog_content ILIKE $1 OR blog_title ILIKE $1)",
+    "totalParams": 3,
+    "finalConditions": [
+      "blog_valid_value = 1",
+      "(blog_content ILIKE $1 OR blog_title ILIKE $1)"
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-25 20:32:09.181",
+  "level": "INFO",
+  "message": "ℹ️ Blog Search Completed Successfully",
+  "meta": {
+    "requestId": "req_1753446729110_df6yt49va",
+    "resultsFound": 0,
+    "totalCount": 0,
+    "currentPage": 1,
+    "totalPages": 0
+  }
+}
+{
+  "timestamp": "2025-07-25 20:32:09.182",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446729110_df6yt49va",
+    "method": "GET",
+    "url": "/api/blog/search?search=test&page=1&limit=3",
+    "statusCode": 200,
+    "duration": "72ms",
+    "success": true
+  }
+}
+{
+  "timestamp": "2025-07-25 20:32:09.190",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446729190_lpdrx6uwb",
+    "method": "GET",
+    "url": "/api/blog/blogcardgroup",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:32:09.899",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446729190_lpdrx6uwb",
+    "method": "GET",
+    "url": "/api/blog/blogcardgroup",
+    "statusCode": 200,
+    "duration": "709ms",
+    "success": true
+  }
+}
+{
+  "timestamp": "2025-07-25 20:32:09.920",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446729920_49wkc62u0",
+    "method": "GET",
+    "url": "/api/blog/blog-detail/1",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:32:09.991",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446729920_49wkc62u0",
+    "method": "GET",
+    "url": "/api/blog/blog-detail/1",
+    "statusCode": 200,
+    "duration": "71ms",
+    "success": true
+  }
+}
+{
+  "timestamp": "2025-07-25 20:32:09.999",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446729999_8xew5yxk2",
+    "method": "GET",
+    "url": "/api/blog/blog-comment/1",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:32:11.024",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446729999_8xew5yxk2",
+    "method": "GET",
+    "url": "/api/blog/blog-comment/1",
+    "statusCode": 200,
+    "duration": "1025ms",
+    "success": true
+  }
+}
+{
+  "timestamp": "2025-07-25 20:32:38.261",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-25 20:32:40.951",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-25 20:34:34.984",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-25 20:34:36.716",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-25 20:34:50.666",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-25 20:34:53.376",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-25 20:35:09.018",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446909018_vcztldpeg",
+    "method": "HEAD",
+    "url": "/api/products/list",
+    "userAgent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; zh-TW) WindowsPowerShell/5.1.22621.5697",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:35:09.080",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446909018_vcztldpeg",
+    "method": "HEAD",
+    "url": "/api/products/list",
+    "statusCode": 200,
+    "duration": "61ms",
+    "success": true
+  }
+}
+{
+  "timestamp": "2025-07-25 20:35:28.704",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-25 20:35:30.260",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-25 20:35:37.326",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446937326_f4pduidsy",
+    "method": "GET",
+    "url": "/api/products/list",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:35:37.384",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446937326_f4pduidsy",
+    "method": "GET",
+    "url": "/api/products/list",
+    "statusCode": 200,
+    "duration": "58ms",
+    "success": true
+  }
+}
+{
+  "timestamp": "2025-07-25 20:35:37.411",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446937411_yfqgvaaab",
+    "method": "GET",
+    "url": "/api/products/list?page=1",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {
+      "page": "1"
+    },
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:35:37.472",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446937411_yfqgvaaab",
+    "method": "GET",
+    "url": "/api/products/list?page=1",
+    "statusCode": 200,
+    "duration": "61ms",
+    "success": true
+  }
+}
+{
+  "timestamp": "2025-07-25 20:35:37.480",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446937480_5uwy8rvlt",
+    "method": "GET",
+    "url": "/api/products/card/1",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:35:37.535",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446937480_5uwy8rvlt",
+    "method": "GET",
+    "url": "/api/products/card/1",
+    "statusCode": 200,
+    "duration": "55ms",
+    "success": true
+  }
+}
+{
+  "timestamp": "2025-07-25 20:35:37.543",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446937543_qgvdik44l",
+    "method": "GET",
+    "url": "/api/products/1",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:35:37.598",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446937543_qgvdik44l",
+    "method": "GET",
+    "url": "/api/products/1",
+    "statusCode": 200,
+    "duration": "55ms",
+    "success": true
+  }
+}
+{
+  "timestamp": "2025-07-25 20:35:37.607",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753446937607_ltkf3i8h4",
+    "method": "GET",
+    "url": "/api/products/related/1",
+    "userAgent": "axios/1.7.9",
+    "ip": "::1",
+    "headers": {},
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-25 20:35:37.664",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753446937607_ltkf3i8h4",
+    "method": "GET",
+    "url": "/api/products/related/1",
+    "statusCode": 200,
+    "duration": "57ms",
+    "success": true
+  }
+}
+{
+  "timestamp": "2025-07-25 20:38:00.030",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-25 20:38:02.588",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-25 20:39:46.092",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-25 20:39:47.836",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-25 20:40:05.394",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-25 20:40:07.060",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-25 20:40:54.404",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-25 20:40:56.024",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-25 20:41:48.871",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-25 20:41:50.564",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-25 20:43:31.832",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-25 20:43:33.549",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-25 20:44:04.938",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-25 20:44:06.497",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-25 22:13:45.449",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-25 22:13:48.056",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-25 22:14:17.376",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-25 22:14:19.195",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-25 23:58:58.006",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-25 23:59:00.671",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 00:30:14.667",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 00:30:16.416",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 00:30:22.161",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 00:30:24.825",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 00:30:31.520",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 00:30:34.243",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 00:30:39.321",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 00:30:41.180",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 00:30:47.791",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 00:30:49.394",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 00:31:04.681",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 00:31:06.300",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 00:31:58.659",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 00:32:00.484",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 00:32:44.314",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 00:32:45.987",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 00:34:07.617",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 00:34:09.415",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 00:39:52.639",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 00:39:54.307",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 00:40:13.553",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 00:40:15.165",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 00:40:27.236",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 00:40:30.936",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 00:40:41.899",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 00:40:45.441",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 00:40:57.061",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 00:40:58.742",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 00:41:11.924",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 00:41:13.505",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 00:41:27.012",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 00:41:28.635",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 00:41:47.112",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 00:41:48.798",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 00:42:05.188",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 00:42:06.929",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 00:57:01.457",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 00:57:03.174",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 00:57:16.327",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 00:57:17.967",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 00:57:38.824",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 00:57:40.424",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 00:58:24.441",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 00:58:27.147",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 01:25:09.666",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 01:25:11.286",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 01:25:22.778",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 01:25:24.505",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 01:25:38.577",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 01:25:40.291",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 01:29:34.031",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 01:29:35.670",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 02:41:46.323",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 02:41:48.008",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 02:41:53.801",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 02:41:55.435",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 02:42:02.290",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 02:42:03.970",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 02:42:11.959",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 02:42:13.690",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 02:42:21.462",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 02:42:23.234",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 02:42:29.046",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 02:42:30.816",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 02:42:36.863",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 02:42:38.868",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 02:42:45.673",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 02:42:47.516",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 02:42:53.538",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 02:42:55.315",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 02:43:01.069",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 02:43:02.802",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 02:43:08.808",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 02:43:10.421",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 02:43:17.254",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 02:43:19.898",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 02:44:02.543",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 02:44:04.591",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 03:15:24.362",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 03:15:26.045",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 03:15:31.812",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 03:15:34.381",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 03:17:17.678",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 03:17:19.377",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 03:48:13.843",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 03:48:16.707",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 03:48:28.675",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 03:48:30.323",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 03:48:42.294",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 03:48:43.917",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 03:48:55.874",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 03:48:57.842",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 03:49:09.489",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 03:49:11.106",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 03:49:44.104",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 03:49:46.013",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 03:50:02.254",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 03:50:03.874",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 03:50:19.744",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 03:50:21.408",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 03:50:34.294",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 03:50:35.912",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 03:50:50.443",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 03:50:53.400",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 04:16:11.694",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 04:16:13.491",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 04:16:47.850",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 04:16:49.450",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 04:17:10.608",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 04:17:12.198",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 04:17:29.443",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 04:17:31.135",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 10:29:18.484",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 10:29:20.170",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 10:33:30.634",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 10:33:32.766",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 10:34:33.336",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 10:34:36.169",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 10:34:45.043",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 10:34:47.824",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 10:34:51.814",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 10:34:54.495",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 10:35:15.603",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 10:35:17.787",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 10:45:39.479",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 10:45:41.357",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 10:45:46.436",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 10:45:48.152",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 10:45:52.506",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 10:45:54.171",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 10:46:13.091",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 10:46:14.807",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 10:46:33.230",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 10:46:34.812",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 10:46:39.051",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 10:46:41.730",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 10:46:45.268",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 10:46:47.055",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 10:46:52.241",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 10:46:53.928",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 10:46:58.675",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 10:47:00.270",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 10:47:11.139",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 10:47:12.724",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 10:47:27.682",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 10:47:29.314",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 10:47:34.514",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 10:47:37.342",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 10:47:41.185",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 10:47:43.901",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 10:47:47.932",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 10:47:49.655",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 10:47:54.757",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 10:47:56.613",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 10:48:36.176",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 10:48:39.095",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 10:48:48.291",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 10:48:49.977",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 10:49:00.741",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 10:49:02.386",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 10:49:17.355",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 10:49:19.109",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 10:58:29.375",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 10:58:31.082",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 10:58:51.945",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 10:58:55.587",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 10:59:09.806",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 10:59:11.472",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 10:59:21.488",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 10:59:23.186",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 10:59:33.326",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 10:59:35.990",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 10:59:46.499",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 10:59:49.189",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 10:59:59.296",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 11:00:01.274",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 11:00:48.437",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 11:00:50.053",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 11:00:59.718",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 11:01:03.223",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 11:01:11.805",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 11:01:14.337",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 11:25:57.787",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 11:25:59.445",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 11:29:19.925",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 11:29:21.579",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 16:21:46.912",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 16:21:48.683",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 16:39:23.126",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 16:39:24.747",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 16:39:34.459",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753519174459_yml5xhwju",
+    "method": "GET",
+    "url": "/_next/static/development/_devPagesManifest.json",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0",
+    "ip": "::1",
+    "headers": {
+      "contentType": "application/json",
+      "origin": "http://192.168.0.12:3000"
+    },
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-26 16:39:34.462",
+  "level": "WARN",
+  "message": "Route not found",
+  "meta": {
+    "method": "GET",
+    "url": "/_next/static/development/_devPagesManifest.json",
+    "headers": {
+      "host": "localhost:3005",
+      "connection": "keep-alive",
+      "sec-ch-ua-platform": "\"Windows\"",
+      "cache-control": "no-store",
+      "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0",
+      "accept": "application/json",
+      "sec-ch-ua": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Microsoft Edge\";v=\"138\"",
+      "content-type": "application/json",
+      "sec-ch-ua-mobile": "?0",
+      "origin": "http://192.168.0.12:3000",
+      "sec-fetch-site": "cross-site",
+      "sec-fetch-mode": "cors",
+      "sec-fetch-dest": "empty",
+      "sec-fetch-storage-access": "active",
+      "referer": "http://192.168.0.12:3000/",
+      "accept-encoding": "gzip, deflate, br, zstd",
+      "accept-language": "zh-TW,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-26 16:39:34.463",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753519174459_yml5xhwju",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:221:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:211:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/_next/static/development/_devPagesManifest.json",
+      "body": {},
+      "query": {},
+      "params": {},
+      "headers": {
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0",
+        "contentType": "application/json",
+        "origin": "http://192.168.0.12:3000"
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-26 16:39:34.464",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753519174459_yml5xhwju",
+    "method": "GET",
+    "url": "/_next/static/development/_devPagesManifest.json",
+    "statusCode": 404,
+    "duration": "5ms",
+    "success": false
+  }
+}
+{
+  "timestamp": "2025-07-26 16:39:34.498",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753519174498_1a82ks5k7",
+    "method": "GET",
+    "url": "/__nextjs_original-stack-frame?isServer=false&isEdgeServer=false&isAppDirectory=false&errorMessage=TypeError%3A+Cannot+read+properties+of+undefined+%28reading+%27includes%27%29&file=webpack-internal%3A%2F%2F%2F.%2Fnode_modules%2Fnext%2Fdist%2Fshared%2Flib%2Frouter%2Frouter.js&methodName=resolveDynamicRoute&arguments=&lineNumber=100&column=16",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0",
+    "ip": "::1",
+    "headers": {
+      "contentType": "application/json",
+      "origin": "http://192.168.0.12:3000"
+    },
+    "query": {
+      "isServer": "false",
+      "isEdgeServer": "false",
+      "isAppDirectory": "false",
+      "errorMessage": "TypeError: Cannot read properties of undefined (reading 'includes')",
+      "file": "webpack-internal:///./node_modules/next/dist/shared/lib/router/router.js",
+      "methodName": "resolveDynamicRoute",
+      "arguments": "",
+      "lineNumber": "100",
+      "column": "16"
+    },
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-26 16:39:34.500",
+  "level": "WARN",
+  "message": "Route not found",
+  "meta": {
+    "method": "GET",
+    "url": "/__nextjs_original-stack-frame?isServer=false&isEdgeServer=false&isAppDirectory=false&errorMessage=TypeError%3A+Cannot+read+properties+of+undefined+%28reading+%27includes%27%29&file=webpack-internal%3A%2F%2F%2F.%2Fnode_modules%2Fnext%2Fdist%2Fshared%2Flib%2Frouter%2Frouter.js&methodName=resolveDynamicRoute&arguments=&lineNumber=100&column=16",
+    "headers": {
+      "host": "localhost:3005",
+      "connection": "keep-alive",
+      "sec-ch-ua-platform": "\"Windows\"",
+      "cache-control": "no-store",
+      "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0",
+      "accept": "application/json",
+      "sec-ch-ua": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Microsoft Edge\";v=\"138\"",
+      "content-type": "application/json",
+      "sec-ch-ua-mobile": "?0",
+      "origin": "http://192.168.0.12:3000",
+      "sec-fetch-site": "cross-site",
+      "sec-fetch-mode": "cors",
+      "sec-fetch-dest": "empty",
+      "sec-fetch-storage-access": "active",
+      "referer": "http://192.168.0.12:3000/",
+      "accept-encoding": "gzip, deflate, br, zstd",
+      "accept-language": "zh-TW,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-26 16:39:34.501",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753519174498_1a82ks5k7",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:221:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:211:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/__nextjs_original-stack-frame?isServer=false&isEdgeServer=false&isAppDirectory=false&errorMessage=TypeError%3A+Cannot+read+properties+of+undefined+%28reading+%27includes%27%29&file=webpack-internal%3A%2F%2F%2F.%2Fnode_modules%2Fnext%2Fdist%2Fshared%2Flib%2Frouter%2Frouter.js&methodName=resolveDynamicRoute&arguments=&lineNumber=100&column=16",
+      "body": {},
+      "query": {
+        "isServer": "false",
+        "isEdgeServer": "false",
+        "isAppDirectory": "false",
+        "errorMessage": "TypeError: Cannot read properties of undefined (reading 'includes')",
+        "file": "webpack-internal:///./node_modules/next/dist/shared/lib/router/router.js",
+        "methodName": "resolveDynamicRoute",
+        "arguments": "",
+        "lineNumber": "100",
+        "column": "16"
+      },
+      "params": {},
+      "headers": {
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0",
+        "contentType": "application/json",
+        "origin": "http://192.168.0.12:3000"
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-26 16:39:34.502",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753519174498_1a82ks5k7",
+    "method": "GET",
+    "url": "/__nextjs_original-stack-frame?isServer=false&isEdgeServer=false&isAppDirectory=false&errorMessage=TypeError%3A+Cannot+read+properties+of+undefined+%28reading+%27includes%27%29&file=webpack-internal%3A%2F%2F%2F.%2Fnode_modules%2Fnext%2Fdist%2Fshared%2Flib%2Frouter%2Frouter.js&methodName=resolveDynamicRoute&arguments=&lineNumber=100&column=16",
+    "statusCode": 404,
+    "duration": "4ms",
+    "success": false
+  }
+}
+{
+  "timestamp": "2025-07-26 16:39:34.504",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753519174504_r1hzn3lyi",
+    "method": "GET",
+    "url": "/__nextjs_original-stack-frame?isServer=false&isEdgeServer=false&isAppDirectory=false&errorMessage=TypeError%3A+Cannot+read+properties+of+undefined+%28reading+%27includes%27%29&file=webpack-internal%3A%2F%2F%2F.%2Fnode_modules%2Fnext%2Fdist%2Fshared%2Flib%2Frouter%2Frouter.js&methodName=Router.change&arguments=&lineNumber=665&column=35",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0",
+    "ip": "::1",
+    "headers": {
+      "contentType": "application/json",
+      "origin": "http://192.168.0.12:3000"
+    },
+    "query": {
+      "isServer": "false",
+      "isEdgeServer": "false",
+      "isAppDirectory": "false",
+      "errorMessage": "TypeError: Cannot read properties of undefined (reading 'includes')",
+      "file": "webpack-internal:///./node_modules/next/dist/shared/lib/router/router.js",
+      "methodName": "Router.change",
+      "arguments": "",
+      "lineNumber": "665",
+      "column": "35"
+    },
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-26 16:39:34.506",
+  "level": "WARN",
+  "message": "Route not found",
+  "meta": {
+    "method": "GET",
+    "url": "/__nextjs_original-stack-frame?isServer=false&isEdgeServer=false&isAppDirectory=false&errorMessage=TypeError%3A+Cannot+read+properties+of+undefined+%28reading+%27includes%27%29&file=webpack-internal%3A%2F%2F%2F.%2Fnode_modules%2Fnext%2Fdist%2Fshared%2Flib%2Frouter%2Frouter.js&methodName=Router.change&arguments=&lineNumber=665&column=35",
+    "headers": {
+      "host": "localhost:3005",
+      "connection": "keep-alive",
+      "sec-ch-ua-platform": "\"Windows\"",
+      "cache-control": "no-store",
+      "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0",
+      "accept": "application/json",
+      "sec-ch-ua": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Microsoft Edge\";v=\"138\"",
+      "content-type": "application/json",
+      "sec-ch-ua-mobile": "?0",
+      "origin": "http://192.168.0.12:3000",
+      "sec-fetch-site": "cross-site",
+      "sec-fetch-mode": "cors",
+      "sec-fetch-dest": "empty",
+      "sec-fetch-storage-access": "active",
+      "referer": "http://192.168.0.12:3000/",
+      "accept-encoding": "gzip, deflate, br, zstd",
+      "accept-language": "zh-TW,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-26 16:39:34.506",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753519174504_r1hzn3lyi",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:221:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:211:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/__nextjs_original-stack-frame?isServer=false&isEdgeServer=false&isAppDirectory=false&errorMessage=TypeError%3A+Cannot+read+properties+of+undefined+%28reading+%27includes%27%29&file=webpack-internal%3A%2F%2F%2F.%2Fnode_modules%2Fnext%2Fdist%2Fshared%2Flib%2Frouter%2Frouter.js&methodName=Router.change&arguments=&lineNumber=665&column=35",
+      "body": {},
+      "query": {
+        "isServer": "false",
+        "isEdgeServer": "false",
+        "isAppDirectory": "false",
+        "errorMessage": "TypeError: Cannot read properties of undefined (reading 'includes')",
+        "file": "webpack-internal:///./node_modules/next/dist/shared/lib/router/router.js",
+        "methodName": "Router.change",
+        "arguments": "",
+        "lineNumber": "665",
+        "column": "35"
+      },
+      "params": {},
+      "headers": {
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0",
+        "contentType": "application/json",
+        "origin": "http://192.168.0.12:3000"
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-26 16:39:34.508",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753519174504_r1hzn3lyi",
+    "method": "GET",
+    "url": "/__nextjs_original-stack-frame?isServer=false&isEdgeServer=false&isAppDirectory=false&errorMessage=TypeError%3A+Cannot+read+properties+of+undefined+%28reading+%27includes%27%29&file=webpack-internal%3A%2F%2F%2F.%2Fnode_modules%2Fnext%2Fdist%2Fshared%2Flib%2Frouter%2Frouter.js&methodName=Router.change&arguments=&lineNumber=665&column=35",
+    "statusCode": 404,
+    "duration": "4ms",
+    "success": false
+  }
+}
+{
+  "timestamp": "2025-07-26 19:21:36.330",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 19:21:38.048",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 19:21:47.682",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753528907681_j0gioeegj",
+    "method": "GET",
+    "url": "/_next/static/development/_devMiddlewareManifest.json",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0",
+    "ip": "::1",
+    "headers": {
+      "contentType": "application/json",
+      "origin": "http://192.168.0.12:3000"
+    },
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-26 19:21:47.685",
+  "level": "WARN",
+  "message": "Route not found",
+  "meta": {
+    "method": "GET",
+    "url": "/_next/static/development/_devMiddlewareManifest.json",
+    "headers": {
+      "host": "localhost:3005",
+      "connection": "keep-alive",
+      "sec-ch-ua-platform": "\"Windows\"",
+      "cache-control": "no-store",
+      "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0",
+      "accept": "application/json",
+      "sec-ch-ua": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Microsoft Edge\";v=\"138\"",
+      "content-type": "application/json",
+      "sec-ch-ua-mobile": "?0",
+      "origin": "http://192.168.0.12:3000",
+      "sec-fetch-site": "cross-site",
+      "sec-fetch-mode": "cors",
+      "sec-fetch-dest": "empty",
+      "sec-fetch-storage-access": "active",
+      "referer": "http://192.168.0.12:3000/",
+      "accept-encoding": "gzip, deflate, br, zstd",
+      "accept-language": "zh-TW,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-26 19:21:47.687",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753528907681_j0gioeegj",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:221:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:211:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/_next/static/development/_devMiddlewareManifest.json",
+      "body": {},
+      "query": {},
+      "params": {},
+      "headers": {
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0",
+        "contentType": "application/json",
+        "origin": "http://192.168.0.12:3000"
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-26 19:21:47.689",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753528907681_j0gioeegj",
+    "method": "GET",
+    "url": "/_next/static/development/_devMiddlewareManifest.json",
+    "statusCode": 404,
+    "duration": "8ms",
+    "success": false
+  }
+}
+{
+  "timestamp": "2025-07-26 19:22:18.646",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}
+{
+  "timestamp": "2025-07-26 19:22:21.534",
+  "level": "INFO",
+  "message": "Database connection successful"
+}
+{
+  "timestamp": "2025-07-26 19:22:30.753",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753528950753_yslhfi0vn",
+    "method": "GET",
+    "url": "/_next/static/development/_devMiddlewareManifest.json",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0",
+    "ip": "::1",
+    "headers": {
+      "contentType": "application/json",
+      "origin": "http://192.168.0.12:3000"
+    },
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-26 19:22:30.756",
+  "level": "WARN",
+  "message": "Route not found",
+  "meta": {
+    "method": "GET",
+    "url": "/_next/static/development/_devMiddlewareManifest.json",
+    "headers": {
+      "host": "localhost:3005",
+      "connection": "keep-alive",
+      "sec-ch-ua-platform": "\"Windows\"",
+      "cache-control": "no-store",
+      "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0",
+      "accept": "application/json",
+      "sec-ch-ua": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Microsoft Edge\";v=\"138\"",
+      "content-type": "application/json",
+      "sec-ch-ua-mobile": "?0",
+      "origin": "http://192.168.0.12:3000",
+      "sec-fetch-site": "cross-site",
+      "sec-fetch-mode": "cors",
+      "sec-fetch-dest": "empty",
+      "sec-fetch-storage-access": "active",
+      "referer": "http://192.168.0.12:3000/",
+      "accept-encoding": "gzip, deflate, br, zstd",
+      "accept-language": "zh-TW,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-26 19:22:30.758",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753528950753_yslhfi0vn",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:221:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:211:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/_next/static/development/_devMiddlewareManifest.json",
+      "body": {},
+      "query": {},
+      "params": {},
+      "headers": {
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0",
+        "contentType": "application/json",
+        "origin": "http://192.168.0.12:3000"
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-26 19:22:30.762",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753528950753_yslhfi0vn",
+    "method": "GET",
+    "url": "/_next/static/development/_devMiddlewareManifest.json",
+    "statusCode": 404,
+    "duration": "8ms",
+    "success": false
+  }
+}
+{
+  "timestamp": "2025-07-26 19:50:09.141",
+  "level": "INFO",
+  "message": "🌐 API Request",
+  "meta": {
+    "requestId": "req_1753530609141_jgomjvymi",
+    "method": "GET",
+    "url": "/_next/static/development/_devMiddlewareManifest.json",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0",
+    "ip": "::1",
+    "headers": {
+      "contentType": "application/json",
+      "origin": "http://192.168.0.12:3000"
+    },
+    "query": {},
+    "params": {},
+    "body": {}
+  }
+}
+{
+  "timestamp": "2025-07-26 19:50:09.143",
+  "level": "WARN",
+  "message": "Route not found",
+  "meta": {
+    "method": "GET",
+    "url": "/_next/static/development/_devMiddlewareManifest.json",
+    "headers": {
+      "host": "localhost:3005",
+      "connection": "keep-alive",
+      "sec-ch-ua-platform": "\"Windows\"",
+      "cache-control": "no-store",
+      "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0",
+      "accept": "application/json",
+      "sec-ch-ua": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Microsoft Edge\";v=\"138\"",
+      "content-type": "application/json",
+      "sec-ch-ua-mobile": "?0",
+      "origin": "http://192.168.0.12:3000",
+      "sec-fetch-site": "cross-site",
+      "sec-fetch-mode": "cors",
+      "sec-fetch-dest": "empty",
+      "sec-fetch-storage-access": "active",
+      "referer": "http://192.168.0.12:3000/",
+      "accept-encoding": "gzip, deflate, br, zstd",
+      "accept-language": "zh-TW,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-26 19:50:09.145",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753530609141_jgomjvymi",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:221:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:211:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/_next/static/development/_devMiddlewareManifest.json",
+      "body": {},
+      "query": {},
+      "params": {},
+      "headers": {
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0",
+        "contentType": "application/json",
+        "origin": "http://192.168.0.12:3000"
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-26 19:50:09.147",
+  "level": "INFO",
+  "message": "📤 API Response",
+  "meta": {
+    "requestId": "req_1753530609141_jgomjvymi",
+    "method": "GET",
+    "url": "/_next/static/development/_devMiddlewareManifest.json",
+    "statusCode": 404,
+    "duration": "6ms",
+    "success": false
+  }
+}
+{
+  "timestamp": "2025-07-26 21:33:46.060",
+  "level": "INFO",
+  "message": "🚀 Application Starting",
+  "meta": {
+    "environment": "production",
+    "port": "3005"
+  }
+}

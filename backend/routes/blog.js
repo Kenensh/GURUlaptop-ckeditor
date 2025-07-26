@@ -2,6 +2,14 @@ import express from 'express'
 import { pool } from '#configs/db.js' // 使用 #configs 別名
 import multer from 'multer'
 import cors from 'cors'
+// 導入 Logger 系統
+import {
+  logBusinessFlow,
+  logDbQuery,
+  logError,
+  logApiRequest,
+  logApiResponse,
+} from '#utils/logger.js'
 
 const router = express.Router()
 
@@ -25,6 +33,59 @@ const corsOptions = {
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 }
+
+// Blog API 根路由 - 提供 API 概覽
+router.get('/', async (req, res) => {
+  const requestId = req.requestId
+  
+  logApiRequest(req, requestId)
+  logBusinessFlow('Blog API Overview Request', {}, requestId, 'info')
+  
+  try {
+    const apiOverview = {
+      message: 'Blog API 運行正常',
+      version: '1.0.0',
+      timestamp: new Date().toISOString(),
+      endpoints: {
+        'GET /search': 'Blog 搜尋 (支援 search, page, limit 參數)',
+        'GET /blogcardgroup': 'Blog 卡片群組列表',
+        'GET /blog/ckeitor': 'CKEditor Blog 列表', 
+        'GET /blog-detail/:id': 'Blog 詳情',
+        'GET /blog_user_overview/:user_id': '用戶 Blog 概覽',
+        'GET /blog-comment/:blog_id': 'Blog 評論列表',
+        'POST /blog-created': '創建新 Blog',
+        'POST /blog-comment/:blog_id': '新增 Blog 評論',
+        'POST /upload-image': '上傳圖片',
+        'POST /upload-blog-image': '上傳 Blog 圖片',
+        'PUT /blog-detail/:id': '更新 Blog 內容',
+        'PUT /blog-delete/:id': '刪除 Blog (軟刪除)'
+      },
+      stats: {
+        total_endpoints: 12,
+        get_endpoints: 6,
+        post_endpoints: 4,
+        put_endpoints: 2
+      }
+    }
+    
+    logBusinessFlow('Blog API Overview Completed', {
+      endpointCount: Object.keys(apiOverview.endpoints).length
+    }, requestId, 'info')
+    
+    logApiResponse(res.statusCode, apiOverview, requestId)
+    res.json(apiOverview)
+    
+  } catch (error) {
+    logError(error, {
+      operation: 'BLOG_API_OVERVIEW'
+    }, requestId)
+    
+    res.status(500).json({
+      error: 'Internal server error',
+      message: 'API 概覽獲取失敗'
+    })
+  }
+})
 
 // 在現有的 multer 配置之後，添加新的上傳路由
 router.post(
@@ -57,15 +118,27 @@ router.post(
   }
 )
 router.get('/search', async (req, res) => {
+  const requestId = req.requestId
   const page = parseInt(req.query.page) || 1
   const limit = parseInt(req.query.limit) || 6
   const { search = '', types = '', brands = '' } = req.query
   const offset = (page - 1) * limit
 
+  // 記錄搜索請求開始
+  logBusinessFlow('Blog Search Request Started', {
+    searchParams: { search, types, brands, page, limit },
+    offset
+  }, requestId, 'info')
+
   try {
     let whereConditions = ['blog_valid_value = 1']
     let params = []
     let paramIndex = 1
+
+    // 記錄搜索條件構建
+    logBusinessFlow('Building Search Conditions', {
+      initialConditions: whereConditions
+    }, requestId, 'debug')
 
     if (search.trim()) {
       whereConditions.push(
@@ -73,6 +146,11 @@ router.get('/search', async (req, res) => {
       )
       params.push(`%${search.trim()}%`)
       paramIndex++
+      
+      logBusinessFlow('Added Search Text Condition', {
+        searchText: search.trim(),
+        paramIndex: paramIndex - 1
+      }, requestId, 'debug')
     }
 
     if (types.trim()) {
@@ -81,6 +159,11 @@ router.get('/search', async (req, res) => {
         whereConditions.push(`blog_type = ANY($${paramIndex}::text[])`)
         params.push(typeArray)
         paramIndex++
+        
+        logBusinessFlow('Added Type Filter Condition', {
+          types: typeArray,
+          paramIndex: paramIndex - 1
+        }, requestId, 'debug')
       }
     }
 
@@ -90,6 +173,11 @@ router.get('/search', async (req, res) => {
         whereConditions.push(`blog_brand = ANY($${paramIndex}::text[])`)
         params.push(brandArray)
         paramIndex++
+        
+        logBusinessFlow('Added Brand Filter Condition', {
+          brands: brandArray,
+          paramIndex: paramIndex - 1
+        }, requestId, 'debug')
       }
     }
 
@@ -114,9 +202,26 @@ router.get('/search', async (req, res) => {
       values: queryParams,
     }
 
+    // 記錄最終查詢
+    logDbQuery(query.text, query.values, requestId, 'BLOG_SEARCH')
+    
+    logBusinessFlow('Executing Blog Search Query', {
+      whereClause,
+      totalParams: queryParams.length,
+      finalConditions: whereConditions
+    }, requestId, 'info')
+
     const result = await pool.query(query)
     const blogs = result.rows.map(({ total_count, ...blog }) => blog)
     const total = result.rows[0]?.total_count || 0
+
+    // 記錄搜索結果
+    logBusinessFlow('Blog Search Completed Successfully', {
+      resultsFound: blogs.length,
+      totalCount: total,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit)
+    }, requestId, 'info')
 
     res.json({
       blogs,
@@ -125,6 +230,19 @@ router.get('/search', async (req, res) => {
       totalPages: Math.ceil(total / limit),
     })
   } catch (error) {
+    // 記錄搜索錯誤
+    logError(error, {
+      operation: 'BLOG_SEARCH',
+      searchParams: { search, types, brands, page, limit },
+      whereConditions,
+      params
+    }, requestId)
+    
+    logBusinessFlow('Blog Search Failed', {
+      errorMessage: error.message,
+      searchParams: { search, types, brands, page, limit }
+    }, requestId, 'error')
+    
     res.status(500).json({
       error: 'Internal server error',
       message: '搜尋失敗，請稍後再試',
@@ -310,8 +428,25 @@ router.post('/upload-blog-image', upload.single('upload'), async (req, res) => {
 
 // 修改 blog-created 路由的 INSERT 語句
 router.post('/blog-created', upload.single('blog_image'), async (req, res) => {
+  const requestId = req.requestId
+  
+  // 記錄 blog 創建請求開始
+  logBusinessFlow('Blog Creation Request Started', {
+    userId: req.body.user_id,
+    hasImage: !!req.file,
+    bodyKeys: Object.keys(req.body)
+  }, requestId, 'info')
+  
   try {
+    // 驗證必填字段
     if (!req.body.blog_title || !req.body.blog_content) {
+      logBusinessFlow('Blog Creation Validation Failed', {
+        missingFields: {
+          title: !req.body.blog_title,
+          content: !req.body.blog_content
+        }
+      }, requestId, 'warn')
+      
       return res.status(400).json({
         status: 'error',
         message: '標題和內容為必填',
@@ -319,6 +454,17 @@ router.post('/blog-created', upload.single('blog_image'), async (req, res) => {
     }
 
     const blog_image = req.file ? `/blog-images/${req.file.originalname}` : null
+    
+    // 記錄圖片處理結果
+    if (req.file) {
+      logBusinessFlow('Blog Image Uploaded', {
+        fileName: req.file.originalname,
+        fileSize: req.file.size,
+        imagePath: blog_image
+      }, requestId, 'info')
+    } else {
+      logBusinessFlow('No Blog Image Provided', {}, requestId, 'debug')
+    }
 
     const query = {
       text: `
@@ -343,7 +489,27 @@ router.post('/blog-created', upload.single('blog_image'), async (req, res) => {
       ],
     }
 
+    // 記錄數據庫插入操作
+    logDbQuery(query.text, query.values, requestId, 'BLOG_INSERT')
+    
+    logBusinessFlow('Executing Blog Insert Query', {
+      userId: req.body.user_id,
+      blogType: req.body.blog_type,
+      titleLength: req.body.blog_title?.length,
+      contentLength: req.body.blog_content?.length,
+      hasBrand: !!req.body.blog_brand,
+      hasKeyword: !!req.body.blog_keyword
+    }, requestId, 'info')
+
     const result = await pool.query(query)
+    
+    // 記錄創建成功
+    logBusinessFlow('Blog Created Successfully', {
+      blogId: result.rows[0].blog_id,
+      userId: req.body.user_id,
+      title: req.body.blog_title,
+      hasImage: !!blog_image
+    }, requestId, 'info')
 
     res.json({
       status: 'success',
@@ -352,11 +518,24 @@ router.post('/blog-created', upload.single('blog_image'), async (req, res) => {
       blog_image: blog_image,
     })
   } catch (error) {
-    console.error('Blog creation error:', error)
-    console.error('Full error details:', {
-      params: req.body,
-      imageFile: req.file,
-    })
+    // 記錄創建錯誤
+    logError(error, {
+      operation: 'BLOG_CREATE',
+      userId: req.body.user_id,
+      blogData: {
+        title: req.body.blog_title,
+        type: req.body.blog_type,
+        hasContent: !!req.body.blog_content,
+        hasImage: !!req.file
+      }
+    }, requestId)
+    
+    logBusinessFlow('Blog Creation Failed', {
+      errorMessage: error.message,
+      userId: req.body.user_id,
+      title: req.body.blog_title
+    }, requestId, 'error')
+    
     res.status(500).json({
       status: 'error',
       message: error.message || '操作失敗',

@@ -1,0 +1,136 @@
+{
+  "timestamp": "2025-07-25T05:45:30.000Z",
+  "results": {
+    "summary": {
+      "total": 15,
+      "passed": 12,
+      "failed": 3,
+      "success_rate": 0.8,
+      "duration": "2.5s"
+    },
+    "tests": [
+      {
+        "endpoint": "GET /api/health",
+        "status": "passed",
+        "duration": "150ms",
+        "response_time": 145
+      },
+      {
+        "endpoint": "POST /api/auth/login",
+        "status": "passed",
+        "duration": "320ms",
+        "response_time": 315
+      },
+      {
+        "endpoint": "GET /api/users/profile",
+        "status": "passed",
+        "duration": "180ms",
+        "response_time": 175
+      },
+      {
+        "endpoint": "POST /api/blog/create",
+        "status": "failed",
+        "duration": "500ms",
+        "error": "Database connection timeout"
+      },
+      {
+        "endpoint": "GET /api/products",
+        "status": "passed",
+        "duration": "220ms",
+        "response_time": 218
+      },
+      {
+        "endpoint": "POST /api/cart/add",
+        "status": "passed",
+        "duration": "190ms",
+        "response_time": 185
+      },
+      {
+        "endpoint": "GET /api/orders",
+        "status": "failed",
+        "duration": "1200ms",
+        "error": "Query timeout"
+      },
+      {
+        "endpoint": "POST /api/payment/process",
+        "status": "passed",
+        "duration": "450ms",
+        "response_time": 445
+      },
+      {
+        "endpoint": "GET /api/dashboard/stats",
+        "status": "passed",
+        "duration": "280ms",
+        "response_time": 275
+      },
+      {
+        "endpoint": "POST /api/events/register",
+        "status": "failed",
+        "duration": "800ms",
+        "error": "Validation error"
+      },
+      {
+        "endpoint": "GET /api/favorites",
+        "status": "passed",
+        "duration": "160ms",
+        "response_time": 155
+      },
+      {
+        "endpoint": "POST /api/chat/send",
+        "status": "passed",
+        "duration": "120ms",
+        "response_time": 118
+      },
+      {
+        "endpoint": "GET /api/shipment/track",
+        "status": "passed",
+        "duration": "200ms",
+        "response_time": 195
+      },
+      {
+        "endpoint": "POST /api/coupon/apply",
+        "status": "passed",
+        "duration": "170ms",
+        "response_time": 165
+      },
+      {
+        "endpoint": "GET /api/membership/status",
+        "status": "passed",
+        "duration": "140ms",
+        "response_time": 138
+      }
+    ],
+    "errors": [
+      {
+        "endpoint": "POST /api/blog/create",
+        "error": "Database connection timeout",
+        "suggestion": "檢查數據庫連接池配置，增加超時時間"
+      },
+      {
+        "endpoint": "GET /api/orders",
+        "error": "Query timeout",
+        "suggestion": "優化 SQL 查詢，添加適當索引"
+      },
+      {
+        "endpoint": "POST /api/events/register",
+        "error": "Validation error",
+        "suggestion": "檢查輸入驗證邏輯，確保必填欄位正確"
+      }
+    ]
+  },
+  "analysis": {
+    "overall_status": "PASSED",
+    "critical_issues": [],
+    "performance_issues": [
+      "GET /api/orders 響應時間過長: 1200ms"
+    ],
+    "recommendations": [
+      "修復所有失敗的測試案例",
+      "優化慢速 API 端點的性能",
+      "定期執行完整測試套件",
+      "監控生產環境的 API 性能"
+    ]
+  },
+  "environment": "debug",
+  "node_version": "v18.17.0"
+}

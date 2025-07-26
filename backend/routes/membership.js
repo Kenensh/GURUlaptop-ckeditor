@@ -1,6 +1,6 @@
 import express from 'express'
 const router = express.Router()
-import { pool } from '##/configs/db.js'
+import { pool } from '#configs/db.js'
 
 // 獲取會員等級資訊
 router.get('/:user_id', async (req, res) => {

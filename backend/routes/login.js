@@ -1,6 +1,6 @@
 import express from 'express'
 import authenticate from '#middlewares/authenticate.js'
-import { pool } from '##/configs/db.js'
+import { pool } from '#configs/db.js'
 import jsonwebtoken from 'jsonwebtoken'
 import { compareHash } from '#db-helpers/password-hash.js'
 

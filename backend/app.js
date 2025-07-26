@@ -10,6 +10,10 @@ import winston from 'winston'
 import { fileURLToPath } from 'url'
 import sessionFileStore from 'session-file-store'
 import { extendLog } from '#utils/tool.js'
+// 導入 Logger 系統
+import logger from '#utils/logger.js'
+import { requestLogger, errorLogger } from '#middlewares/logger.js'
+import { DatabaseLogger } from '#utils/db-logger.js'
 import 'colors'
 import 'dotenv/config.js'
 
@@ -25,7 +29,12 @@ import couponUserRouter from './routes/coupon-user.js'
 import chatRoutes from './routes/chat.js'
 import GroupRequests from './routes/group-request.js'
 import blogRouter from './routes/blog.js'
+import productsRouter from './routes/products.js'
 import forgotPasswordRouter from './routes/forgot-password.js'
+import healthRouter from './routes/health.js'
+import cartRouter from './routes/cart.js'
+import orderRouter from './routes/order.js'
+import buyListRouter from './routes/buy-list.js'
 
 const app = express()
 app.set('trust proxy', 1)
@@ -54,10 +63,21 @@ if (!fs.existsSync(uploadDir)) {
 const FileStore = sessionFileStore(session)
 
 const corsOptions = {
-  origin:
-    process.env.NODE_ENV === 'production'
-      ? 'https://gurulaptop-ckeditor-frontend.onrender.com'
-      : 'http://localhost:3000',
+  origin: function (origin, callback) {
+    // 允許的來源
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'http://192.168.0.12:3000',
+      'https://gurulaptop-ckeditor-frontend.onrender.com'
+    ]
+    
+    // 如果沒有 origin（如 Postman）或在允許列表中，則允許
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: [
@@ -100,76 +120,16 @@ const sessionConfig = {
   saveUninitialized: true,
 }
 
-// 建立 Winston Logger
-const logger = winston.createLogger({
-  level: process.env.LOG_LEVEL || 'info',
-  format: winston.format.combine(
-    winston.format.timestamp({
-      format: 'YYYY-MM-DD HH:mm:ss',
-    }),
-    winston.format.errors({ stack: true }),
-    winston.format.json()
-  ),
-  transports: [
-    new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.printf(({ level, message, timestamp, ...meta }) => {
-          let output = `${timestamp} ${level}: ${message}`
-          if (meta.stack) {
-            output += `\nStack: ${meta.stack}`
-          }
-          const { stack, ...restMeta } = meta
-          if (Object.keys(restMeta).length > 0) {
-            output += `\nMetadata: ${JSON.stringify(restMeta, null, 2)}`
-          }
-          return output
-        })
-      ),
-    }),
-    new winston.transports.File({
-      filename: 'logs/error.log',
-      level: 'error',
-    }),
-    new winston.transports.File({
-      filename: 'logs/combined.log',
-    }),
-  ],
+// 初始化資料庫 Logger
+const dbLogger = new DatabaseLogger(db.pool)
+app.locals.dbLogger = dbLogger
+
+// 應用程式啟動日誌
+logger.info('🚀 Application Starting', {
+  environment: process.env.NODE_ENV,
+  port: process.env.PORT || 3005,
+  timestamp: new Date().toISOString()
 })
-
-// 請求記錄中間件
-const requestLogger = (req, res, next) => {
-  const startTime = Date.now()
-  const requestId = Math.random().toString(36).substring(7)
-
-  logger.info(`Request started [${requestId}]`, {
-    requestId,
-    method: req.method,
-    url: req.url,
-    query: req.query,
-    body: req.method !== 'GET' ? req.body : undefined,
-    headers: {
-      'user-agent': req.get('user-agent'),
-      'content-type': req.get('content-type'),
-      origin: req.get('origin'),
-      authorization: req.get('authorization') ? '[PRESENT]' : '[NONE]',
-    },
-  })
-
-  res.on('finish', () => {
-    const duration = Date.now() - startTime
-    logger.info(`Request completed [${requestId}]`, {
-      requestId,
-      method: req.method,
-      url: req.url,
-      status: res.statusCode,
-      duration: `${duration}ms`,
-      contentLength: res.get('content-length'),
-    })
-  })
-
-  next()
-}
 
 app.use(express.json({ limit: '20mb' }))
 app.use(express.urlencoded({ extended: false, limit: '20mb' }))
@@ -178,6 +138,7 @@ app.use(
 )
 app.use(session(sessionConfig))
 app.use(morganLogger('dev'))
+// 使用我們的詳細 Logger 中間件
 app.use(requestLogger)
 
 // 在 API 路由前添加
@@ -226,6 +187,7 @@ app.use('/uploads', express.static(uploadDir))
 // API 路由順序
 app.use('/api/auth', authRouter)
 app.use('/api/blog', blogRouter)
+app.use('/api/products', productsRouter)
 app.use('/api/dashboard', dashboardRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/events', eventsRouter)
@@ -233,7 +195,12 @@ app.use('/api/forgot-password', forgotPasswordRouter)
 app.use('/api/coupon', couponRouter)
 app.use('/api/coupon-user', couponUserRouter)
 app.use('/api/chat', chatRoutes)
+app.use('/api/cart', cartRouter)
+app.use('/api/order', orderRouter)
+app.use('/api/buy-list', buyListRouter)
 app.use('/api', GroupRequests)
+// 健康檢查路由
+app.use('/api', healthRouter)
 
 // 添加主域名判斷
 app.use((req, res, next) => {
@@ -260,43 +227,8 @@ app.use((req, res, next) => {
   next(err)
 })
 
-// 錯誤處理
-app.use((err, req, res, next) => {
-  const errorResponse = {
-    status: 'error',
-    message:
-      process.env.NODE_ENV === 'production'
-        ? 'Internal Server Error'
-        : err.message,
-    code: err.status || 500,
-  }
-
-  logger.error('Application error', {
-    error: {
-      message: err.message,
-      stack: err.stack,
-      status: err.status || 500,
-    },
-    request: {
-      method: req.method,
-      url: req.url,
-      query: req.query,
-      body: req.method !== 'GET' ? req.body : undefined,
-      headers: {
-        'content-type': req.headers['content-type'],
-        'user-agent': req.headers['user-agent'],
-        origin: req.headers.origin,
-      },
-    },
-  })
-
-  if (process.env.NODE_ENV !== 'production') {
-    errorResponse.stack = err.stack
-    errorResponse.details = err
-  }
-
-  res.status(err.status || 500).json(errorResponse)
-})
+// 錯誤處理 - 使用我們的詳細 errorLogger 中間件
+app.use(errorLogger)
 
 // 未捕獲錯誤處理
 process.on('unhandledRejection', (reason, promise) => {

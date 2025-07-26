@@ -1,3 +1,8 @@
+// WebSocket 相關常量
+const WS_URL = process.env.NODE_ENV === 'development' 
+  ? 'ws://localhost:3005' 
+  : 'wss://gurulaptop-ckeditor.onrender.com'
+
 // WebSocket連線的狀態常數
 const WebSocketState = {
   CONNECTING: 0,
@@ -28,7 +33,7 @@ class WebSocketService {
     this.isConnecting = true
 
     // 建立WebSocket連線
-    this.ws = new WebSocket('ws://localhost:3005')
+    this.ws = new WebSocket(WS_URL)
 
     // 連線成功時的處理
     this.ws.onopen = () => {

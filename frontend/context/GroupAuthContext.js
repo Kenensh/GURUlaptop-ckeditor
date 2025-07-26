@@ -1,6 +1,12 @@
 import { createContext, useContext } from 'react'
 import { useAuth } from '@/hooks/use-auth'
 
+// 定義常量
+const BACKEND_URL =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3005'
+    : 'https://gurulaptop-ckeditor.onrender.com'
+
 const GroupAuthContext = createContext(null)
 
 export const GroupAuthProvider = ({ children }) => {
@@ -9,7 +15,7 @@ export const GroupAuthProvider = ({ children }) => {
   const sendGroupRequest = async (groupId, gameId, description) => {
     try {
       // 從 cookie 中獲取 token
-      const response = await fetch('http://localhost:3005/api/group/requests', {
+      const response = await fetch(`${BACKEND_URL}/api/group/requests`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

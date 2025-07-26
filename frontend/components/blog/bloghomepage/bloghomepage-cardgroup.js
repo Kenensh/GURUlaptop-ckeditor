@@ -1,9 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 
+// 動態後端 URL 配置
+const BACKEND_URL =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3005'
+    : 'https://gurulaptop-ckeditor.onrender.com'
+
 export default function BloghomepageCardgroup() {
   // 設定狀態存放文章資料
   const [blogs, setBlogs] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
 
   // 將文章分組，每組2篇
   const rows = []
@@ -15,24 +22,53 @@ export default function BloghomepageCardgroup() {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const queryParams = new URLSearchParams({
-          limit: 6, // 限制只撈6筆
+        setIsLoading(true)
+        console.log('Fetching blogs from:', `${BACKEND_URL}/api/blog/blogcardgroup`)
+
+        const res = await fetch(`${BACKEND_URL}/api/blog/blogcardgroup?limit=6`, {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
         })
 
-        const res = await fetch(`http://localhost:3005/api/blog/blogcardgroup`)
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`)
+        }
+
         const data = await res.json()
 
         if (data.blogs) {
           setBlogs(data.blogs)
-          console.log(data)
+          console.log('BloghomepageCardgroup 文章載入成功:', data.blogs.length, '篇')
+        } else {
+          console.warn('No blogs data in response:', data)
+          setBlogs([])
         }
       } catch (err) {
         console.error('載入文章錯誤:', err)
+        setBlogs([])
+      } finally {
+        setIsLoading(false)
       }
     }
 
     fetchBlogs()
   }, []) // 只在組件掛載時執行一次
+
+  if (isLoading) {
+    return (
+      <div className="container">
+        <div className="row g-4">
+          <div className="col-12 text-center">
+            <p>載入文章中...</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <>
@@ -50,11 +86,11 @@ export default function BloghomepageCardgroup() {
                     <img
                       src={
                         data.blog_image
-                          ? `http://localhost:3005${data.blog_image}`
-                          : 'http://localhost:3005/blog-images/nolaptopupload.jpeg'
+                          ? `${BACKEND_URL}${data.blog_image}`
+                          : `${BACKEND_URL}/blog-images/nolaptopupload.jpeg`
                       }
                       className="w-100 h-100 ratio object-fit-cover position-center"
-                      alt="..."
+                      alt={data.blog_title || "Blog 圖片"}
                       style={{ objectPosition: 'center' }}
                     />
                     <div className="ArticleSmallerCardHeadHover position-absolute left-0 bottom-0 w-100 h-25 container">

@@ -3,6 +3,12 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { useAuth } from '@/hooks/use-auth'
 
+// 定義常量
+const BACKEND_URL =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3005'
+    : 'https://gurulaptop-ckeditor.onrender.com'
+
 export default function BlogUserOverview() {
   // 1. 所有的 hooks
   const router = useRouter()
@@ -27,7 +33,7 @@ export default function BlogUserOverview() {
     const user_id = pathParts[pathParts.length - 1]
 
     if (user_id) {
-      fetch(`http://localhost:3005/api/blog/blog_user_overview/${user_id}`)
+      fetch(`${BACKEND_URL}/api/blog/blog_user_overview/${user_id}`)
         .then((response) => response.json())
         .then((data) => {
           console.log('API回傳的資料:', data)

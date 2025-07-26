@@ -1,5 +1,5 @@
 import express from 'express'
-import db from '../configs/db.js'
+import { pool } from '../configs/db.js'
 import { checkAuth } from '../middlewares/authenticate.js'
 
 const router = express.Router()
@@ -7,7 +7,7 @@ const router = express.Router()
 // 獲取所有唯一的遊戲類型
 router.get('/filters/types', async (req, res) => {
   try {
-    const types = await db.query(`
+    const types = await pool.query(`
       SELECT DISTINCT event_type 
       FROM event_type 
       WHERE valid = true 
@@ -31,7 +31,7 @@ router.get('/filters/types', async (req, res) => {
 // 獲取所有唯一的平台
 router.get('/filters/platforms', async (req, res) => {
   try {
-    const platforms = await db.query(`
+    const platforms = await pool.query(`
       SELECT DISTINCT event_platform 
       FROM event_type 
       WHERE valid = true 
@@ -79,6 +79,7 @@ router.get('/', async (req, res) => {
          FROM event_registration er 
          WHERE er.event_id = et.event_id 
          AND er.registration_status = 'active'
+         AND er.valid = true
         ) as current_participants,
         CASE 
           WHEN NOW() < et.apply_start_time THEN '即將開始報名'
@@ -167,7 +168,7 @@ router.get('/', async (req, res) => {
           ORDER BY er.registration_time DESC
         `
 
-        const result = await db.query(query, [userId])
+        const result = await pool.query(query, [userId])
 
         res.json({
           code: 200,
@@ -238,8 +239,8 @@ router.get('/', async (req, res) => {
     query += ` ORDER BY et.created_at DESC LIMIT $${paramCount} OFFSET $${paramCount + 1}`
     queryParams.push(parseInt(pageSize), offset)
 
-    const events = await db.query(query, queryParams)
-    const totalRows = await db.query(countQuery, countParams)
+    const events = await pool.query(query, queryParams)
+    const totalRows = await pool.query(countQuery, countParams)
 
     res.json({
       code: 200,
@@ -283,7 +284,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params
-    const result = await db.query(
+    const result = await pool.query(
       `
       SELECT 
         et.*,
@@ -291,6 +292,7 @@ router.get('/:id', async (req, res) => {
          FROM event_registration er 
          WHERE er.event_id = et.event_id 
          AND er.registration_status = 'active'
+         AND er.valid = true
         ) as current_participants,
         CASE 
           WHEN NOW() < et.apply_start_time THEN '即將開始報名'
@@ -384,7 +386,7 @@ router.post('/:eventId/register/:type', checkAuth, async (req, res) => {
 
     // 檢查報名狀態
     const registered = await client.query(
-      'SELECT 1 FROM event_registration WHERE event_id = $1 AND user_id = $2 AND registration_status = $3',
+      'SELECT 1 FROM event_registration WHERE event_id = $1 AND user_id = $2 AND registration_status = $3 AND valid = true',
       [eventId, userId, 'active']
     )
 
@@ -414,7 +416,7 @@ router.post('/:eventId/register/:type', checkAuth, async (req, res) => {
       `UPDATE event_type
        SET current_participants = (
          SELECT COUNT(*) FROM event_registration 
-         WHERE event_id = $1 AND registration_status = 'active'
+         WHERE event_id = $1 AND registration_status = 'active' AND valid = true
        )
        WHERE event_id = $1`,
       [eventId]
@@ -480,7 +482,7 @@ router.delete('/:eventId/registration', checkAuth, async (req, res) => {
       `UPDATE event_type 
        SET current_participants = (
          SELECT COUNT(*) FROM event_registration 
-         WHERE event_id = $1 AND registration_status = 'active'
+         WHERE event_id = $1 AND registration_status = 'active' AND valid = true
        )
        WHERE event_id = $1`,
       [eventId]

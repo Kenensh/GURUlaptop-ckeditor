@@ -5,6 +5,12 @@ import { useAuth } from '@/hooks/use-auth'
 import Swal from 'sweetalert2'
 import { useRouter } from 'next/router'
 
+// 定義常量
+const BACKEND_URL =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3005'
+    : 'https://gurulaptop-ckeditor.onrender.com'
+
 export default function ProductCard({ onSendMessage, product_id }) {
   // 產品卡片的 key 值，用於比較功能的 checkbox
   const key = Math.random()
@@ -24,7 +30,7 @@ export default function ProductCard({ onSendMessage, product_id }) {
     if (isAuth && userData?.user_id && product_id) {
       try {
         const response = await fetch(
-          `http://localhost:3005/api/favorites/${userData.user_id}/${product_id}`
+          `${BACKEND_URL}/api/favorites/${userData.user_id}/${product_id}`
         )
         const result = await response.json()
         if (result.status === 'success') {
@@ -59,7 +65,7 @@ export default function ProductCard({ onSendMessage, product_id }) {
       if (product_id) {
         try {
           const response = await fetch(
-            `http://localhost:3005/api/products/card/${product_id}`
+            `${BACKEND_URL}/api/products/card/${product_id}`
           )
           if (!response.ok) {
             throw new Error('獲取產品資料失敗')
@@ -131,7 +137,7 @@ export default function ProductCard({ onSendMessage, product_id }) {
       if (isChecked) {
         // 取消收藏
         const response = await fetch(
-          `http://localhost:3005/api/favorites/${userData.user_id}/${product_id}`,
+          `${BACKEND_URL}/api/favorites/${userData.user_id}/${product_id}`,
           {
             method: 'DELETE',
             headers: {
@@ -149,7 +155,7 @@ export default function ProductCard({ onSendMessage, product_id }) {
       } else {
         // 添加收藏
         const response = await fetch(
-          `http://localhost:3005/api/favorites/${userData.user_id}/${product_id}`,
+          `${BACKEND_URL}/api/favorites/${userData.user_id}/${product_id}`,
           {
             method: 'PUT',
             headers: {
@@ -195,7 +201,7 @@ export default function ProductCard({ onSendMessage, product_id }) {
     }
 
     try {
-      const response = await fetch(`http://localhost:3005/api/cart/add`, {
+      const response = await fetch(`${BACKEND_URL}/api/cart/add`, {
         method: 'PUT',
         body: JSON.stringify({
           user_id: userData.user_id,
@@ -223,106 +229,4 @@ export default function ProductCard({ onSendMessage, product_id }) {
 
   // 前往產品頁面
   const goToProductPage = () => {
-    if (product_id) {
-      router.push(`/product/${product_id}`)
-    }
-  }
-
-  return (
-    <div className={styles.product_card}>
-      <div className={styles.product_card_img}>
-        <input
-          type="checkbox"
-          id={`productCompareCheck_${key}`}
-          onChange={toggleCompare}
-          checked={isCompared}
-          className={styles.product_compare_checkbox}
-        />
-        <label
-          htmlFor={`productCompareCheck_${key}`}
-          className={styles.product_compare_label}
-        >
-          {''}
-        </label>
-        <span className={styles.product_compare_text}>比較</span>
-        <Image
-          src={
-            data?.product_img_path
-              ? `/product/${data.product_img_path}`
-              : '/images/product/placeholder.avif'
-          }
-          alt={data?.product_name || "Product"}
-          width={200}
-          height={200}
-        />
-      </div>
-      <div className={styles.product_card_content}>
-        <div className={`${styles.product_text} `}>
-          <div className={styles.product_ellipsis}>
-            {data ? data.product_name : 'Loading...'}
-          </div>
-          <div className={styles.product_ellipsis}>
-            {data?.model || ''}
-          </div>
-        </div>
-        <div className={styles.product_icons}>
-          <input
-            type="checkbox"
-            id={`heartCheckbox_${key}`}
-            checked={isChecked}
-            onChange={toggleHeart}
-            className={styles.product_collection_checkbox}
-          />
-          <svg
-            className={styles.product_collection_icon}
-            onClick={toggleHeart}
-            width={20}
-            height={20}
-            viewBox="0 0 32 30"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M16.0102 4.82806C19.0093 1.32194 24.0104 0.378798 27.768 3.58936C31.5255 6.79991 32.0545 12.1679 29.1037 15.965C26.6503 19.122 19.2253 25.7805 16.7918 27.9356C16.5196 28.1768 16.3834 28.2972 16.2247 28.3446C16.0861 28.386 15.9344 28.386 15.7958 28.3446C15.6371 28.2972 15.5009 28.1768 15.2287 27.9356C12.7952 25.7805 5.37022 19.122 2.91682 15.965C-0.0339811 12.1679 0.430418 6.76615 4.25257 3.58936C8.07473 0.412578 13.0112 1.32194 16.0102 4.82806Z"
-              stroke="white"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <Image
-            onClick={addToCart}
-            src="/images/product/cart.svg"
-            alt="cart"
-            width={20}
-            height={20}
-            style={{ cursor: 'pointer' }}
-          />
-        </div>
-      </div>
-      <div className={styles.price_button}>
-        <span className={styles.price}>
-          {data
-            ? `NT ${new Intl.NumberFormat('zh-TW').format(data.list_price)}元`
-            : 'NT$ -'}
-        </span>
-        <span
-          onClick={goToProductPage}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              goToProductPage()
-            }
-          }}
-          role="button"
-          tabIndex={0}
-          className={styles.arrow}
-          style={{ cursor: 'pointer' }}
-        >
-          →
-        </span>
-      </div>
-    </div>
-  )
-}
+    if

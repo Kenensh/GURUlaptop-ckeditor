@@ -29,7 +29,7 @@ export const getProducts = async (
     searchParams.append('page', page);
     searchParams.append('perpage', perpage);
     
-    const response = await axiosInstance.get(`/api/products?${searchParams.toString()}`);
+    const response = await axiosInstance.get(`/api/products/list?${searchParams.toString()}`);
     return response.data;
   } catch (error) {
     return handleApiError(error, '獲取產品列表失敗');
@@ -107,7 +107,7 @@ export const useProduct = (searchCriteria = {}, pageNow = 1, perpage = 10) => {
   
   // 使用 SWR 獲取資料
   const { data, error, isLoading } = useSWR(
-    `/api/products?page=${pageNow}&perpage=${perpage}&${searchParams.toString()}`,
+    `/api/products/list?page=${pageNow}&perpage=${perpage}&${searchParams.toString()}`,
     fetchProducts
   );
   
@@ -142,7 +142,7 @@ export const useProductMore = (searchCriteria = {}, perpage = 10) => {
       if (previousPageData && !previousPageData.length) return null;
       
       // 加入頁數和每頁數量
-      return `/api/products?page=${index + 1}&perpage=${perpage}&${searchParams.toString()}`;
+      return `/api/products/list?page=${index + 1}&perpage=${perpage}&${searchParams.toString()}`;
     }, fetchProducts);
   
   // 合併所有頁面的產品資料

@@ -1,7 +1,7 @@
 import express from 'express'
 const router = express.Router()
 
-import { pool } from '##/configs/db.js'
+import { pool } from '../configs/db.js'
 import multer from 'multer'
 const upload = multer()
 
@@ -12,7 +12,7 @@ router.put('/', upload.none(), async (req, res, next) => {
     const { order_id } = req.body
 
     const result = await client.query(
-      'UPDATE order_list SET already_pay = true WHERE order_id = $1 RETURNING *',
+      'UPDATE order_list SET already_pay = 1 WHERE order_id = $1 RETURNING *',
       [order_id]
     )
 

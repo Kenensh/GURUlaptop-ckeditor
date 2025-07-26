@@ -1,9 +1,9 @@
 import express from 'express'
-import { pool } from '../configs/db.js'
+import { pool } from '#configs/db.js'
 import multer from 'multer'
 const upload = multer()
 const router = express.Router()
-import { generateHash } from '../db-helpers/password-hash.js'
+import { generateHash } from '#db-helpers/password-hash.js'
 
 // 註冊路由
 router.post('/', upload.none(), async (req, res, next) => {

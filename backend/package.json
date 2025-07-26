@@ -8,7 +8,16 @@
     "seed": "node ./cli/db-init.js",
     "backup": "node ./cli/db-backup.js",
     "debug": "DEBUG=express:* node ./bin/www",
-    "debug-win": "set DEBUG=express:* & node ./bin/www"
+    "debug-win": "set DEBUG=express:* & node ./bin/www",
+    "test:all": "node test-automation.js",
+    "test:quick": "node quick-test.js",
+    "cicd:test": "node cicd-pipeline.js",
+    "cicd:dev": "NODE_ENV=development node cicd-pipeline.js",
+    "cicd:prod": "NODE_ENV=production node cicd-pipeline.js",
+    "cicd:debug": "node debug-cicd.js",
+    "start:test": "node start-and-test.js",
+    "system:check": "node system-check.js",
+    "health:check": "curl http://localhost:3005/api/health || echo '請先啟動服務: npm run dev'"
   },
   "dependencies": {
     "app-root-path": "^3.1.0",

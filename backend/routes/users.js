@@ -1,7 +1,8 @@
 import express from 'express'
 const router = express.Router()
 import multer from 'multer'
-import db from '../configs/db.js'
+import bcrypt from 'bcrypt'
+import { pool } from '#configs/db.js'
 import authenticate from '#middlewares/authenticate.js'
 import { compareHash } from '#db-helpers/password-hash.js'
 import path from 'path'
@@ -39,11 +40,12 @@ router.get('/', async (req, res) => {
   const requestId = Math.random().toString(36).substring(7)
   console.log(`[${requestId}] 開始獲取所有用戶`)
 
+  const client = await pool.connect()
   try {
-    const result = await db.query(`
+    const result = await client.query(`
       SELECT user_id, email, name, level, created_at 
       FROM users 
-      WHERE valid = 1
+      WHERE valid = true
       ORDER BY created_at DESC
     `)
 
@@ -59,6 +61,8 @@ router.get('/', async (req, res) => {
       message: '獲取用戶列表失敗',
       details: isProduction ? null : error.message,
     })
+  } finally {
+    client.release()
   }
 })
 
@@ -79,13 +83,13 @@ router.get('/:id', authenticate, async (req, res) => {
   }
 
   try {
-    const result = await db.query(
+    const result = await pool.query(
       `
       SELECT user_id, email, name, level, gender, phone,
              city, district, road_name, detailed_address, 
              image_path, remarks, created_at
       FROM users 
-      WHERE user_id = $1 AND valid = 1
+      WHERE user_id = $1 AND valid = true
     `,
       [id]
     )
@@ -167,13 +171,13 @@ router.put('/:id/profile', authenticate, async (req, res) => {
     const query = `
       UPDATE users 
       SET ${setClause}, updated_at = CURRENT_TIMESTAMP 
-      WHERE user_id = $1 AND valid = 1 
+      WHERE user_id = $1 AND valid = true 
       RETURNING user_id, email, name, level, gender, phone,
                 city, district, road_name, detailed_address, 
                 image_path, remarks, updated_at
     `
 
-    const result = await db.query(query, values)
+    const result = await pool.query(query, values)
 
     if (result.rows.length === 0) {
       console.log(`[${requestId}] 更新失敗: 找不到用戶 ${id}`)
@@ -225,8 +229,8 @@ router.put('/:id/password', authenticate, async (req, res) => {
 
   try {
     // 驗證當前密碼
-    const user = await db.query(
-      'SELECT password FROM users WHERE user_id = $1 AND valid = 1',
+    const user = await pool.query(
+      'SELECT password FROM users WHERE user_id = $1 AND valid = true',
       [id]
     )
 
@@ -249,11 +253,11 @@ router.put('/:id/password', authenticate, async (req, res) => {
 
     // 更新密碼
     const hashedPassword = await bcrypt.hash(newPassword, 10)
-    await db.query(
+    await pool.query(
       `
       UPDATE users 
       SET password = $1, updated_at = CURRENT_TIMESTAMP 
-      WHERE user_id = $2 AND valid = 1
+      WHERE user_id = $2 AND valid = true
     `,
       [hashedPassword, id]
     )
@@ -291,11 +295,11 @@ router.post(
       }
 
       // 更新資料庫中的頭像路徑
-      const result = await db.query(
+      const result = await pool.query(
         `
       UPDATE users 
       SET image_path = $1, updated_at = CURRENT_TIMESTAMP 
-      WHERE user_id = $2 AND valid = 1 
+      WHERE user_id = $2 AND valid = true 
       RETURNING user_id, image_path
     `,
         [req.file.filename, req.user.user_id]

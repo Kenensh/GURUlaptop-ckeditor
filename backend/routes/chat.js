@@ -2,7 +2,7 @@ import express from 'express'
 import { chatController } from '../controllers/chatController.js'
 import { chatService } from '../services/chatService.js'
 import { checkAuth } from '../middlewares/authenticate.js'
-import db from '../configs/db.js'
+import { pool } from '../configs/db.js'
 
 const router = express.Router()
 router.use(checkAuth)

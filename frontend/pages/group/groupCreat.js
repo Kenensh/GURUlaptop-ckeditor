@@ -6,6 +6,12 @@ import Swal from 'sweetalert2'
 import NextBreadCrumb from '@/components/common/next-breadcrumb'
 import Head from 'next/head'
 
+// 定義常量
+const BACKEND_URL =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3005'
+    : 'https://gurulaptop-ckeditor.onrender.com'
+
 const isClient = typeof window !== 'undefined'
 
 export default function GroupCreat() {
@@ -32,7 +38,7 @@ export default function GroupCreat() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await fetch('http://localhost:3005/api/auth/check', {
+        const response = await fetch(`${BACKEND_URL}/api/auth/check`, {
           credentials: 'include',
         })
 
@@ -240,7 +246,7 @@ export default function GroupCreat() {
       }
 
       // 發送請求
-      const response = await fetch('http://localhost:3005/api/group', {
+      const response = await fetch(`${BACKEND_URL}/api/group`, {
         method: 'POST',
         credentials: 'include',
         body: submitFormData,

@@ -59,7 +59,7 @@ a {
   transition: color 0.2s ease;
   
   &:hover {
-    color: darken($primary, 15%);
+    color: #005a82; // darken($primary, 15%) 的固定值
     text-decoration: underline;
   }
 }

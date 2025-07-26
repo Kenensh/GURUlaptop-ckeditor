@@ -5,11 +5,16 @@ const isClient = typeof window !== 'undefined'
 
 const BackToTop = () => {
   const [isVisible, setIsVisible] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
   const mainBodyRef = useRef(null)
   const scrollObserver = useRef(null)
 
   useEffect(() => {
-    if (!isClient) return
+    setIsMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (!isClient || !isMounted) return
 
     try {
       // 使用 requestAnimationFrame 來優化性能
@@ -50,7 +55,7 @@ const BackToTop = () => {
     } catch (error) {
       console.error('[BackToTop] Error setting up scroll listener:', error)
     }
-  }, [])
+  }, [isMounted])
 
   const scrollToTop = () => {
     if (!isClient) return
@@ -75,8 +80,8 @@ const BackToTop = () => {
     }
   }
 
-  // 在 SSR 時不渲染
-  if (!isClient) return null
+  // 在 SSR 時或未掛載時不渲染
+  if (!isClient || !isMounted) return null
 
   return (
     <button

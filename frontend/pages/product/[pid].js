@@ -10,6 +10,13 @@ import { useAuth } from '@/hooks/use-auth'
 import { forEach } from 'lodash'
 import BackToTop2 from '@/components/BackToTop/BackToTop2'
 import Head from 'next/head'
+
+// 定義常量
+const BACKEND_URL =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3005'
+    : 'https://gurulaptop-ckeditor.onrender.com'
+
 export default function Detail() {
   // 從網址列的參數取得商品ID，並透過ID取得商品資料
 
@@ -34,7 +41,7 @@ export default function Detail() {
       if (isClient) {
         // 改用 isClient
         const response = await fetch(
-          `http://localhost:3005/api/favorites/${userData.user_id}/${pid}`
+          `${BACKEND_URL}/api/favorites/${userData.user_id}/${pid}`
         )
         const result = await response.json()
 
@@ -85,7 +92,7 @@ export default function Detail() {
       //抓取商品資料
       try {
         const response = await fetch(
-          `http://localhost:3005/api/products/${pid}`
+          `${BACKEND_URL}/api/products/${pid}`
         )
         const result = await response.json()
         setData(result.data.product)
@@ -146,7 +153,7 @@ export default function Detail() {
     async function fetchRelatedProducts() {
       try {
         const response = await fetch(
-          `http://localhost:3005/api/products/related/${pid}`
+          `${BACKEND_URL}/api/products/related/${pid}`
         )
         const result = await response.json()
         setRelatedProducts(result.data.randomRelatedProducts)
@@ -164,10 +171,10 @@ export default function Detail() {
     if (isAuth) {
       // 點擊按鈕時傳送訊息到父元件
       if (isChecked) {
-        //刪除favorite_management資料庫
+        //刪除favorite管理資料庫
         try {
           const response = await fetch(
-            `http://localhost:3005/api/favorites/${userData.user_id}/${pid}`,
+            `${BACKEND_URL}/api/favorites/${userData.user_id}/${pid}`,
             {
               method: 'DELETE',
               headers: {
@@ -190,7 +197,7 @@ export default function Detail() {
         //寫入favorite management資料庫
         try {
           const response = await fetch(
-            `http://localhost:3005/api/favorites/${userData.user_id}/${pid}`,
+            `${BACKEND_URL}/api/favorites/${userData.user_id}/${pid}`,
             {
               method: 'PUT',
               headers: {

@@ -35,7 +35,7 @@ export default function FrontPage(props) {
           </div>
           <div className="home-banner">
             <div className="home-one">
-              <img src="./images/index/laptop-banner.jpg" alt />
+              <img src="./images/index/laptop-banner.jpg" alt="laptop banner" />
             </div>
             <div className="home-two">
               <div className="home-item">
@@ -366,15 +366,15 @@ export default function FrontPage(props) {
                   </div>
                   <div className="home-pic2">
                     <span />
-                    <img src="/images/index/banner_05.jpg" alt />
+                    <img src="/images/index/banner_05.jpg" alt="product banner" />
                   </div>
                   <div className="home-pic1">
                     <span />
-                    <img src="/images/index/banner_06.jpg" alt />
+                    <img src="/images/index/banner_06.jpg" alt="product banner" />
                   </div>
                   <div className="home-pic3">
                     <span />
-                    <img src="/images/index/banner_07.jpg" alt />
+                    <img src="/images/index/banner_07.jpg" alt="product banner" />
                   </div>
                 </div>
                 <p className="home-font">
@@ -392,7 +392,7 @@ export default function FrontPage(props) {
               <article className="home-article">
                 <div className="home-article-body">
                   <div className="home-article-img">
-                    <img src="/images/index/banner_08.jpg" alt />
+                    <img src="/images/index/banner_08.jpg" alt="product banner" />
                   </div>
                   <div className="home-article-content">
                     <div className="home-article-title2">
@@ -417,12 +417,12 @@ export default function FrontPage(props) {
                     </p>
                   </div>
                   <div className="home-article-img">
-                    <img src="/images/index/banner_09.jpg" alt />
+                    <img src="/images/index/banner_09.jpg" alt="product banner" />
                   </div>
                 </div>
               </article>
               <button className="home-article-btn">
-                <img src="/images/index/arrow.svg" alt />
+                <img src="/images/index/arrow.svg" alt="arrow" />
               </button>
 
               <article className="home-article home-hide-on-mobile">
@@ -437,7 +437,7 @@ export default function FrontPage(props) {
                     </p>
                   </div>
                   <div className="home-article-img">
-                    <img src="/images/index/banner_09.jpg" alt />
+                    <img src="/images/index/banner_09.jpg" alt="product banner" />
                   </div>
                 </div>
               </article>
@@ -465,7 +465,7 @@ export default function FrontPage(props) {
                       href="http://localhost:3000/event/eventDetail/1"
                       className="home-activity-btn"
                     >
-                      <img src="/images/index/arrow.svg" alt />
+                      <img src="/images/index/arrow.svg" alt="arrow" />
                     </a>
                   </div>
                 </div>
@@ -481,7 +481,7 @@ export default function FrontPage(props) {
                       href="http://localhost:3000/event/eventDetail/9"
                       className="home-activity-btn"
                     >
-                      <img src="/images/index/arrow.svg" alt />
+                      <img src="/images/index/arrow.svg" alt="arrow" />
                     </a>
                   </div>
                 </div>
@@ -498,7 +498,7 @@ export default function FrontPage(props) {
                       href="http://localhost:3000/event/eventDetail/11"
                       className="home-activity-btn"
                     >
-                      <img src="/images/index/arrow.svg" alt />
+                      <img src="/images/index/arrow.svg" alt="arrow" />
                     </a>
                   </div>
                 </div>
@@ -512,7 +512,7 @@ export default function FrontPage(props) {
                       href="http://localhost:3000/event/eventDetail/13"
                       className="home-activity-btn"
                     >
-                      <img src="/images/index/arrow.svg" alt />
+                      <img src="/images/index/arrow.svg" alt="arrow" />
                     </a>
                   </div>
                 </div>
@@ -530,7 +530,7 @@ export default function FrontPage(props) {
                     href="http://localhost:3000/event/eventDetail/37"
                     className="home-activity-btn"
                   >
-                    <img src="/images/index/arrow.svg" alt />
+                    <img src="/images/index/arrow.svg" alt="arrow" />
                   </a>
                 </div>
               </div>
@@ -558,7 +558,7 @@ export default function FrontPage(props) {
                     href="http://localhost:3000/event"
                     className="home-activity-btn"
                   >
-                    <img src="/images/index/arrow.svg" alt />
+                    <img src="/images/index/arrow.svg" alt="arrow" />
                   </a>
                 </div>
               </div>

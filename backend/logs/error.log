@@ -2,3 +2,375 @@
 {"level":"error","message":"Unhandled Rejection at:","promise":{},"reason":{},"timestamp":"2025-01-18 10:36:04"}
 {"error":{"message":"Not Found","stack":"NotFoundError: Not Found\n    at file:///C:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD)/MFEE57-laptopGuru-ckeditor/backend/app.js:230:8\n    at Layer.handle [as handle_request] (C:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (C:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at C:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (C:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (C:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at C:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:646:15\n    at next (C:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:265:14)\n    at Function.handle (C:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:175:3)\n    at router (C:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:47:12)\n    at Layer.handle [as handle_request] (C:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (C:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at C:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (C:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (C:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at C:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:646:15","status":404},"level":"error","message":"Application error","request":{"body":{},"method":"GET","query":{},"url":"/api/events/user/registered"},"timestamp":"2025-01-18 15:52:21"}
 {"level":"error","message":"Unhandled Rejection at:","promise":{},"reason":{},"timestamp":"2025-01-18 15:52:22"}
+{
+  "timestamp": "2025-07-25 03:55:31.483",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753386931481_fnnnacfga",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:202:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:192:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/api",
+      "body": {},
+      "query": {},
+      "params": {},
+      "headers": {
+        "userAgent": "axios/1.7.9"
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.647",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753386931646_g27ois133",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:202:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:192:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/api/products",
+      "body": {},
+      "query": {},
+      "params": {},
+      "headers": {
+        "userAgent": "axios/1.7.9"
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.657",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753386931655_uuta8kwiz",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:202:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:192:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/api/blog",
+      "body": {},
+      "query": {},
+      "params": {},
+      "headers": {
+        "userAgent": "axios/1.7.9"
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.668",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753386931666_u59yh8tsi",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:202:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:192:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/api/dashboard",
+      "body": {},
+      "query": {},
+      "params": {},
+      "headers": {
+        "userAgent": "axios/1.7.9"
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.764",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753386931763_33d6nocuw",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:202:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:192:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/api/cart",
+      "body": {},
+      "query": {},
+      "params": {},
+      "headers": {
+        "userAgent": "axios/1.7.9"
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.774",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753386931773_mx9lyb74r",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:202:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:192:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/api/order",
+      "body": {},
+      "query": {},
+      "params": {},
+      "headers": {
+        "userAgent": "axios/1.7.9"
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.860",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753386931859_aa1t19sd9",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:202:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:192:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/api/favorites",
+      "body": {},
+      "query": {},
+      "params": {},
+      "headers": {
+        "userAgent": "axios/1.7.9"
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.870",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753386931868_2fbvae3bd",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:202:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:192:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/api/shipment",
+      "body": {},
+      "query": {},
+      "params": {},
+      "headers": {
+        "userAgent": "axios/1.7.9"
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-25 03:55:31.879",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753386931878_nqpx5ms6g",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:202:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:192:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/api/membership",
+      "body": {},
+      "query": {},
+      "params": {},
+      "headers": {
+        "userAgent": "axios/1.7.9"
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:06.479",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753446546477_ss78rvs6k",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:202:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:192:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/api/blog",
+      "body": {},
+      "query": {},
+      "params": {},
+      "headers": {
+        "userAgent": "axios/1.7.9"
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-25 20:29:06.489",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753446546488_wiyqqq0gj",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:202:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:192:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/api/blog/",
+      "body": {},
+      "query": {},
+      "params": {},
+      "headers": {
+        "userAgent": "axios/1.7.9"
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-26 16:39:34.463",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753519174459_yml5xhwju",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:221:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:211:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/_next/static/development/_devPagesManifest.json",
+      "body": {},
+      "query": {},
+      "params": {},
+      "headers": {
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0",
+        "contentType": "application/json",
+        "origin": "http://192.168.0.12:3000"
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-26 16:39:34.501",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753519174498_1a82ks5k7",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:221:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:211:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/__nextjs_original-stack-frame?isServer=false&isEdgeServer=false&isAppDirectory=false&errorMessage=TypeError%3A+Cannot+read+properties+of+undefined+%28reading+%27includes%27%29&file=webpack-internal%3A%2F%2F%2F.%2Fnode_modules%2Fnext%2Fdist%2Fshared%2Flib%2Frouter%2Frouter.js&methodName=resolveDynamicRoute&arguments=&lineNumber=100&column=16",
+      "body": {},
+      "query": {
+        "isServer": "false",
+        "isEdgeServer": "false",
+        "isAppDirectory": "false",
+        "errorMessage": "TypeError: Cannot read properties of undefined (reading 'includes')",
+        "file": "webpack-internal:///./node_modules/next/dist/shared/lib/router/router.js",
+        "methodName": "resolveDynamicRoute",
+        "arguments": "",
+        "lineNumber": "100",
+        "column": "16"
+      },
+      "params": {},
+      "headers": {
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0",
+        "contentType": "application/json",
+        "origin": "http://192.168.0.12:3000"
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-26 16:39:34.506",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753519174504_r1hzn3lyi",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:221:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:211:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/__nextjs_original-stack-frame?isServer=false&isEdgeServer=false&isAppDirectory=false&errorMessage=TypeError%3A+Cannot+read+properties+of+undefined+%28reading+%27includes%27%29&file=webpack-internal%3A%2F%2F%2F.%2Fnode_modules%2Fnext%2Fdist%2Fshared%2Flib%2Frouter%2Frouter.js&methodName=Router.change&arguments=&lineNumber=665&column=35",
+      "body": {},
+      "query": {
+        "isServer": "false",
+        "isEdgeServer": "false",
+        "isAppDirectory": "false",
+        "errorMessage": "TypeError: Cannot read properties of undefined (reading 'includes')",
+        "file": "webpack-internal:///./node_modules/next/dist/shared/lib/router/router.js",
+        "methodName": "Router.change",
+        "arguments": "",
+        "lineNumber": "665",
+        "column": "35"
+      },
+      "params": {},
+      "headers": {
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0",
+        "contentType": "application/json",
+        "origin": "http://192.168.0.12:3000"
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-26 19:21:47.687",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753528907681_j0gioeegj",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:221:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:211:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/_next/static/development/_devMiddlewareManifest.json",
+      "body": {},
+      "query": {},
+      "params": {},
+      "headers": {
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0",
+        "contentType": "application/json",
+        "origin": "http://192.168.0.12:3000"
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-26 19:22:30.758",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753528950753_yslhfi0vn",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:221:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:211:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/_next/static/development/_devMiddlewareManifest.json",
+      "body": {},
+      "query": {},
+      "params": {},
+      "headers": {
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0",
+        "contentType": "application/json",
+        "origin": "http://192.168.0.12:3000"
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-26 19:50:09.145",
+  "level": "ERROR",
+  "message": "❌ Error Occurred",
+  "meta": {
+    "requestId": "req_1753530609141_jgomjvymi",
+    "errorMessage": "Not Found",
+    "errorStack": "NotFoundError: Not Found\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:221:15\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at file:///c:/Users/ken15.%E5%B0%8F%E6%81%A9/OneDrive/%E6%A1%8C%E9%9D%A2/GURUlaptop/%E6%96%B0%E5%A2%9Eckeditor%E7%89%88%E6%9C%AC(%E7%B7%A8%E8%BC%AF%E4%B8%AD%20render%20%E7%94%A8)/MFEE57-laptopGuru-ckeditor/backend/app.js:211:3\n    at Layer.handle [as handle_request] (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at c:\\Users\\ken15.小恩\\OneDrive\\桌面\\GURUlaptop\\新增ckeditor版本(編輯中 render 用)\\MFEE57-laptopGuru-ckeditor\\backend\\node_modules\\express\\lib\\router\\index.js:286:9",
+    "context": {
+      "method": "GET",
+      "url": "/_next/static/development/_devMiddlewareManifest.json",
+      "body": {},
+      "query": {},
+      "params": {},
+      "headers": {
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0",
+        "contentType": "application/json",
+        "origin": "http://192.168.0.12:3000"
+      }
+    }
+  }
+}

@@ -1,12 +1,12 @@
 import express from 'express'
-import db from '../configs/db.js'
+import { pool } from '../configs/db.js'
 import multer from 'multer'
 
 const router = express.Router()
 const upload = multer()
 
 router.post('/add/:userId', upload.none(), async (req, res, next) => {
-  const client = await db.connect()
+  const client = await pool.connect()
   try {
     console.log('=== 優惠券領取請求 ===')
     console.log('URL參數:', req.params)
@@ -82,7 +82,7 @@ router.post('/add/:userId', upload.none(), async (req, res, next) => {
 })
 
 router.get('/:userId', async (req, res) => {
-  const client = await db.connect()
+  const client = await pool.connect()
   try {
     const userId = parseInt(req.params.userId)
 
@@ -149,7 +149,7 @@ router.get('/:userId', async (req, res) => {
 })
 
 router.put('/update/:userId/:coupon_id', async (req, res) => {
-  const client = await db.connect()
+  const client = await pool.connect()
   try {
     const userId = req.params.userId
     const coupon_id = req.params.coupon_id

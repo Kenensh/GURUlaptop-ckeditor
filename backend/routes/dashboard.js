@@ -77,7 +77,7 @@ router.put('/:user_id', async (req, res) => {
       valid,
     } = req.body
 
-    const result = await db.query(
+    const result = await pool.query(
       `UPDATE users 
       SET name=$1, birthdate=$2, phone=$3, gender=$4, country=$5, city=$6, 
           district=$7, road_name=$8, detailed_address=$9, image_path=$10, 
@@ -117,7 +117,7 @@ router.put('/pwdCheck/:user_id', async (req, res) => {
   const { currentPassword } = req.body
 
   try {
-    const users = await db.query(
+    const users = await pool.query(
       'SELECT password FROM users WHERE user_id = $1',
       [user_id]
     )
@@ -159,7 +159,7 @@ router.put('/:user_id/pwdReset', async (req, res) => {
 
     const hashedPassword = await generateHash(newPassword2)
 
-    const result = await db.query(
+    const result = await pool.query(
       'UPDATE users SET password = $1 WHERE user_id = $2 RETURNING *',
       [hashedPassword, user_id]
     )
