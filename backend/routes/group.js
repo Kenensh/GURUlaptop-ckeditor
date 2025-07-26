@@ -96,11 +96,11 @@ router.get('/events', async function (req, res) {
   const client = await pool.connect()
   try {
     const eventsResult = await client.query(`
-      SELECT DISTINCT e.event_id, e.event_name 
+      SELECT DISTINCT e.event_id, e.event_name, e.event_start_time
       FROM "group" g 
       JOIN event_type e ON g.event_id = e.event_id
       WHERE g.event_id IS NOT NULL
-      GROUP BY e.event_id, e.event_name
+      GROUP BY e.event_id, e.event_name, e.event_start_time
       HAVING COUNT(g.group_id) > 0
       ORDER BY e.event_start_time DESC
     `)

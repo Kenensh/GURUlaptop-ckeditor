@@ -7,7 +7,7 @@ router.get('/card/:product_id', async (req, res) => {
   const client = await pool.connect()
   try {
     const result = await client.query(
-      'SELECT p.product_name, p.model, p.list_price, pi.product_img_path FROM product p LEFT JOIN product_img pi ON p.product_id = pi.img_product_id WHERE p.product_id = $1 AND p.valid = true',
+      'SELECT p.product_name, p.model, p.list_price, pi.product_img_path FROM product p LEFT JOIN product_img pi ON p.product_id = pi.img_product_id WHERE p.product_id = $1 AND p.valid = 1',
       [req.params.product_id]
     )
 
@@ -65,7 +65,7 @@ router.get('/list', async (req, res) => {
       paramCounter += 2
     }
 
-    where.push('valid = true')
+    where.push('valid = 1')
 
     const whereClause = where.length ? `WHERE ${where.join(' AND ')}` : ''
 
@@ -108,7 +108,7 @@ router.get('/:product_id', async (req, res) => {
   const client = await pool.connect()
   try {
     const productDetailResult = await client.query(
-      'SELECT * FROM product WHERE product_id = $1 AND valid = true',
+      'SELECT * FROM product WHERE product_id = $1 AND valid = 1',
       [req.params.product_id]
     )
 
@@ -146,7 +146,7 @@ router.get('/related/:product_id', async (req, res) => {
   const client = await pool.connect()
   try {
     const productResult = await client.query(
-      'SELECT product_name, affordance, product_brand FROM product WHERE product_id = $1 AND valid = true',
+      'SELECT product_name, affordance, product_brand FROM product WHERE product_id = $1 AND valid = 1',
       [req.params.product_id]
     )
 
@@ -158,7 +158,7 @@ router.get('/related/:product_id', async (req, res) => {
     const fuzzyName = `%${product_detail.product_name}%`
 
     const relatedResult = await client.query(
-      'SELECT product_id FROM product WHERE (product_name ILIKE $1 OR product_brand LIKE $2 OR affordance LIKE $3) AND product_id != $4 AND valid = true',
+      'SELECT product_id FROM product WHERE (product_name ILIKE $1 OR product_brand LIKE $2 OR affordance LIKE $3) AND product_id != $4 AND valid = 1',
       [
         fuzzyName,
         product_detail.product_brand,
