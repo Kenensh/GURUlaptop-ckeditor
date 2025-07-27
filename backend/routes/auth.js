@@ -43,7 +43,7 @@ router.get('/check', authenticate, async (req, res) => {
       return res.status(401).json({ status: 'error', message: '未授權' })
     }
 
-    const query = `SELECT user_id, email, name, level FROM users WHERE user_id = $1 AND valid = true`
+    const query = `SELECT user_id, email, name, level FROM users WHERE user_id = $1 AND valid = 1`
     const values = [req.user.user_id]
     
     logDbQuery(query, values, requestId, 'USER_VALIDATION')
@@ -101,7 +101,7 @@ router.post('/login', async (req, res) => {
       })
     }
 
-    const query = 'SELECT * FROM users WHERE email = $1 AND valid = true'
+    const query = 'SELECT * FROM users WHERE email = $1 AND valid = 1'
     const values = [email]
     
     logDbQuery(query, values, requestId, 'USER_LOGIN_LOOKUP')

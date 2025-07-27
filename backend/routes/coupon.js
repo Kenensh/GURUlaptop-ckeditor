@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
        coupon_end_time,
        valid
      FROM coupon
-     WHERE valid = true
+     WHERE valid = 1
      ORDER BY coupon_id ASC`)
 
     if (coupons.rows.length === 0) {
@@ -50,7 +50,7 @@ router.get('/:coupon_id', async (req, res) => {
   const coupon_id = req.params.coupon_id
 
   try {
-    const coupon = await pool.query('SELECT * FROM coupon WHERE coupon_id = $1 AND valid = true', [
+    const coupon = await pool.query('SELECT * FROM coupon WHERE coupon_id = $1 AND valid = 1', [
       coupon_id,
     ])
 

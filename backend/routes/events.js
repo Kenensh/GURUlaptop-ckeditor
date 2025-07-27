@@ -4,7 +4,8 @@ import { checkAuth } from '../middlewares/authenticate.js'
 
 const router = express.Router()
 
-// ?²å??€?‰å”¯ä¸€?„é??²é???router.get('/filters/types', async (req, res) => {
+// ç²å–æ‰€æœ‰å”¯ä¸€çš„éŠæˆ²é¡å‹
+router.get('/filters/types', async (req, res) => {
   try {
     const types = await pool.query(`
       SELECT DISTINCT event_type 
@@ -21,13 +22,14 @@ const router = express.Router()
     console.error('Error fetching game types:', error)
     res.status(500).json({
       code: 500,
-      message: '?²å??Šæˆ²é¡å?å¤±æ?',
+      message: 'ç²å–éŠæˆ²é¡å‹å¤±æ•—',
       error: error.message,
     })
   }
 })
 
-// ?²å??€?‰å”¯ä¸€?„å¹³??router.get('/filters/platforms', async (req, res) => {
+// ç²å–æ‰€æœ‰å”¯ä¸€çš„å¹³å°
+router.get('/filters/platforms', async (req, res) => {
   try {
     const platforms = await pool.query(`
       SELECT DISTINCT event_platform 
@@ -44,13 +46,13 @@ const router = express.Router()
     console.error('Error fetching platforms:', error)
     res.status(500).json({
       code: 500,
-      message: '?²å?å¹³å°?—è¡¨å¤±æ?',
+      message: 'ç²å–å¹³å°åˆ—è¡¨å¤±æ•—',
       error: error.message,
     })
   }
 })
 
-// ?²å?æ´»å??—è¡¨
+// ç²å–æ´»å‹•åˆ—è¡¨
 router.get('/', async (req, res) => {
   try {
     const {
@@ -69,7 +71,7 @@ router.get('/', async (req, res) => {
     const countParams = []
     const conditions = []
 
-    // ?ºç??¥è©¢
+    // åŸºç¤æŸ¥è©¢
     let query = `
       SELECT 
         et.*,
@@ -80,10 +82,10 @@ router.get('/', async (req, res) => {
          AND er.valid = 1
         ) as current_participants,
         CASE 
-          WHEN NOW() < et.apply_start_time THEN '?³å??‹å??±å?'
-          WHEN NOW() BETWEEN et.apply_start_time AND et.apply_end_time THEN '?±å?ä¸?
-          WHEN NOW() BETWEEN et.apply_end_time AND et.event_end_time THEN '?²è?ä¸?
-          ELSE 'å·²ç???
+          WHEN NOW() < et.apply_start_time THEN 'å³å°‡é–‹å§‹å ±å'
+          WHEN NOW() BETWEEN et.apply_start_time AND et.apply_end_time THEN 'å ±åä¸­'
+          WHEN NOW() BETWEEN et.apply_end_time AND et.event_end_time THEN 'é€²è¡Œä¸­'
+          ELSE 'å·²çµæŸ'
         END as event_status
       FROM event_type et
       WHERE et.valid = 1
@@ -95,8 +97,8 @@ router.get('/', async (req, res) => {
       WHERE et.valid = 1
     `
 
-    // ?Šæˆ²é¡å?ç¯©é¸
-    if (type && type !== '?¨éƒ¨?Šæˆ²' && type !== '?¨éƒ¨?Šæˆ²') {
+    // éŠæˆ²é¡å‹ç¯©é¸
+    if (type && type !== 'å…¨éƒ¨éŠæˆ²' && type !== 'å…¨éƒ¨éŠæˆ²') {
       conditions.push(`et.event_type = $${paramCount}`)
       queryParams.push(type)
       countParams.push(type)
@@ -127,13 +129,13 @@ router.get('/', async (req, res) => {
       }
     }
 
-    // ?‹äºº/?˜é?ç¯©é¸
-    if (teamType && teamType !== '?‹äºº/?˜é?') {
+    // å€‹äºº/åœ˜éšŠç¯©é¸
+    if (teamType && teamType !== 'å€‹äºº/åœ˜éšŠ') {
       let dbTeamType
-      if (teamType === '?˜é?') {
-        dbTeamType = '?˜é?'
-      } else if (teamType === '?‹äºº') {
-        dbTeamType = '?‹äºº'
+      if (teamType === 'åœ˜éšŠ') {
+        dbTeamType = 'åœ˜é«”'
+      } else if (teamType === 'å€‹äºº') {
+        dbTeamType = 'å€‹äºº'
       }
 
       if (dbTeamType) {
@@ -153,10 +155,10 @@ router.get('/', async (req, res) => {
             er.registration_status,
             er.registration_time,
             CASE 
-              WHEN NOW() < et.apply_start_time THEN '?³å??‹å??±å?'
-              WHEN NOW() BETWEEN et.apply_start_time AND et.apply_end_time THEN '?±å?ä¸?
-              WHEN NOW() BETWEEN et.apply_end_time AND et.event_end_time THEN '?²è?ä¸?
-              ELSE 'å·²ç???
+              WHEN NOW() < et.apply_start_time THEN 'å³å°‡é–‹å§‹å ±å'
+              WHEN NOW() BETWEEN et.apply_start_time AND et.apply_end_time THEN 'å ±åä¸­'
+              WHEN NOW() BETWEEN et.apply_end_time AND et.event_end_time THEN 'é€²è¡Œä¸­'
+              ELSE 'å·²çµæŸ'
             END as event_status
           FROM event_type et
           JOIN event_registration er ON et.event_id = er.event_id
@@ -190,32 +192,35 @@ router.get('/', async (req, res) => {
           },
         })
       } catch (error) {
-        console.error('?²å??¨æˆ¶æ´»å?å¤±æ?:', error)
+        console.error('ç²å–ç”¨æˆ¶æ´»å‹•å¤±æ•—:', error)
         res.status(500).json({
           code: 500,
-          message: '?²å??¨æˆ¶æ´»å?å¤±æ?',
+          message: 'ç²å–ç”¨æˆ¶æ´»å‹•å¤±æ•—',
           error: error.message,
         })
       }
     })
 
-    // ?œéµå­—æ?å°?    if (keyword && keyword.trim()) {
+    // é—œéµå­—æœå°‹
+    if (keyword && keyword.trim()) {
       conditions.push(`(
         et.event_name ILIKE $${paramCount} OR
         et.event_type ILIKE $${paramCount + 1} OR
         et.event_platform ILIKE $${paramCount + 2} OR
         et.event_content ILIKE $${paramCount + 3}
       )`)
-      const searchTerm = `%${keyword.toLowerCase().trim()}%` // ç¢ºä?è½‰æ??ºå?å¯?      queryParams.push(searchTerm, searchTerm, searchTerm, searchTerm)
+      const searchTerm = `%${keyword.toLowerCase().trim()}%` // ç¢ºä¿è½‰æ›ç‚ºå°å¯«
+      queryParams.push(searchTerm, searchTerm, searchTerm, searchTerm)
       countParams.push(searchTerm, searchTerm, searchTerm, searchTerm)
       paramCount += 4
     }
-    // ?€?‹ç¯©??    if (status) {
+    // ç‹€æ…‹ç¯©é¸
+    if (status) {
       const statusCondition = {
-        ?²è?ä¸? 'NOW() BETWEEN et.apply_end_time AND et.event_end_time',
-        ?±å?ä¸? 'NOW() BETWEEN et.apply_start_time AND et.apply_end_time',
-        ?³å??‹å??±å?: 'NOW() < et.apply_start_time',
-        å·²ç??? 'NOW() > et.event_end_time',
+        é€²è¡Œä¸­: 'NOW() BETWEEN et.apply_end_time AND et.event_end_time',
+        å ±åä¸­: 'NOW() BETWEEN et.apply_start_time AND et.apply_end_time',
+        å³å°‡é–‹å§‹å ±å: 'NOW() < et.apply_start_time',
+        å·²çµæŸ: 'NOW() > et.event_end_time',
       }[status]
 
       if (statusCondition) {
@@ -223,13 +228,15 @@ router.get('/', async (req, res) => {
       }
     }
 
-    // çµ„å??€?‰æ?ä»?    if (conditions.length > 0) {
+    // çµ„åˆæ‰€æœ‰æ¢ä»¶
+    if (conditions.length > 0) {
       const whereClause = conditions.join(' AND ')
       query += ` AND (${whereClause})`
       countQuery += ` AND (${whereClause})`
     }
 
-    // æ·»å??’å??Œå???    query += ` ORDER BY et.created_at DESC LIMIT $${paramCount} OFFSET $${paramCount + 1}`
+    // æ·»åŠ æ’åºå’Œåˆ†é 
+    query += ` ORDER BY et.created_at DESC LIMIT $${paramCount} OFFSET $${paramCount + 1}`
     queryParams.push(parseInt(pageSize), offset)
 
     const events = await pool.query(query, queryParams)
@@ -267,13 +274,13 @@ router.get('/', async (req, res) => {
     console.error('Error fetching events:', error)
     res.status(500).json({
       code: 500,
-      message: '?²å?æ´»å?è³‡æ?å¤±æ?',
+      message: 'ç²å–æ´»å‹•è³‡æ–™å¤±æ•—',
       error: error.message,
     })
   }
 })
 
-// ?²å??®ä?æ´»å?è©³æ?
+// ç²å–å–®ä¸€æ´»å‹•è©³æƒ…
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params
@@ -288,10 +295,10 @@ router.get('/:id', async (req, res) => {
          AND er.valid = 1
         ) as current_participants,
         CASE 
-          WHEN NOW() < et.apply_start_time THEN '?³å??‹å??±å?'
-          WHEN NOW() BETWEEN et.apply_start_time AND et.apply_end_time THEN '?±å?ä¸?
-          WHEN NOW() BETWEEN et.apply_end_time AND et.event_end_time THEN '?²è?ä¸?
-          ELSE 'å·²ç???
+          WHEN NOW() < et.apply_start_time THEN 'å³å°‡é–‹å§‹å ±å'
+          WHEN NOW() BETWEEN et.apply_start_time AND et.apply_end_time THEN 'å ±åä¸­'
+          WHEN NOW() BETWEEN et.apply_end_time AND et.event_end_time THEN 'é€²è¡Œä¸­'
+          ELSE 'å·²çµæŸ'
         END as event_status
       FROM event_type et
       WHERE et.event_id = $1 AND et.valid = 1`,
@@ -301,7 +308,7 @@ router.get('/:id', async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({
         code: 404,
-        message: 'æ´»å?ä¸å???,
+        message: 'æ´»å‹•ä¸å­˜åœ¨',
       })
     }
 
@@ -333,13 +340,13 @@ router.get('/:id', async (req, res) => {
     console.error('Error fetching event details:', error)
     res.status(500).json({
       code: 500,
-      message: '?²å?æ´»å?è©³æ?å¤±æ?',
+      message: 'ç²å–æ´»å‹•è©³æƒ…å¤±æ•—',
       error: error.message,
     })
   }
 })
 
-// è¨»å??¸é?è·¯ç”±ï¼ˆå€‹äºº?Œå??Šï?
+// è¨»å†Šç›¸é—œè·¯ç”±ï¼ˆå€‹äººå’Œåœ˜éšŠï¼‰
 router.post('/:eventId/register/:type', checkAuth, async (req, res) => {
   const client = await db.connect()
   try {
@@ -348,24 +355,24 @@ router.post('/:eventId/register/:type', checkAuth, async (req, res) => {
     const { participantInfo, teamName, captainInfo, teamMembers } = req.body
     const isTeam = type === 'team'
 
-    // é©—è?å¿…è?è³‡æ?
+    // é©—è­‰å¿…è¦è³‡æ–™
     if (isTeam && (!teamName || !captainInfo || !teamMembers)) {
       return res.status(400).json({
         code: 400,
-        message: 'ç¼ºå?å¿…è??„å ±?è?è¨?,
+        message: 'ç¼ºå°‘å¿…è¦çš„å ±åè³‡è¨Š',
       })
     }
 
     await client.query('BEGIN')
 
-    // æª¢æŸ¥æ´»å??¯å¦å­˜åœ¨
+    // æª¢æŸ¥æ´»å‹•æ˜¯å¦å­˜åœ¨
     const eventResult = await client.query(
       'SELECT * FROM event_type WHERE event_id = $1 AND valid = 1',
       [eventId]
     )
 
     if (eventResult.rows.length === 0) {
-      throw new Error('æ´»å?ä¸å???)
+      throw new Error('æ´»å‹•ä¸å­˜åœ¨')
     }
 
     const event = eventResult.rows[0]
@@ -373,20 +380,21 @@ router.post('/:eventId/register/:type', checkAuth, async (req, res) => {
     const applyStartTime = new Date(event.apply_start_time)
     const applyEndTime = new Date(event.apply_end_time)
 
-    // ?„ç¨®æª¢æŸ¥
-    if (now < applyStartTime) throw new Error('?±å??ªé?å§?)
-    if (now > applyEndTime) throw new Error('?±å?å·²ç???)
+    // å„ç¨®æª¢æŸ¥
+    if (now < applyStartTime) throw new Error('å ±åæœªé–‹å§‹')
+    if (now > applyEndTime) throw new Error('å ±åå·²çµæŸ')
 
-    // æª¢æŸ¥?±å??€??    const registered = await client.query(
+    // æª¢æŸ¥å ±åç‹€æ…‹
+    const registered = await client.query(
       'SELECT 1 FROM event_registration WHERE event_id = $1 AND user_id = $2 AND registration_status = $3 AND valid = 1',
       [eventId, userId, 'active']
     )
 
     if (registered.rows.length > 0) {
-      throw new Error('?¨å·²?±å?æ­¤æ´»??)
+      throw new Error('æ‚¨å·²å ±åæ­¤æ´»å‹•')
     }
 
-    // ?°å??±å?è³‡è?
+    // æ–°å¢å ±åè³‡è¨Š
     const regResult = await client.query(
       `INSERT INTO event_registration 
        (event_id, user_id, participant_info, registration_status, registration_time)
@@ -403,7 +411,7 @@ router.post('/:eventId/register/:type', checkAuth, async (req, res) => {
       ]
     )
 
-    // ?´æ–°?ƒè?äººæ•¸
+    // æ›´æ–°åƒèˆ‡äººæ•¸
     await client.query(
       `UPDATE event_type
        SET current_participants = (
@@ -418,24 +426,24 @@ router.post('/:eventId/register/:type', checkAuth, async (req, res) => {
 
     res.json({
       code: 200,
-      message: '?±å??å?',
+      message: 'å ±åæˆåŠŸ',
       data: {
         registrationId: regResult.rows[0].id,
       },
     })
   } catch (error) {
     await client.query('ROLLBACK')
-    console.error('?±å?å¤±æ?:', error)
+    console.error('å ±åå¤±æ•—:', error)
     res.status(500).json({
       code: 500,
-      message: error.message || '?±å?å¤±æ?',
+      message: error.message || 'å ±åå¤±æ•—',
     })
   } finally {
     client.release()
   }
 })
 
-// ?–æ??±å?
+// å–æ¶ˆå ±å
 router.delete('/:eventId/registration', checkAuth, async (req, res) => {
   const client = await db.connect()
   try {
@@ -450,7 +458,7 @@ router.delete('/:eventId/registration', checkAuth, async (req, res) => {
     )
 
     if (eventResult.rows.length === 0) {
-      throw new Error('æ´»å?ä¸å???)
+      throw new Error('æ´»å‹•ä¸å­˜åœ¨')
     }
 
     const event = eventResult.rows[0]
@@ -458,7 +466,7 @@ router.delete('/:eventId/registration', checkAuth, async (req, res) => {
     const eventStartTime = new Date(event.event_start_time)
 
     if (now >= eventStartTime) {
-      throw new Error('æ´»å?å·²é?å§‹ï??¡æ??–æ??±å?')
+      throw new Error('æ´»å‹•å·²é–‹å§‹ï¼Œç„¡æ³•å–æ¶ˆå ±å')
     }
 
     const updateResult = await client.query(
@@ -467,7 +475,7 @@ router.delete('/:eventId/registration', checkAuth, async (req, res) => {
     )
 
     if (updateResult.rows.length === 0) {
-      throw new Error('?¨å??ªå ±?æ­¤æ´»å?')
+      throw new Error('æ‚¨å°šæœªå ±åæ­¤æ´»å‹•')
     }
 
     await client.query(
@@ -484,14 +492,14 @@ router.delete('/:eventId/registration', checkAuth, async (req, res) => {
 
     res.json({
       code: 200,
-      message: '?–æ??±å??å?',
+      message: 'å–æ¶ˆå ±åæˆåŠŸ',
     })
   } catch (error) {
     await client.query('ROLLBACK')
-    console.error('?–æ??±å?å¤±æ?:', error)
+    console.error('å–æ¶ˆå ±åå¤±æ•—:', error)
     res.status(500).json({
       code: 500,
-      message: error.message || '?–æ??±å?å¤±æ?',
+      message: error.message || 'å–æ¶ˆå ±åå¤±æ•—',
     })
   } finally {
     client.release()

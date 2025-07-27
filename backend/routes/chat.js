@@ -186,7 +186,7 @@ router.get('/users', async (req, res) => {
        image_path,
        created_at
      FROM users 
-     WHERE valid = true`
+     WHERE valid = 1`
     )
 
     res.json({

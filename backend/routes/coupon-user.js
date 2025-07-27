@@ -35,7 +35,7 @@ router.post('/add/:userId', upload.none(), async (req, res, next) => {
     }
 
     const coupons = await client.query(
-      'SELECT coupon_id FROM coupon WHERE coupon_id = $1 AND valid = true',
+      'SELECT coupon_id FROM coupon WHERE coupon_id = $1 AND valid = 1',
       [couponId]
     )
 
@@ -126,7 +126,7 @@ router.get('/:userId', async (req, res) => {
      JOIN coupon c ON cu.coupon_id = c.coupon_id
      JOIN users u ON cu.user_id = u.user_id
      WHERE cu.user_id = $1 
-     AND cu.valid = true
+     AND cu.valid = 1
      ORDER BY cu.id DESC`,
       [userId]
     )

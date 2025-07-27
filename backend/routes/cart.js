@@ -17,7 +17,7 @@ router.post('/', upload.none(), async (req, res, next) => {
       FROM cart 
       JOIN product ON cart.product_id = product.product_id 
       JOIN product_img ON cart.product_id = product_img.img_product_id  
-      WHERE cart.user_id = $1 AND cart.valid = true`,
+      WHERE cart.user_id = $1 AND cart.valid = 1`,
       [user_id]
     )
 
@@ -37,7 +37,7 @@ router.put('/add', upload.none(), async (req, res, next) => {
 
   try {
     const cartCheck = await pool.query(
-      'SELECT * FROM cart WHERE user_id = $1 AND product_id = $2 AND valid = true',
+      'SELECT * FROM cart WHERE user_id = $1 AND product_id = $2 AND valid = 1',
       [user_id, product_id]
     )
 
@@ -92,7 +92,7 @@ router.post('/update', upload.none(), async (req, res, next) => {
 
   try {
     const productCheck = await pool.query(
-      'SELECT * FROM cart WHERE user_id = $1 AND product_id = $2 AND valid = true',
+      'SELECT * FROM cart WHERE user_id = $1 AND product_id = $2 AND valid = 1',
       [user_id, product_id]
     )
 
