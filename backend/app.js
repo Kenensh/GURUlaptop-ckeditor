@@ -80,13 +80,20 @@ const corsOptions = {
     }
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH', 'HEAD'],
   allowedHeaders: [
     'Content-Type',
     'Authorization',
     'Cache-Control',
     'Access-Control-Allow-Headers',
     'Access-Control-Allow-Credentials',
+    'X-Requested-With',
+    'Accept',
+    'Accept-Version',
+    'Content-Length',
+    'Content-MD5',
+    'Date',
+    'X-Api-Version',
   ],
   exposedHeaders: [
     'Set-Cookie',
@@ -94,10 +101,22 @@ const corsOptions = {
     'Access-Control-Allow-Credentials',
   ],
   maxAge: 86400,
+  preflightContinue: false,
+  optionsSuccessStatus: 200,
 }
 
+// 確保 CORS 中間件在所有路由之前
 app.use(cors(corsOptions))
-app.options('*', cors(corsOptions))
+
+// 明確處理預檢請求
+app.options('*', (req, res) => {
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*')
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH, HEAD')
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Cache-Control, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Date, X-Api-Version')
+  res.header('Access-Control-Allow-Credentials', 'true')
+  res.header('Access-Control-Max-Age', '86400')
+  res.sendStatus(200)
+})
 
 const cookieConfig = {
   httpOnly: false, // 改為 false 讓前端可以存取

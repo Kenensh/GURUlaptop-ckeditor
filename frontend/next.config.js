@@ -2,7 +2,10 @@
 const nextConfig = {
   reactStrictMode: false,
   
-  // 完全移除 experimental 和 assetPrefix 設定
+  // 確保靜態資源正確加載
+  assetPrefix: '',
+  trailingSlash: false,
+  
   images: {
     domains: ['localhost', 'via.placeholder.com', 'gurulaptop-ckeditor.onrender.com'],
     unoptimized: true,
@@ -14,6 +17,13 @@ const nextConfig = {
   },
   typescript: {
     ignoreBuildErrors: true,
+  },
+  
+  // 環境變數設定
+  env: {
+    BACKEND_URL: process.env.NODE_ENV === 'production' 
+      ? 'https://gurulaptop-ckeditor.onrender.com'
+      : 'http://localhost:3005',
   },
   
   // 最小化 webpack 設定
