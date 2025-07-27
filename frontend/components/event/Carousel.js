@@ -3,6 +3,11 @@ import Link from 'next/link'
 import axios from 'axios'
 import styles from './Carousel.module.css'
 
+// 動態 API URL 配置 
+const BACKEND_URL = process.env.NODE_ENV === 'production' 
+  ? 'https://gurulaptop-ckeditor.onrender.com' 
+  : 'http://localhost:3005'
+
 const Carousel = () => {
   const [activeIndex, setActiveIndex] = useState(0)
   const [upcomingEvents, setUpcomingEvents] = useState([])
@@ -11,7 +16,7 @@ const Carousel = () => {
   useEffect(() => {
     const fetchUpcomingEvents = async () => {
       try {
-        const response = await axios.get('http://localhost:3005/api/events', {
+        const response = await axios.get(`${BACKEND_URL}/api/events`, {
           params: {
             status: '即將開始報名',
             sort: 'nearest', 

@@ -8,6 +8,11 @@ import PrivacyPolicy from '@/components/event/PrivacyPolicy'
 import NextBreadCrumb from '@/components/common/next-breadcrumb'
 import Head from 'next/head'
 
+// 動態 API URL 配置 
+const BACKEND_URL = process.env.NODE_ENV === 'production' 
+  ? 'https://gurulaptop-ckeditor.onrender.com' 
+  : 'http://localhost:3005'
+
 const isClient = typeof window !== 'undefined'
 
 const EventRegistration = () => {
@@ -41,7 +46,7 @@ const EventRegistration = () => {
 
       try {
         const response = await axios.get(
-          `http://localhost:3005/api/events/${eventId}`,
+          `${BACKEND_URL}/api/events/${eventId}`,
           { withCredentials: true }
         )
         const eventData = response.data.data
@@ -307,7 +312,7 @@ const EventRegistration = () => {
 
     try {
       const response = await axios.post(
-        `http://localhost:3005/api/events/${eventId}/register/team`,
+        `${BACKEND_URL}/api/events/${eventId}/register/team`,
         {
           teamName: formData.teamName,
           captainInfo: formData.captain,

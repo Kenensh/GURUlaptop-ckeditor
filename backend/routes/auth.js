@@ -2,7 +2,8 @@ import express from 'express'
 import jsonwebtoken from 'jsonwebtoken'
 import authenticate from '#middlewares/authenticate.js'
 import { pool } from '#configs/db.js'
-import { compareHash } from '#db-helpers/password-hash.js'
+import { compareHash, generateHash } from '#db-helpers/password-hash.js'
+import multer from 'multer'
 // 導入 Logger 系統
 import {
   logAuth,
@@ -13,6 +14,7 @@ import {
 import 'dotenv/config.js'
 
 const router = express.Router()
+const upload = multer()
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -185,6 +187,162 @@ router.post('/login', async (req, res) => {
     }, requestId)
     
     return res.status(500).json({ status: 'error', message: '系統錯誤' })
+  }
+})
+
+// 註冊路由
+router.post('/signup', upload.none(), async (req, res, next) => {
+  const requestId = req.requestId || Math.random().toString(36).substring(7)
+  
+  // 取得資料庫連線
+  const client = await pool.connect()
+
+  try {
+    // 解構請求資料
+    const { email, password, phone, birthdate, gender } = req.body
+
+    // 記錄接收到的資料
+    logBusinessFlow('Signup Request Started', {
+      email,
+      hasPhone: !!phone,
+      hasBirthdate: !!birthdate,
+      hasGender: !!gender,
+    }, requestId, 'info')
+
+    // 驗證必要欄位
+    if (!email || !password) {
+      logAuth('SIGNUP', email, false, {
+        reason: 'Missing required fields'
+      }, requestId)
+      
+      return res.status(400).json({
+        status: 'error',
+        message: '必填欄位未填寫完整',
+      })
+    }
+
+    // 檢查 email 格式
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      logAuth('SIGNUP', email, false, {
+        reason: 'Invalid email format'
+      }, requestId)
+      
+      return res.status(400).json({
+        status: 'error',
+        message: '無效的 email 格式',
+      })
+    }
+
+    // 檢查 email 是否已存在
+    const checkEmailQuery = `SELECT 1 FROM users WHERE email = $1`
+    const existingUser = await client.query(checkEmailQuery, [email])
+
+    if (existingUser.rows.length > 0) {
+      logAuth('SIGNUP', email, false, {
+        reason: 'Email already exists'
+      }, requestId)
+      
+      return res.status(400).json({
+        status: 'error',
+        message: '此 email 已被註冊',
+      })
+    }
+
+    // 密碼加密
+    const hashedPassword = await generateHash(password)
+
+    // 插入新用戶資料
+    const insertUserQuery = `
+      INSERT INTO users (
+        email, 
+        password, 
+        phone, 
+        birthdate, 
+        gender,
+        level, 
+        valid, 
+        created_at,
+        country, 
+        city, 
+        district, 
+        road_name, 
+        detailed_address,
+        name,
+        image_path,
+        google_uid,
+        remarks
+      ) VALUES (
+        $1, $2, $3, $4, $5,
+        0, 1, CURRENT_TIMESTAMP,
+        '', '', '', '', '',
+        '', NULL, NULL, NULL
+      )
+      RETURNING user_id
+    `
+
+    const params = [
+      email,
+      hashedPassword,
+      phone || null,
+      birthdate || null,
+      gender || null,
+    ]
+
+    logDbQuery(insertUserQuery, params, requestId, 'USER_CREATION')
+    const result = await client.query(insertUserQuery, params)
+
+    // 確認插入成功
+    if (result.rows.length > 0) {
+      logAuth('SIGNUP', email, true, {
+        userId: result.rows[0].user_id
+      }, requestId)
+      
+      logBusinessFlow('Signup Successful', {
+        userId: result.rows[0].user_id,
+        email: email
+      }, requestId, 'info')
+      
+      return res.json({
+        status: 'success',
+        message: '註冊成功',
+        data: {
+          user_id: result.rows[0].user_id,
+        },
+      })
+    } else {
+      throw new Error('用戶資料插入失敗')
+    }
+  } catch (error) {
+    logError(error, {
+      operation: 'SIGNUP',
+      email: email,
+      hasPassword: !!password
+    }, requestId)
+    
+    logAuth('SIGNUP', email, false, {
+      reason: 'System error',
+      errorMessage: error.message
+    }, requestId)
+
+    // 特定錯誤處理
+    if (error.code === '23505') {
+      // unique_violation
+      return res.status(400).json({
+        status: 'error',
+        message: '此 email 已被註冊',
+      })
+    }
+
+    // 其他錯誤
+    return res.status(500).json({
+      status: 'error',
+      message: '註冊失敗，請稍後再試',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined,
+    })
+  } finally {
+    // 釋放資料庫連線
+    client.release()
   }
 })
 

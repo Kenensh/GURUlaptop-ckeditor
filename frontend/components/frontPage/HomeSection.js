@@ -44,9 +44,9 @@ export default function HomeSection() {
 
   return (
     <div className="home-section1">
-      <div className="home-welcome">
+      {/* <div className="home-welcome">
         <span>Welcome</span>
-      </div>
+      </div> */}
       <div className="home-guru">
         <span>Guru</span>
       </div>

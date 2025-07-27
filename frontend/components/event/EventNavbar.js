@@ -15,6 +15,12 @@ const EventNavbar = ({ onFilterChange }) => {
   const [selectedTeamType, setSelectedTeamType] = useState('個人/團隊')
   const [isInitialized, setIsInitialized] = useState(false)
 
+  // 動態後端 URL 配置
+  const BACKEND_URL =
+    process.env.NODE_ENV === 'development'
+      ? 'http://localhost:3005'
+      : 'https://gurulaptop-ckeditor.onrender.com'
+
   // 從 URL 初始化篩選狀態
   useEffect(() => {
     if (!isInitialized && router.isReady) {
@@ -34,8 +40,8 @@ const EventNavbar = ({ onFilterChange }) => {
     const fetchFilters = async () => {
       try {
         const [typesResponse, platformsResponse] = await Promise.all([
-          axios.get('http://localhost:3005/api/events/filters/types'),
-          axios.get('http://localhost:3005/api/events/filters/platforms'),
+          axios.get(`${BACKEND_URL}/api/events/filters/types`),
+          axios.get(`${BACKEND_URL}/api/events/filters/platforms`),
         ])
 
         if (typesResponse.data.code === 200) {

@@ -97,7 +97,7 @@ export default function Event() {
     search: null,
   })
 
-  // 環境變數設置
+  // 動態後端 URL 配置
   const BACKEND_URL =
     process.env.NODE_ENV === 'development'
       ? 'http://localhost:3005'

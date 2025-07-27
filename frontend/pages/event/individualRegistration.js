@@ -7,6 +7,12 @@ import Swal from 'sweetalert2'
 import PrivacyPolicy from '@/components/event/PrivacyPolicy'
 import NextBreadCrumb from '@/components/common/next-breadcrumb'
 import Head from 'next/head'
+
+// 動態 API URL 配置 
+const BACKEND_URL = process.env.NODE_ENV === 'production' 
+  ? 'https://gurulaptop-ckeditor.onrender.com' 
+  : 'http://localhost:3005'
+
 const isClient = typeof window !== 'undefined'
 const IndividualRegistration = () => {
   const router = useRouter()
@@ -140,7 +146,7 @@ const IndividualRegistration = () => {
 
     try {
       const response = await axios.post(
-        `http://localhost:3005/api/events/${eventId}/register/individual`,
+        `${BACKEND_URL}/api/events/${eventId}/register/individual`,
         {
           participantInfo: {
             name: formData.participant.name,
