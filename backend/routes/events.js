@@ -10,7 +10,7 @@ router.get('/filters/types', async (req, res) => {
     const types = await pool.query(`
       SELECT DISTINCT event_type 
       FROM event_type 
-      WHERE valid = 1 
+      WHERE valid = true 
       ORDER BY event_type ASC`)
 
     res.json({
@@ -34,7 +34,7 @@ router.get('/filters/platforms', async (req, res) => {
     const platforms = await pool.query(`
       SELECT DISTINCT event_platform 
       FROM event_type 
-      WHERE valid = 1 
+      WHERE valid = true 
       ORDER BY event_platform ASC`)
 
     res.json({
@@ -88,13 +88,13 @@ router.get('/', async (req, res) => {
           ELSE '已結束'
         END as event_status
       FROM event_type et
-      WHERE et.valid = 1
+      WHERE et.valid = true
     `
 
     let countQuery = `
       SELECT COUNT(*) as total 
       FROM event_type et
-      WHERE et.valid = 1
+      WHERE et.valid = true
     `
 
     // 遊戲類型篩選
@@ -164,7 +164,7 @@ router.get('/', async (req, res) => {
           JOIN event_registration er ON et.event_id = er.event_id
           WHERE er.user_id = $1 
           AND er.registration_status = 'active'
-          AND et.valid = 1
+          AND et.valid = true
           ORDER BY er.registration_time DESC
         `
 
@@ -301,7 +301,7 @@ router.get('/:id', async (req, res) => {
           ELSE '已結束'
         END as event_status
       FROM event_type et
-      WHERE et.event_id = $1 AND et.valid = 1`,
+      WHERE et.event_id = $1 AND et.valid = true`,
       [id]
     )
 
@@ -367,7 +367,7 @@ router.post('/:eventId/register/:type', checkAuth, async (req, res) => {
 
     // 檢查活動是否存在
     const eventResult = await client.query(
-      'SELECT * FROM event_type WHERE event_id = $1 AND valid = 1',
+      'SELECT * FROM event_type WHERE event_id = $1 AND valid = true',
       [eventId]
     )
 
@@ -453,7 +453,7 @@ router.delete('/:eventId/registration', checkAuth, async (req, res) => {
     await client.query('BEGIN')
 
     const eventResult = await client.query(
-      'SELECT * FROM event_type WHERE event_id = $1 AND valid = 1',
+      'SELECT * FROM event_type WHERE event_id = $1 AND valid = true',
       [eventId]
     )
 
