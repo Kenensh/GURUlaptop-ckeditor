@@ -7,19 +7,27 @@ const router = express.Router()
 // 獲取所有唯一的遊戲類型
 router.get('/filters/types', async (req, res) => {
   try {
+    console.log('=== FETCHING GAME TYPES ===')
     const types = await pool.query(`
       SELECT DISTINCT event_type 
       FROM event_type 
       WHERE valid = true 
       ORDER BY event_type ASC`)
 
+    console.log('Game types query result:', types.rows.length, 'types found')
     res.json({
       code: 200,
       message: 'success',
       data: types.rows.map((type) => type.event_type),
     })
   } catch (error) {
-    console.error('Error fetching game types:', error)
+    console.error('=== ERROR FETCHING GAME TYPES ===')
+    console.error('Error details:', {
+      message: error.message,
+      code: error.code,
+      detail: error.detail,
+      stack: error.stack
+    })
     res.status(500).json({
       code: 500,
       message: '獲取遊戲類型失敗',
@@ -31,19 +39,27 @@ router.get('/filters/types', async (req, res) => {
 // 獲取所有唯一的平台
 router.get('/filters/platforms', async (req, res) => {
   try {
+    console.log('=== FETCHING PLATFORMS ===')
     const platforms = await pool.query(`
       SELECT DISTINCT event_platform 
       FROM event_type 
       WHERE valid = true 
       ORDER BY event_platform ASC`)
 
+    console.log('Platforms query result:', platforms.rows.length, 'platforms found')
     res.json({
       code: 200,
       message: 'success',
       data: platforms.rows.map((platform) => platform.event_platform),
     })
   } catch (error) {
-    console.error('Error fetching platforms:', error)
+    console.error('=== ERROR FETCHING PLATFORMS ===')
+    console.error('Error details:', {
+      message: error.message,
+      code: error.code,
+      detail: error.detail,
+      stack: error.stack
+    })
     res.status(500).json({
       code: 500,
       message: '獲取平台列表失敗',
@@ -55,6 +71,9 @@ router.get('/filters/platforms', async (req, res) => {
 // 獲取活動列表
 router.get('/', async (req, res) => {
   try {
+    console.log('=== FETCHING EVENTS LIST ===')
+    console.log('Query params:', req.query)
+    
     const {
       page = 1,
       pageSize = 12,
@@ -65,6 +84,8 @@ router.get('/', async (req, res) => {
       keyword = '',
     } = req.query
     const offset = (page - 1) * pageSize
+
+    console.log('Processed params:', { page, pageSize, status, type, platform, teamType, keyword, offset })
 
     let paramCount = 1
     const queryParams = []
@@ -184,8 +205,16 @@ router.get('/', async (req, res) => {
     query += ` ORDER BY et.created_at DESC LIMIT $${paramCount} OFFSET $${paramCount + 1}`
     queryParams.push(parseInt(pageSize), offset)
 
+    console.log('Final query:', query)
+    console.log('Query params:', queryParams)
+    console.log('Count query:', countQuery)
+    console.log('Count params:', countParams)
+
     const events = await pool.query(query, queryParams)
     const totalRows = await pool.query(countQuery, countParams)
+
+    console.log('Events query result:', events.rows.length, 'events found')
+    console.log('Total count result:', totalRows.rows[0].total)
 
     res.json({
       code: 200,
@@ -216,7 +245,13 @@ router.get('/', async (req, res) => {
       },
     })
   } catch (error) {
-    console.error('Error fetching events:', error)
+    console.error('=== ERROR FETCHING EVENTS ===')
+    console.error('Error details:', {
+      message: error.message,
+      code: error.code,
+      detail: error.detail,
+      stack: error.stack
+    })
     res.status(500).json({
       code: 500,
       message: '獲取活動資料失敗',
@@ -293,7 +328,7 @@ router.get('/:id', async (req, res) => {
 
 // 註冊相關路由（個人和團隊）
 router.post('/:eventId/register/:type', checkAuth, async (req, res) => {
-  const client = await db.connect()
+  const client = await pool.connect()
   try {
     const { eventId, type } = req.params
     const userId = req.user.user_id
@@ -390,7 +425,7 @@ router.post('/:eventId/register/:type', checkAuth, async (req, res) => {
 
 // 取消報名
 router.delete('/:eventId/registration', checkAuth, async (req, res) => {
-  const client = await db.connect()
+  const client = await pool.connect()
   try {
     const { eventId } = req.params
     const userId = req.user.user_id

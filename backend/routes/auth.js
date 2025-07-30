@@ -194,12 +194,29 @@ router.post('/login', async (req, res) => {
 router.post('/signup', upload.none(), async (req, res, next) => {
   const requestId = req.requestId || Math.random().toString(36).substring(7)
   
+  console.log('=== SIGNUP REQUEST START ===')
+  console.log('Request body:', req.body)
+  console.log('Request headers:', req.headers)
+  
   // 取得資料庫連線
-  const client = await pool.connect()
+  let client
+  try {
+    console.log('Attempting to get database connection...')
+    client = await pool.connect()
+    console.log('Database connection successful')
+  } catch (dbError) {
+    console.error('Database connection failed:', dbError)
+    return res.status(500).json({
+      status: 'error',
+      message: '資料庫連線失敗',
+      error: dbError.message
+    })
+  }
 
   try {
     // 解構請求資料
     const { email, password, phone, birthdate, gender } = req.body
+    console.log('Extracted data:', { email, hasPassword: !!password, phone, birthdate, gender })
 
     // 記錄接收到的資料
     logBusinessFlow('Signup Request Started', {
@@ -211,6 +228,7 @@ router.post('/signup', upload.none(), async (req, res, next) => {
 
     // 驗證必要欄位
     if (!email || !password) {
+      console.log('Missing required fields:', { email: !!email, password: !!password })
       logAuth('SIGNUP', email, false, {
         reason: 'Missing required fields'
       }, requestId)
@@ -222,8 +240,10 @@ router.post('/signup', upload.none(), async (req, res, next) => {
     }
 
     // 檢查 email 格式
+    console.log('Validating email format:', email)
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
+      console.log('Invalid email format:', email)
       logAuth('SIGNUP', email, false, {
         reason: 'Invalid email format'
       }, requestId)
@@ -235,10 +255,14 @@ router.post('/signup', upload.none(), async (req, res, next) => {
     }
 
     // 檢查 email 是否已存在
+    console.log('Checking if email exists:', email)
     const checkEmailQuery = `SELECT 1 FROM users WHERE email = $1`
+    console.log('Executing query:', checkEmailQuery, [email])
     const existingUser = await client.query(checkEmailQuery, [email])
+    console.log('Email check result:', existingUser.rows.length)
 
     if (existingUser.rows.length > 0) {
+      console.log('Email already exists:', email)
       logAuth('SIGNUP', email, false, {
         reason: 'Email already exists'
       }, requestId)
@@ -250,9 +274,12 @@ router.post('/signup', upload.none(), async (req, res, next) => {
     }
 
     // 密碼加密
+    console.log('Hashing password...')
     const hashedPassword = await generateHash(password)
+    console.log('Password hashed successfully')
 
     // 插入新用戶資料
+    console.log('Preparing user insert query...')
     const insertUserQuery = `
       INSERT INTO users (
         email, 
@@ -289,11 +316,21 @@ router.post('/signup', upload.none(), async (req, res, next) => {
       gender || null,
     ]
 
+    console.log('Executing insert query with params:', { 
+      email, 
+      hasPassword: !!hashedPassword, 
+      phone: phone || null, 
+      birthdate: birthdate || null, 
+      gender: gender || null 
+    })
+    
     logDbQuery(insertUserQuery, params, requestId, 'USER_CREATION')
     const result = await client.query(insertUserQuery, params)
+    console.log('Insert query result:', result.rows)
 
     // 確認插入成功
     if (result.rows.length > 0) {
+      console.log('User created successfully with ID:', result.rows[0].user_id)
       logAuth('SIGNUP', email, true, {
         userId: result.rows[0].user_id
       }, requestId)
@@ -303,6 +340,7 @@ router.post('/signup', upload.none(), async (req, res, next) => {
         email: email
       }, requestId, 'info')
       
+      console.log('=== SIGNUP SUCCESS ===')
       return res.json({
         status: 'success',
         message: '註冊成功',
@@ -311,9 +349,18 @@ router.post('/signup', upload.none(), async (req, res, next) => {
         },
       })
     } else {
+      console.log('Insert query returned no rows')
       throw new Error('用戶資料插入失敗')
     }
   } catch (error) {
+    console.log('=== SIGNUP ERROR ===')
+    console.error('Signup error details:', {
+      message: error.message,
+      code: error.code,
+      detail: error.detail,
+      stack: error.stack
+    })
+    
     logError(error, {
       operation: 'SIGNUP',
       email: req.body?.email,
@@ -328,6 +375,7 @@ router.post('/signup', upload.none(), async (req, res, next) => {
     // 特定錯誤處理
     if (error.code === '23505') {
       // unique_violation
+      console.log('Unique constraint violation for email:', req.body?.email)
       return res.status(400).json({
         status: 'error',
         message: '此 email 已被註冊',
@@ -335,6 +383,7 @@ router.post('/signup', upload.none(), async (req, res, next) => {
     }
 
     // 其他錯誤
+    console.log('Returning 500 error response')
     return res.status(500).json({
       status: 'error',
       message: '註冊失敗，請稍後再試',
@@ -342,7 +391,12 @@ router.post('/signup', upload.none(), async (req, res, next) => {
     })
   } finally {
     // 釋放資料庫連線
-    client.release()
+    console.log('Releasing database connection...')
+    if (client) {
+      client.release()
+      console.log('Database connection released')
+    }
+    console.log('=== SIGNUP REQUEST END ===')
   }
 })
 
