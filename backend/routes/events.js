@@ -100,7 +100,7 @@ router.get('/', async (req, res) => {
          FROM event_registration er 
          WHERE er.event_id = et.event_id 
          AND er.registration_status = 'active'
-         AND er.valid = true
+         AND er.valid = 1
         ) as current_participants,
         CASE 
           WHEN NOW() < et.apply_start_time THEN '即將開始報名'
@@ -272,7 +272,7 @@ router.get('/:id', async (req, res) => {
          FROM event_registration er 
          WHERE er.event_id = et.event_id 
          AND er.registration_status = 'active'
-         AND er.valid = true
+         AND er.valid = 1
         ) as current_participants,
         CASE 
           WHEN NOW() < et.apply_start_time THEN '即將開始報名'
