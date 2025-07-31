@@ -301,7 +301,7 @@ router.post('/signup', upload.none(), async (req, res, next) => {
         remarks
       ) VALUES (
         $1, $2, $3, $4, $5,
-        0, 1, CURRENT_TIMESTAMP,
+        0, true, CURRENT_TIMESTAMP,
         '', '', '', '', '',
         '', NULL, NULL, NULL
       )

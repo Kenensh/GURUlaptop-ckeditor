@@ -23,7 +23,7 @@ router.post('/send', async (req, res) => {
 
     // 檢查信箱是否存在
     const userResult = await client.query(
-      'SELECT * FROM users WHERE email = $1 AND valid = 1',
+      'SELECT * FROM users WHERE email = $1 AND valid = true',
       [email]
     )
 

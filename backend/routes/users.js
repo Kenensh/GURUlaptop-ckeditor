@@ -45,7 +45,7 @@ router.get('/', async (req, res) => {
     const result = await client.query(`
       SELECT user_id, email, name, level, created_at 
       FROM users 
-      WHERE valid = 1
+      WHERE valid = true
       ORDER BY created_at DESC
     `)
 
@@ -89,7 +89,7 @@ router.get('/:id', authenticate, async (req, res) => {
              city, district, road_name, detailed_address, 
              image_path, remarks, created_at
       FROM users 
-      WHERE user_id = $1 AND valid = 1
+      WHERE user_id = $1 AND valid = true
     `,
       [id]
     )
@@ -171,7 +171,7 @@ router.put('/:id/profile', authenticate, async (req, res) => {
     const query = `
       UPDATE users 
       SET ${setClause}, updated_at = CURRENT_TIMESTAMP 
-      WHERE user_id = $1 AND valid = 1 
+      WHERE user_id = $1 AND valid = true 
       RETURNING user_id, email, name, level, gender, phone,
                 city, district, road_name, detailed_address, 
                 image_path, remarks, updated_at
@@ -230,7 +230,7 @@ router.put('/:id/password', authenticate, async (req, res) => {
   try {
     // 驗證當前密碼
     const user = await pool.query(
-      'SELECT password FROM users WHERE user_id = $1 AND valid = 1',
+      'SELECT password FROM users WHERE user_id = $1 AND valid = true',
       [id]
     )
 
@@ -257,7 +257,7 @@ router.put('/:id/password', authenticate, async (req, res) => {
       `
       UPDATE users 
       SET password = $1, updated_at = CURRENT_TIMESTAMP 
-      WHERE user_id = $2 AND valid = 1
+      WHERE user_id = $2 AND valid = true
     `,
       [hashedPassword, id]
     )
@@ -299,7 +299,7 @@ router.post(
         `
       UPDATE users 
       SET image_path = $1, updated_at = CURRENT_TIMESTAMP 
-      WHERE user_id = $2 AND valid = 1 
+      WHERE user_id = $2 AND valid = true 
       RETURNING user_id, image_path
     `,
         [req.file.filename, req.user.user_id]
