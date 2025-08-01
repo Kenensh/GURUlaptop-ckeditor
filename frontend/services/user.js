@@ -1,7 +1,7 @@
 import useSWR from 'swr'
 
-const BACKEND_URL =
-  process.env.NEXT_PUBLIC_BACKEND_URL ||
+const BASE_URL = 
+  process.env.NEXT_PUBLIC_API_URL ||
   'https://gurulaptop-ckeditor.onrender.com'
 
 // 統一的 API 請求處理函數

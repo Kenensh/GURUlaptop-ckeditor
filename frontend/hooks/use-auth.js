@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }) => {
     try {
       setAuth(prev => ({ ...prev, isLoading: true, error: null }))
       
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3005'}/api/auth/login`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005'}/api/auth/login`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -103,7 +103,7 @@ export const AuthProvider = ({ children }) => {
     try {
       setAuth(prev => ({ ...prev, isLoading: true }))
       
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3005'}/api/auth/logout`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005'}/api/auth/logout`, {
         method: 'POST',
         credentials: 'include',
         headers: {

@@ -11,7 +11,7 @@ import GlowingText from '@/components/dashboard/glowing-text/glowing-text'
 
 // 確保使用正確的後端 URL
 const isClient = typeof window !== 'undefined'
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 
   (isClient && window.location.hostname === 'localhost' ? 
     'http://localhost:3005' : 
     'https://gurulaptop-ckeditor.onrender.com')

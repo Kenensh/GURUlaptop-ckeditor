@@ -6,7 +6,7 @@ import Swal from 'sweetalert2'
 import Image from 'next/image'
 
 const isClient = typeof window !== 'undefined'
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 
   (isClient && window.location.hostname === 'localhost' ? 
     'http://localhost:3005' : 
     'https://gurulaptop-ckeditor.onrender.com')

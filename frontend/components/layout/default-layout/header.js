@@ -10,7 +10,7 @@ const isClient = typeof window !== 'undefined'
 
 // 添加 BACKEND_URL
 const BACKEND_URL =
-  process.env.NEXT_PUBLIC_BACKEND_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
   'https://gurulaptop-ckeditor.onrender.com'
 
 // fetch API 的包裝函數
