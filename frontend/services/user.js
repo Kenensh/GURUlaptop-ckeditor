@@ -8,7 +8,7 @@ const BASE_URL =
 const fetchApi = async (endpoint, options = {}) => {
   try {
     const token = localStorage.getItem('token')
-    const response = await fetch(`${BACKEND_URL}${endpoint}`, {
+    const response = await fetch(`${BASE_URL}${endpoint}`, {
       ...options,
       credentials: 'include', // 加上這個來處理 cookies
       headers: {
@@ -60,10 +60,18 @@ export const checkAuth = async () => {
 
 export const login = async (loginData) => {
   try {
+    console.log('準備發送登入請求:', {
+      loginData,
+      BASE_URL,
+      endpoint: '/api/auth/login'
+    })
+    
     const response = await fetchApi('/api/auth/login', {
       method: 'POST',
       body: JSON.stringify(loginData),
     })
+
+    console.log('登入回應:', response)
 
     if (response.token) {
       localStorage.setItem('token', response.token)
