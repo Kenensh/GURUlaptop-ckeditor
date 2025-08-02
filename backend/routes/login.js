@@ -36,8 +36,15 @@ router.post('/', express.json(), async (req, res) => {
 
   try {
     const { email, password } = req.body || {}
+    console.log(`[${requestId}] 接收到的登入資料:`, {
+      email: email || 'undefined',
+      password: password ? '有密碼' : 'undefined',
+      bodyKeys: Object.keys(req.body || {}),
+      fullBody: req.body
+    })
 
     if (!email || !password) {
+      console.log(`[${requestId}] 登入資料不完整`, { email: !!email, password: !!password })
       return res.status(400).json({
         status: 'error',
         message: '請提供完整登入資訊',
