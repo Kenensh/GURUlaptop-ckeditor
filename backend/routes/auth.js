@@ -83,6 +83,15 @@ router.post('/login', async (req, res) => {
   const requestId = req.requestId || Math.random().toString(36).substring(7)
   const { email, password } = req.body
 
+  console.log(`[${requestId}] Login request received:`, {
+    body: req.body,
+    hasEmail: !!email,
+    hasPassword: !!password,
+    contentType: req.headers['content-type'],
+    method: req.method,
+    url: req.url
+  })
+
   logBusinessFlow('Login Request Started', {
     email: email,
     hasPassword: !!password,

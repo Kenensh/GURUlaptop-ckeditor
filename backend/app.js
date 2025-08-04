@@ -120,9 +120,9 @@ app.options('*', (req, res) => {
 
 const cookieConfig = {
   httpOnly: false, // 改為 false 讓前端可以存取
-  secure: true,
-  sameSite: 'none',
-  domain: '.onrender.com', // 生產環境下固定 domain
+  secure: true, // HTTPS 環境下必須為 true
+  sameSite: 'none', // 跨域必須設為 none
+  domain: undefined, // 移除 domain 設定，讓瀏覽器自動處理
   path: '/',
 }
 

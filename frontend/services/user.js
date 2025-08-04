@@ -134,7 +134,7 @@ export const updateProfile = async (id, user) => {
 export const updateProfileAvatar = async (formData) => {
   try {
     const token = localStorage.getItem('token')
-    const response = await fetch(`${BACKEND_URL}/api/users/upload-avatar`, {
+    const response = await fetch(`${BASE_URL}/api/users/upload-avatar`, {
       method: 'POST',
       headers: {
         Authorization: token ? `Bearer ${token}` : '',
