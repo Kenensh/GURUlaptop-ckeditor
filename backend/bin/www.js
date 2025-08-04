@@ -5,37 +5,51 @@ import { exit } from 'node:process'
 import { initializeWebSocket } from './../configs/websocket.js'
 import 'dotenv/config.js'
 
+console.log('🌟 Starting server initialization...')
+console.log('Current working directory:', process.cwd())
+console.log('Node.js version:', process.version)
+console.log('Environment variables loaded')
+
 const debug = debugLib('node-express-es6:server')
 
+console.log('🔧 Setting up server configuration...')
 // 設定 port，移除 host
 const port = normalizePort(process.env.PORT || '3005')
+console.log('✅ Port normalized:', port)
 
 app.set('port', port)
+console.log('✅ Port set on app')
 
+console.log('🏗️ Creating HTTP server...')
 // 創建 HTTP server
 const server = http.createServer(app)
+console.log('✅ HTTP server created')
 
 // 添加啟動超時保護
 const startupTimeout = setTimeout(() => {
-  console.error('Server startup timeout after 30 seconds')
+  console.error('❌ Server startup timeout after 30 seconds')
   exit(1)
 }, 30000)
+console.log('⏰ Startup timeout protection enabled (30s)')
 
+console.log('🔌 Initializing WebSocket...')
 // WebSocket 初始化（添加錯誤處理）
 try {
   initializeWebSocket(server)
-  console.log('WebSocket initialized successfully')
+  console.log('✅ WebSocket initialized successfully')
 } catch (error) {
-  console.error('WebSocket initialization failed:', error)
+  console.error('❌ WebSocket initialization failed:', error)
   // 不要因為 WebSocket 失敗就停止服務器
 }
 
+console.log('🚀 Starting server listener...')
 // 直接啟動伺服器，不指定 host
 server.listen(port, () => {
   clearTimeout(startupTimeout) // 清除啟動超時
-  console.log(`Server is running on port ${port}`)
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`)
-  console.log('Server startup completed successfully')
+  console.log('🎉 Server is running on port', port)
+  console.log('🌍 Environment:', process.env.NODE_ENV || 'development')
+  console.log('🔥 Server startup completed successfully')
+  console.log('=' .repeat(50))
 })
 
 server.on('error', onError)

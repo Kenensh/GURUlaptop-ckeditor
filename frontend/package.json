@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "node server-debug.js",
+    "start:original": "next start",
     "prod": "set PORT=3000 && npm start",
     "lint": "next lint"
   },

@@ -17,8 +17,16 @@ import { DatabaseLogger } from '#utils/db-logger.js'
 import 'colors'
 import 'dotenv/config.js'
 
+console.log('🚀 Starting application initialization...')
+console.log('Environment:', process.env.NODE_ENV || 'development')
+console.log('Port:', process.env.PORT || '3005')
+
 // 導入資料庫和路由
+console.log('📦 Loading database configuration...')
 import db from './configs/db.js'
+console.log('✅ Database configuration loaded')
+
+console.log('📦 Loading route modules...')
 import authRouter from './routes/auth.js'
 import loginRouter from './routes/login.js'
 import dashboardRouter from './routes/dashboard.js'
@@ -36,9 +44,12 @@ import healthRouter from './routes/health.js'
 import cartRouter from './routes/cart.js'
 import orderRouter from './routes/order.js'
 import buyListRouter from './routes/buy-list.js'
+console.log('✅ All route modules loaded successfully')
 
+console.log('🏗️ Creating Express application...')
 const app = express()
 app.set('trust proxy', 1)
+console.log('✅ Express application created')
 
 // ESM __dirname fix
 const __filename = fileURLToPath(import.meta.url)

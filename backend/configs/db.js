@@ -61,52 +61,42 @@ pool.on('error', (err) => {
   console.error('Database pool error:', err)
 })
 
-// 添加進程退出時的清理
-process.on('SIGINT', async () => {
-  console.log('Closing database connections...')
-  await pool.end()
-  await sequelize.close()
-  process.exit(0)
-})
-
-process.on('SIGTERM', async () => {
-  console.log('Closing database connections...')
-  await pool.end()
-  await sequelize.close()
-  process.exit(0)
-})
-
 // 初始化模型
+console.log('Initializing database models...')
 const User = UserModel(sequelize)
 sequelize.models.User = User
+console.log('Database models initialized successfully')
 
 // 資料庫連線測試
 const testConnection = async () => {
+  console.log('Starting database connection test...')
   try {
     // 測試 Sequelize 連線
+    console.log('Testing Sequelize connection...')
     await sequelize.authenticate()
-    console.log('Sequelize connection successful')
+    console.log('✅ Sequelize connection successful')
 
     // 測試 Pool 連線
+    console.log('Testing Pool connection...')
     const client = await pool.connect()
     client.release()
-    console.log('Pool connection successful')
+    console.log('✅ Pool connection successful')
 
     return true
   } catch (error) {
-    console.error('Database connection error:', error)
+    console.error('❌ Database connection error:', error.message)
     return false
   }
 }
 
 // 清理資源函數
 const cleanup = async () => {
+  console.log('Starting database cleanup...')
   try {
-    console.log('Closing database connections...')
     await Promise.all([pool.end(), sequelize.close()])
-    console.log('Database connections closed successfully')
+    console.log('✅ Database connections closed successfully')
   } catch (error) {
-    console.error('Error during cleanup:', error)
+    console.error('❌ Error during cleanup:', error)
     process.exit(1)
   }
 }
@@ -126,11 +116,22 @@ process.on('SIGTERM', async () => {
 
 // 未捕獲的 Promise 異常處理
 process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason)
+  console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason)
 })
 
 // 執行連線測試
-testConnection()
+console.log('Executing database connection test...')
+testConnection().then(success => {
+  if (success) {
+    console.log('🎉 Database initialization completed successfully')
+  } else {
+    console.log('⚠️ Database connection test failed, but continuing...')
+  }
+}).catch(error => {
+  console.error('❌ Database test execution failed:', error)
+})
+
+console.log('Database module export ready')
 
 // 匯出需要的模組
 export { pool, sequelize as default, User, testConnection, cleanup }
