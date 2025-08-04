@@ -15,12 +15,27 @@ app.set('port', port)
 // 創建 HTTP server
 const server = http.createServer(app)
 
-// WebSocket 初始化
-initializeWebSocket(server)
+// 添加啟動超時保護
+const startupTimeout = setTimeout(() => {
+  console.error('Server startup timeout after 30 seconds')
+  exit(1)
+}, 30000)
+
+// WebSocket 初始化（添加錯誤處理）
+try {
+  initializeWebSocket(server)
+  console.log('WebSocket initialized successfully')
+} catch (error) {
+  console.error('WebSocket initialization failed:', error)
+  // 不要因為 WebSocket 失敗就停止服務器
+}
 
 // 直接啟動伺服器，不指定 host
 server.listen(port, () => {
+  clearTimeout(startupTimeout) // 清除啟動超時
   console.log(`Server is running on port ${port}`)
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`)
+  console.log('Server startup completed successfully')
 })
 
 server.on('error', onError)

@@ -108,6 +108,24 @@ const corsOptions = {
 // 確保 CORS 中間件在所有路由之前
 app.use(cors(corsOptions))
 
+// 在所有中間件之前添加快速健康檢查
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'ok', 
+    message: 'Server is running',
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString() 
+  })
+})
+
+app.get('/', (req, res) => {
+  res.status(200).json({ 
+    status: 'ok', 
+    message: 'API is running',
+    version: '1.2.0'
+  })
+})
+
 // 明確處理預檢請求
 app.options('*', (req, res) => {
   res.header('Access-Control-Allow-Origin', req.headers.origin || '*')

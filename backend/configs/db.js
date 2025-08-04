@@ -46,18 +46,34 @@ const pool = new Pool({
   ssl: {
     rejectUnauthorized: false,
   },
-  max: 20, // 最大連線數
-  idleTimeoutMillis: 30000, // 閒置超時
-  connectionTimeoutMillis: 2000, // 連線超時
+  max: 10, // 減少最大連線數
+  min: 2,  // 設置最小連線數
+  idleTimeoutMillis: 20000, // 減少閒置超時
+  connectionTimeoutMillis: 10000, // 添加連接超時
 })
 
 // 監聽 Pool 事件
 pool.on('connect', () => {
-  console.log('Pool client connected')
+  console.log('Database pool client connected')
 })
 
 pool.on('error', (err) => {
-  console.error('Pool error:', err)
+  console.error('Database pool error:', err)
+})
+
+// 添加進程退出時的清理
+process.on('SIGINT', async () => {
+  console.log('Closing database connections...')
+  await pool.end()
+  await sequelize.close()
+  process.exit(0)
+})
+
+process.on('SIGTERM', async () => {
+  console.log('Closing database connections...')
+  await pool.end()
+  await sequelize.close()
+  process.exit(0)
 })
 
 // 初始化模型

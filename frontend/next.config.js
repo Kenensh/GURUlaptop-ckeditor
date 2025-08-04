@@ -6,6 +6,15 @@ const nextConfig = {
   assetPrefix: '',
   trailingSlash: false,
   
+  // 優化構建設置
+  compress: true,
+  poweredByHeader: false,
+  
+  // 快速啟動設置
+  experimental: {
+    // 減少構建時間
+  },
+  
   images: {
     domains: ['localhost', 'via.placeholder.com', 'gurulaptop-ckeditor.onrender.com'],
     unoptimized: true,
@@ -27,7 +36,31 @@ const nextConfig = {
   },
   
   // 最小化 webpack 設定
-  webpack: (config) => {
+  webpack: (config, { dev, isServer }) => {
+    // 生產環境優化
+    if (!dev && !isServer) {
+      config.optimization.splitChunks = {
+        chunks: 'all',
+        cacheGroups: {
+          default: false,
+          vendors: false,
+          vendor: {
+            name: 'vendor',
+            chunks: 'all',
+            test: /node_modules/,
+            priority: 20
+          },
+          common: {
+            minChunks: 2,
+            chunks: 'all',
+            name: 'common',
+            priority: 10,
+            reuseExistingChunk: true,
+            enforce: true
+          }
+        }
+      }
+    }
     return config
   },
 }
