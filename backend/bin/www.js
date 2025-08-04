@@ -35,11 +35,15 @@ console.log('⏰ Startup timeout protection enabled (30s)')
 console.log('🔌 Initializing WebSocket...')
 // WebSocket 初始化（添加錯誤處理）
 try {
-  initializeWebSocket(server)
-  console.log('✅ WebSocket initialized successfully')
+  const wsServer = initializeWebSocket(server)
+  if (wsServer) {
+    console.log('✅ WebSocket initialized successfully')
+  } else {
+    console.log('⚠️ WebSocket initialization skipped')
+  }
 } catch (error) {
-  console.error('❌ WebSocket initialization failed:', error)
-  // 不要因為 WebSocket 失敗就停止服務器
+  console.error('❌ WebSocket initialization failed:', error.message)
+  console.log('⚠️ Continuing without WebSocket functionality...')
 }
 
 console.log('🚀 Starting server listener...')

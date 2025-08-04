@@ -46,10 +46,10 @@ const pool = new Pool({
   ssl: {
     rejectUnauthorized: false,
   },
-  max: 10, // 減少最大連線數
-  min: 2,  // 設置最小連線數
-  idleTimeoutMillis: 20000, // 減少閒置超時
-  connectionTimeoutMillis: 10000, // 添加連接超時
+  max: 5, // 進一步減少最大連線數
+  min: 1,  // 減少最小連線數
+  idleTimeoutMillis: 15000, // 減少閒置超時
+  connectionTimeoutMillis: 5000, // 減少連接超時
 })
 
 // 監聽 Pool 事件
@@ -70,17 +70,27 @@ console.log('Database models initialized successfully')
 // 資料庫連線測試
 const testConnection = async () => {
   console.log('Starting database connection test...')
+  const timeout = new Promise((_, reject) => 
+    setTimeout(() => reject(new Error('Database connection test timeout')), 10000)
+  )
+  
   try {
-    // 測試 Sequelize 連線
-    console.log('Testing Sequelize connection...')
-    await sequelize.authenticate()
-    console.log('✅ Sequelize connection successful')
+    // 添加超時保護的連接測試
+    await Promise.race([
+      (async () => {
+        // 測試 Sequelize 連線
+        console.log('Testing Sequelize connection...')
+        await sequelize.authenticate()
+        console.log('✅ Sequelize connection successful')
 
-    // 測試 Pool 連線
-    console.log('Testing Pool connection...')
-    const client = await pool.connect()
-    client.release()
-    console.log('✅ Pool connection successful')
+        // 測試 Pool 連線
+        console.log('Testing Pool connection...')
+        const client = await pool.connect()
+        client.release()
+        console.log('✅ Pool connection successful')
+      })(),
+      timeout
+    ])
 
     return true
   } catch (error) {
@@ -119,17 +129,19 @@ process.on('unhandledRejection', (reason, promise) => {
   console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason)
 })
 
-// 執行連線測試
+// 執行連線測試（非阻塞）
 console.log('Executing database connection test...')
-testConnection().then(success => {
-  if (success) {
-    console.log('🎉 Database initialization completed successfully')
-  } else {
-    console.log('⚠️ Database connection test failed, but continuing...')
-  }
-}).catch(error => {
-  console.error('❌ Database test execution failed:', error)
-})
+setTimeout(() => {
+  testConnection().then(success => {
+    if (success) {
+      console.log('🎉 Database initialization completed successfully')
+    } else {
+      console.log('⚠️ Database connection test failed, but continuing...')
+    }
+  }).catch(error => {
+    console.error('❌ Database test execution failed:', error)
+  })
+}, 0) // 異步執行，不阻塞模塊加載
 
 console.log('Database module export ready')
 

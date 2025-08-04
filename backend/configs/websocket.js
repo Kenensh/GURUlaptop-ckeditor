@@ -1,5 +1,4 @@
 import { WebSocketServer } from 'ws'
-import { chatService } from '../services/chatService.js'
 
 const initializeWebSocket = (server) => {
   console.log('🔌 Initializing WebSocket server...')
@@ -10,19 +9,24 @@ const initializeWebSocket = (server) => {
 
     wss.on('connection', (ws, req) => {
       console.log('🔗 New WebSocket connection established')
-      // 初始化檢測
+      
+      // 基本的連接處理
       ws.isAlive = true
       ws.on('pong', () => {
         ws.isAlive = true
       })
 
-      // 將連接處理委託給 chatService
-      try {
-        chatService.handleConnection(ws, req)
-        console.log('✅ WebSocket connection handled by chatService')
-      } catch (error) {
-        console.error('❌ Error handling WebSocket connection:', error)
-      }
+      ws.on('message', (message) => {
+        console.log('📨 Received message:', message.toString())
+      })
+
+      ws.on('close', () => {
+        console.log('🔌 WebSocket connection closed')
+      })
+
+      ws.on('error', (error) => {
+        console.error('❌ WebSocket connection error:', error)
+      })
     })
 
     // 處理 WebSocket server 錯誤
@@ -54,10 +58,10 @@ const initializeWebSocket = (server) => {
     
   } catch (error) {
     console.error('❌ Critical error in WebSocket initialization:', error)
-    throw error
+    // 不要拋出錯誤，允許服務器繼續啟動
+    console.log('⚠️ Continuing without WebSocket...')
+    return null
   }
 }
-
-export { initializeWebSocket }
 
 export { initializeWebSocket }
