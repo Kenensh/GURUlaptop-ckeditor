@@ -164,10 +164,30 @@ router.post('/login', async (req, res) => {
     const userData = { ...user.rows[0] }
     delete userData.password
 
+    // 設置 cookie 用於認證
+    const isProduction = process.env.NODE_ENV === 'production'
+    const cookieConfig = {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
+      domain: isProduction ? '.onrender.com' : undefined,
+      path: '/',
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30天
+    }
+
+    console.log(`[${requestId}] 設置 cookie:`, {
+      token: token.substring(0, 20) + '...',
+      cookieConfig,
+      isProduction
+    })
+
+    res.cookie('accessToken', token, cookieConfig)
+
     logAuth('LOGIN', email, true, {
       userId: user.rows[0].user_id,
       userLevel: user.rows[0].level,
-      tokenGenerated: true
+      tokenGenerated: true,
+      cookieSet: true
     }, requestId)
 
     logBusinessFlow('Login Successful', {
@@ -200,6 +220,42 @@ router.post('/login', async (req, res) => {
 })
 
 // 註冊路由
+  }
+})
+
+// 登出路由
+router.post('/logout', (req, res) => {
+  const requestId = Math.random().toString(36).substring(7)
+  console.log(`[${requestId}] Logout request received`)
+
+  try {
+    // 清除 accessToken cookie
+    const isProduction = process.env.NODE_ENV === 'production'
+    const cookieConfig = {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
+      domain: isProduction ? '.onrender.com' : undefined,
+      path: '/',
+    }
+
+    res.clearCookie('accessToken', cookieConfig)
+    
+    console.log(`[${requestId}] Cookie cleared successfully`)
+
+    return res.json({
+      status: 'success',
+      message: '登出成功'
+    })
+  } catch (error) {
+    console.error(`[${requestId}] Logout error:`, error)
+    return res.status(500).json({ 
+      status: 'error', 
+      message: '登出失敗' 
+    })
+  }
+})
+
 router.post('/signup', upload.none(), async (req, res, next) => {
   const requestId = req.requestId || Math.random().toString(36).substring(7)
   

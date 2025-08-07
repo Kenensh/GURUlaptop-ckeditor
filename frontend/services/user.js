@@ -7,35 +7,40 @@ const BASE_URL =
 // 統一的 API 請求處理函數
 const fetchApi = async (endpoint, options = {}) => {
   try {
-    const token = localStorage.getItem('token')
+    console.log(`[Frontend API] 發送請求到: ${BASE_URL}${endpoint}`)
+    
     const response = await fetch(`${BASE_URL}${endpoint}`, {
       ...options,
-      credentials: 'include', // 加上這個來處理 cookies
+      credentials: 'include', // 重要！確保發送和接收 cookies
       headers: {
         'Content-Type': 'application/json',
-        ...(token && { Authorization: `Bearer ${token}` }),
         ...options.headers,
       },
     })
 
-    // 檢查是否需要刷新 token
-    const newToken = response.headers.get('Set-Cookie')
-    if (newToken) {
-      localStorage.setItem('token', newToken)
-    }
+    console.log(`[Frontend API] 收到回應狀態: ${response.status}`)
 
     const data = await response.json()
+    
     if (!response.ok) {
+      console.error(`[Frontend API] 請求失敗 ${endpoint}:`, {
+        status: response.status,
+        data
+      })
+      
       if (response.status === 401) {
         // 如果是認證錯誤，清除本地存儲
         localStorage.removeItem('token')
         localStorage.removeItem('userData')
+        console.log('[Frontend API] 清除認證資訊因為 401 錯誤')
       }
       throw new Error(data.message || '請求失敗')
     }
+    
+    console.log(`[Frontend API] 請求成功 ${endpoint}:`, data)
     return data
   } catch (error) {
-    console.error(`API Error (${endpoint}):`, error)
+    console.error(`[Frontend API] API Error (${endpoint}):`, error)
     throw error
   }
 }
@@ -43,16 +48,23 @@ const fetchApi = async (endpoint, options = {}) => {
 // 認證相關功能
 export const checkAuth = async () => {
   try {
+    console.log('[Frontend Auth] 開始檢查身份驗證')
+    
     const response = await fetchApi('/api/auth/check', {
       method: 'GET',
       credentials: 'include', // 確保發送 cookies
     })
-    return response
+    
+    console.log('[Frontend Auth] 身份驗證檢查成功:', response)
+    return { data: response }
   } catch (error) {
+    console.error('[Frontend Auth] 身份驗證檢查失敗:', error)
+    
     // 如果是認證錯誤，清除本地存儲
     if (error.message === '請先登入' || error.message === '登入已過期') {
       localStorage.removeItem('token')
       localStorage.removeItem('userData')
+      console.log('[Frontend Auth] 清除本地認證資料')
     }
     throw error
   }
@@ -60,7 +72,7 @@ export const checkAuth = async () => {
 
 export const login = async (loginData) => {
   try {
-    console.log('準備發送登入請求:', {
+    console.log('[Frontend Login] 準備發送登入請求:', {
       loginData,
       BASE_URL,
       endpoint: '/api/auth/login'
@@ -71,11 +83,14 @@ export const login = async (loginData) => {
       body: JSON.stringify(loginData),
     })
 
-    console.log('登入回應:', response)
+    console.log('[Frontend Login] 登入回應:', response)
 
-    if (response.token) {
-      localStorage.setItem('token', response.token)
-      localStorage.setItem('userData', JSON.stringify(response.user))
+    // 注意：不再使用 localStorage 存儲 token
+    // token 現在通過 httpOnly cookie 自動管理
+    if (response.status === 'success' && response.data?.user) {
+      // 只存儲用戶資料到 localStorage 作為快取
+      localStorage.setItem('userData', JSON.stringify(response.data.user))
+      console.log('[Frontend Login] 用戶資料已存儲到 localStorage')
     }
 
     return response
@@ -87,11 +102,24 @@ export const login = async (loginData) => {
 
 export const logout = async () => {
   try {
+    console.log('[Frontend Logout] 開始登出流程')
+    
+    // 清除本地存儲的用戶資料
     localStorage.removeItem('token')
     localStorage.removeItem('userData')
-    return await fetchApi('/api/auth/logout', { method: 'POST' })
+    
+    console.log('[Frontend Logout] 本地資料已清除')
+    
+    // 調用後端登出 API 清除 cookie
+    const response = await fetchApi('/api/auth/logout', { method: 'POST' })
+    
+    console.log('[Frontend Logout] 登出成功:', response)
+    return response
   } catch (error) {
-    console.error('Logout failed:', error)
+    console.error('[Frontend Logout] Logout failed:', error)
+    // 即使後端失敗，也要確保本地資料被清除
+    localStorage.removeItem('token')
+    localStorage.removeItem('userData')
     throw error
   }
 }

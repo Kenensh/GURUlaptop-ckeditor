@@ -21,10 +21,19 @@ const cookieConfig = {
 async function authenticate(req, res, next) {
   const requestId = Math.random().toString(36).substring(7)
   console.log(`[${requestId}] 開始進行身份驗證檢查`);
+  console.log(`[${requestId}] 請求 URL: ${req.method} ${req.originalUrl}`);
+  console.log(`[${requestId}] Cookies:`, req.cookies);
+  console.log(`[${requestId}] Authorization Header:`, req.headers.authorization);
 
   try {
     // 嘗試從 cookie 或授權標頭獲取令牌
-    const token = req.cookies?.accessToken || req.headers?.authorization?.split(' ')[1]
+    const cookieToken = req.cookies?.accessToken
+    const headerToken = req.headers?.authorization?.split(' ')[1]
+    const token = cookieToken || headerToken
+    
+    console.log(`[${requestId}] Cookie Token:`, cookieToken ? `存在 (${cookieToken.substring(0, 20)}...)` : '不存在');
+    console.log(`[${requestId}] Header Token:`, headerToken ? `存在 (${headerToken.substring(0, 20)}...)` : '不存在');
+    console.log(`[${requestId}] 使用的 Token:`, token ? `存在 (${token.substring(0, 20)}...)` : '不存在');
     
     if (!token) {
       console.log(`[${requestId}] 未找到訪問令牌`);
