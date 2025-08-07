@@ -23,8 +23,29 @@ export default function LogIn() {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const router = useRouter()
-  const { login, auth } = useAuth()
+  const { login, auth, setAuth } = useAuth()
   const { showLoader, hideLoader } = useLoader()
+
+  // 定義初始用戶數據結構
+  const initUserData = {
+    user_id: 0,
+    email: '',
+    name: '',
+    phone: '',
+    birthdate: null,
+    gender: '',
+    level: 0,
+    valid: true,
+    created_at: '',
+    country: '',
+    city: '',
+    district: '',
+    road_name: '',
+    detailed_address: '',
+    image_path: null,
+    google_uid: null,
+    remarks: null
+  }
 
   useEffect(() => {
     console.log('Auth state changed:', auth) // 監視 auth 狀態變化
@@ -68,15 +89,26 @@ export default function LogIn() {
         throw new Error(result.message || '登入失敗')
       }
       
-      if (result.status === 'success') {
-        // 使用 auth context 進行狀態更新
-        const loginResult = await login(result.data)
+      if (result.status === 'success' && result.data) {
+        // 直接更新 auth 狀態，不再發送額外的登入請求
+        const updatedUserData = { ...initUserData, ...result.data.user }
         
-        if (loginResult.status === 'success') {
-          await router.replace('/dashboard')
-        } else {
-          throw new Error(loginResult.message || '登入失敗')
+        setAuth({
+          isAuth: true,
+          userData: updatedUserData,
+          isLoading: false,
+          error: null,
+        })
+
+        // 在本地存儲中保存身份驗證狀態
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('isAuthenticated', 'true')
         }
+        
+        // 導航到 dashboard
+        await router.replace('/dashboard')
+      } else {
+        throw new Error(result.message || '登入失敗')
       }
     } catch (error) {
       console.error('Login error:', error)
