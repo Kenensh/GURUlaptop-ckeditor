@@ -219,10 +219,6 @@ router.post('/login', async (req, res) => {
   }
 })
 
-// 註冊路由
-  }
-})
-
 // 登出路由
 router.post('/logout', (req, res) => {
   const requestId = Math.random().toString(36).substring(7)
