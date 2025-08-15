@@ -9,7 +9,7 @@ const cookieConfig = {
   httpOnly: true,
   secure: isProduction, // 生產環境為 true，開發環境可為 false
   sameSite: isProduction ? 'none' : 'lax', // 在開發環境使用較寬鬆的設定
-  domain: isProduction ? '.onrender.com' : undefined,
+  // 移除 domain 設定，讓瀏覽器自動處理
   path: '/',
   maxAge: 30 * 24 * 60 * 60 * 1000, // 30天
 }
@@ -22,8 +22,10 @@ async function authenticate(req, res, next) {
   const requestId = Math.random().toString(36).substring(7)
   console.log(`[${requestId}] 開始進行身份驗證檢查`);
   console.log(`[${requestId}] 請求 URL: ${req.method} ${req.originalUrl}`);
-  console.log(`[${requestId}] Cookies:`, req.cookies);
-  console.log(`[${requestId}] Authorization Header:`, req.headers.authorization);
+  console.log(`[${requestId}] Origin: ${req.headers.origin}`);
+  console.log(`[${requestId}] User-Agent: ${req.headers['user-agent']?.substring(0, 50)}...`);
+  console.log(`[${requestId}] Cookies:`, Object.keys(req.cookies || {}).length > 0 ? req.cookies : 'No cookies');
+  console.log(`[${requestId}] Authorization Header:`, req.headers.authorization ? 'Present' : 'Missing');
 
   try {
     // 嘗試從 cookie 或授權標頭獲取令牌
@@ -36,7 +38,7 @@ async function authenticate(req, res, next) {
     console.log(`[${requestId}] 使用的 Token:`, token ? `存在 (${token.substring(0, 20)}...)` : '不存在');
     
     if (!token) {
-      console.log(`[${requestId}] 未找到訪問令牌`);
+      console.log(`[${requestId}] 未找到訪問令牌 - 可能的原因: Cookie未設置或跨域問題`);
       res.setHeader('WWW-Authenticate', 'Bearer')
       return res.status(401).json({ status: 'error', message: '請先登入' })
     }

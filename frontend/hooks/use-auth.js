@@ -55,44 +55,58 @@ export const AuthProvider = ({ children }) => {
     try {
       setAuth(prev => ({ ...prev, isLoading: true, error: null }))
       
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005'}/api/auth/login`, {
+      console.log('[useAuth Login] 開始登入請求:', userData)
+      
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 
+        (process.env.NODE_ENV === 'production' 
+          ? 'https://gurulaptop-ckeditor.onrender.com'  // 生產環境後端網址
+          : 'http://localhost:3005')  // 開發環境
+      const loginUrl = `${apiUrl}/api/auth/login`
+      
+      console.log('[useAuth Login] 登入 URL:', loginUrl)
+      
+      const response = await fetch(loginUrl, {
         method: 'POST',
-        credentials: 'include',
+        credentials: 'include', // 確保發送和接收 cookies
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(userData),
       })
 
+      console.log('[useAuth Login] 響應狀態:', response.status)
+      console.log('[useAuth Login] 響應頭 Set-Cookie:', response.headers.get('Set-Cookie'))
+
       if (!response.ok) {
         const error = await response.json()
+        console.error('[useAuth Login] 登入錯誤響應:', error)
         throw new Error(error.message || '登入失敗')
       }
 
       const result = await response.json()
+      console.log('[useAuth Login] 登入成功響應:', result)
       
       if (result.status === 'success') {
-        // 成功登入，設定 auth 狀態
-        const updatedUserData = { ...initUserData, ...result.data.user }
+        // 成功登入後，立即檢查 auth 狀態
+        console.log('[useAuth Login] 登入成功，現在檢查 auth 狀態')
         
-        setAuth({
-          isAuth: true,
-          userData: updatedUserData,
-          isLoading: false,
-          error: null,
-        })
-
-        // 在本地存儲中保存身份驗證狀態
-        if (isClient) {
-          localStorage.setItem('isAuthenticated', 'true')
+        // 稍等一下讓 cookie 設置完成
+        await new Promise(resolve => setTimeout(resolve, 100))
+        
+        const authCheckResult = await handleCheckAuth(true)
+        
+        if (authCheckResult.status === 'success') {
+          console.log('[useAuth Login] Auth 檢查成功，登入完成')
+          return { status: 'success', user: authCheckResult.user }
+        } else {
+          console.error('[useAuth Login] Auth 檢查失敗:', authCheckResult)
+          throw new Error('登入後認證檢查失敗')
         }
-        
-        return { status: 'success', user: updatedUserData }
       } else {
         throw new Error(result.message || '登入失敗')
       }
     } catch (error) {
-      console.error('登入失敗：', error)
+      console.error('[useAuth Login] 登入失敗：', error)
       setAuth(prev => ({ ...prev, isLoading: false, error: error.message }))
       return { status: 'error', message: error.message }
     }
@@ -103,7 +117,12 @@ export const AuthProvider = ({ children }) => {
     try {
       setAuth(prev => ({ ...prev, isLoading: true }))
       
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005'}/api/auth/logout`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 
+        (process.env.NODE_ENV === 'production' 
+          ? 'https://gurulaptop-ckeditor.onrender.com'  // 生產環境後端網址
+          : 'http://localhost:3005')  // 開發環境
+      
+      const response = await fetch(`${apiUrl}/api/auth/logout`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -152,10 +171,38 @@ export const AuthProvider = ({ children }) => {
       }
 
       setAuth(prev => ({ ...prev, isLoading: true }))
-      const res = await checkAuth()
+      
+      console.log('[useAuth CheckAuth] 開始檢查身份驗證')
+      
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 
+        (process.env.NODE_ENV === 'production' 
+          ? 'https://gurulaptop-ckeditor.onrender.com'  // 生產環境後端網址
+          : 'http://localhost:3005')  // 開發環境
+      const checkUrl = `${apiUrl}/api/auth/check`
+      
+      console.log('[useAuth CheckAuth] 檢查 URL:', checkUrl)
+      
+      const response = await fetch(checkUrl, {
+        method: 'GET',
+        credentials: 'include', // 確保發送 cookies
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
 
-      if (res.data?.status === 'success' && res.data?.data?.user) {
-        const dbUser = res.data.data.user
+      console.log('[useAuth CheckAuth] 響應狀態:', response.status)
+
+      if (!response.ok) {
+        const error = await response.json()
+        console.log('[useAuth CheckAuth] Auth 檢查失敗:', error)
+        throw new Error(error.message || '身份驗證失敗')
+      }
+
+      const result = await response.json()
+      console.log('[useAuth CheckAuth] Auth 檢查成功:', result)
+
+      if (result?.status === 'success' && result?.data?.user) {
+        const dbUser = result.data.user
         const userData = { ...initUserData }
         
         // 將後端返回的用戶數據映射到前端用戶數據結構
@@ -186,7 +233,7 @@ export const AuthProvider = ({ children }) => {
           isAuth: false,
           userData: initUserData,
           isLoading: false,
-          error: res.data?.message || '驗證失敗',
+          error: result?.message || '驗證失敗',
         })
         
         // 如果是受保護的頁面，重定向到登入頁

@@ -168,9 +168,9 @@ router.post('/login', async (req, res) => {
     const isProduction = process.env.NODE_ENV === 'production'
     const cookieConfig = {
       httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? 'none' : 'lax',
-      domain: isProduction ? '.onrender.com' : undefined,
+      secure: isProduction, // HTTPS 必須為 true
+      sameSite: isProduction ? 'none' : 'lax', // 跨域請求必須使用 'none'
+      // 移除 domain 設定，讓瀏覽器自動處理
       path: '/',
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30天
     }
@@ -178,7 +178,9 @@ router.post('/login', async (req, res) => {
     console.log(`[${requestId}] 設置 cookie:`, {
       token: token.substring(0, 20) + '...',
       cookieConfig,
-      isProduction
+      isProduction,
+      origin: req.headers.origin,
+      userAgent: req.headers['user-agent']
     })
 
     res.cookie('accessToken', token, cookieConfig)
@@ -231,7 +233,7 @@ router.post('/logout', (req, res) => {
       httpOnly: true,
       secure: isProduction,
       sameSite: isProduction ? 'none' : 'lax',
-      domain: isProduction ? '.onrender.com' : undefined,
+      // 移除 domain 設定，讓瀏覽器自動處理
       path: '/',
     }
 

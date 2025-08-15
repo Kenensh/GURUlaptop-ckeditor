@@ -82,36 +82,22 @@ export default function LogIn() {
     showLoader()
     
     try {
-      // 使用 API 服務層進行登入
-      const result = await api.auth.login(formData)
+      console.log('[Login Page] 開始登入流程')
       
-      if (result.success === false) {
-        throw new Error(result.message || '登入失敗')
-      }
+      // 使用 useAuth hook 的 login 函數，而不是 API 層
+      const result = await login(formData)
       
-      if (result.status === 'success' && result.data) {
-        // 直接更新 auth 狀態，不再發送額外的登入請求
-        const updatedUserData = { ...initUserData, ...result.data.user }
-        
-        setAuth({
-          isAuth: true,
-          userData: updatedUserData,
-          isLoading: false,
-          error: null,
-        })
-
-        // 在本地存儲中保存身份驗證狀態
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('isAuthenticated', 'true')
-        }
-        
-        // 導航到 dashboard
-        await router.replace('/dashboard')
+      console.log('[Login Page] 登入結果:', result)
+      
+      if (result?.status === 'success') {
+        console.log('[Login Page] 登入成功，等待導航到 dashboard')
+        // useAuth hook 會自動處理狀態更新和導航
+        // 不需要手動設置 auth 狀態或導航
       } else {
-        throw new Error(result.message || '登入失敗')
+        throw new Error(result?.message || '登入失敗')
       }
     } catch (error) {
-      console.error('Login error:', error)
+      console.error('[Login Page] 登入錯誤:', error)
       setErrors({ general: error.message || '登入失敗' })
     } finally {
       setIsSubmitting(false)

@@ -10,15 +10,23 @@ const isClient = typeof window !== 'undefined';
  */
 export const login = async (loginData) => {
   try {
+    console.log('[Frontend API Auth] 開始登入請求:', loginData)
+    
     const response = await axiosInstance.post('/api/auth/login', loginData);
     
-    if (isClient && response.data.token) {
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('userData', JSON.stringify(response.data.user));
+    console.log('[Frontend API Auth] 登入回應:', response.data)
+    
+    // 注意：不再使用 localStorage 存儲 token
+    // token 現在通過 httpOnly cookie 自動管理
+    if (isClient && response.data.status === 'success' && response.data.data?.user) {
+      // 只存儲用戶資料到 localStorage 作為快取
+      localStorage.setItem('userData', JSON.stringify(response.data.data.user));
+      console.log('[Frontend API Auth] 用戶資料已存儲到 localStorage')
     }
     
     return response.data;
   } catch (error) {
+    console.error('[Frontend API Auth] 登入失敗:', error)
     return handleApiError(error, '登入失敗');
   }
 };
@@ -29,13 +37,20 @@ export const login = async (loginData) => {
  */
 export const checkAuth = async () => {
   try {
+    console.log('[Frontend API Auth] 檢查身份驗證')
+    
     const response = await axiosInstance.get('/api/auth/check');
+    
+    console.log('[Frontend API Auth] 身份驗證檢查成功:', response.data)
     return response.data;
   } catch (error) {
+    console.error('[Frontend API Auth] 身份驗證檢查失敗:', error)
+    
     // 如果是認證錯誤，清除本地存儲
     if (isClient && (error.response?.status === 401 || error.response?.data?.message === '請先登入' || error.response?.data?.message === '登入已過期')) {
       localStorage.removeItem('token');
       localStorage.removeItem('userData');
+      console.log('[Frontend API Auth] 清除本地認證資料')
     }
     return handleApiError(error, '認證檢查失敗');
   }

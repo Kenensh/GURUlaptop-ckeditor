@@ -5,11 +5,11 @@ const isClient = typeof window !== 'undefined';
 // 使用環境變數定義基本 URL
 const BASE_URL = 
   process.env.NEXT_PUBLIC_API_URL || 
-  (process.env.NODE_ENV === 'development' 
-    ? 'http://localhost:3005' 
-    : 'https://gurulaptop-ckeditor.onrender.com');
+  (process.env.NODE_ENV === 'production' 
+    ? 'https://gurulaptop-ckeditor.onrender.com'  // 生產環境後端網址
+    : 'http://localhost:3005')  // 開發環境
 
-    
+
 // 創建 axios 實例
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
@@ -20,51 +20,53 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
-// 請求攔截器 - 添加 token
+// 請求攔截器 - 確保 credentials 設定
 axiosInstance.interceptors.request.use((config) => {
   // 確保跨域請求可以帶上 cookies
   config.withCredentials = true;
   
-  // 如果在客戶端且存在 token，添加到 headers
-  if (isClient) {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-  }
+  console.log(`[Axios] 發送請求到: ${config.baseURL}${config.url}`, {
+    method: config.method,
+    withCredentials: config.withCredentials,
+    hasAuthHeader: !!config.headers.Authorization
+  });
   
   return config;
 }, (error) => {
+  console.error('[Axios] 請求攔截器錯誤:', error);
   return Promise.reject(error);
 });
 
-// 響應攔截器 - 處理認證和重整 token
+// 響應攔截器 - 處理認證錯誤
 axiosInstance.interceptors.response.use(
   (response) => {
-    // 檢查是否需要更新 token
-    const newToken = response.headers['authorization'] || response.headers['Authorization'];
-    if (isClient && newToken && newToken.startsWith('Bearer ')) {
-      const token = newToken.split(' ')[1];
-      localStorage.setItem('token', token);
-    }
+    console.log(`[Axios] 收到回應: ${response.status}`, {
+      url: response.config.url,
+      status: response.status,
+      hasData: !!response.data
+    });
     
     return response;
   },
   (error) => {
-    // 處理 401 未授權錯誤 - 登出並重定向到登入頁面
+    console.error(`[Axios] 響應錯誤:`, {
+      url: error.config?.url,
+      status: error.response?.status,
+      message: error.response?.data?.message,
+      error: error.message
+    });
+    
+    // 處理 401 未授權錯誤 - 清除本地資料但不自動重定向
     if (error.response?.status === 401) {
       if (isClient) {
+        console.log('[Axios] 清除本地認證資料因為 401 錯誤');
         localStorage.removeItem('token');
         localStorage.removeItem('userData');
-        
-        // 只有在非登入頁面才重定向，避免無限迴圈
-        if (!window.location.pathname.includes('/member/login')) {
-          window.location.href = '/member/login';
-        }
+        localStorage.removeItem('isAuthenticated');
       }
     }
     
-    // 其他錯誤，直接拒絕 Promise
+    // 直接拒絕 Promise，讓呼叫者處理錯誤
     return Promise.reject(error);
   }
 );
