@@ -93,7 +93,7 @@ export const AuthProvider = ({ children }) => {
         // 稍等一下讓 cookie 設置完成
         await new Promise(resolve => setTimeout(resolve, 100))
         
-        const authCheckResult = await handleCheckAuth(true)
+        const authCheckResult = await safeHandleCheckAuth(true)
         
         if (authCheckResult.status === 'success') {
           console.log('[useAuth Login] Auth 檢查成功，登入完成')
@@ -150,7 +150,11 @@ export const AuthProvider = ({ children }) => {
           error: null,
         })
         
-        await router.push(loginRoute)
+        try {
+          await router.push(loginRoute)
+        } catch (routerError) {
+          console.error('[useAuth] Router push error:', routerError)
+        }
         return { status: 'success' }
       } else {
         throw new Error(result.message || '登出失敗')
@@ -164,10 +168,13 @@ export const AuthProvider = ({ children }) => {
 
   // 檢查用戶身份狀態
   const handleCheckAuth = async (force = false) => {
+    console.log('[useAuth CheckAuth] handleCheckAuth 被調用，force:', force)
+    
     try {
       // 如果已經驗證且非強制更新，則跳過
       if (auth.isAuth && !force) {
-        return { status: 'success', user: auth.userData }
+        console.log('[useAuth CheckAuth] 已驗證，跳過檢查')
+        return Promise.resolve({ status: 'success', user: auth.userData })
       }
 
       setAuth(prev => ({ ...prev, isLoading: true }))
@@ -212,17 +219,23 @@ export const AuthProvider = ({ children }) => {
           }
         }
         
-        setAuth({
-          isAuth: true,
-          userData,
-          isLoading: false,
-          error: null,
-        })
+        // 安全的狀態更新
+        try {
+          setAuth({
+            isAuth: true,
+            userData,
+            isLoading: false,
+            error: null,
+          })
+        } catch (stateError) {
+          console.error('[useAuth CheckAuth] 狀態更新錯誤:', stateError)
+        }
         
         if (isClient) {
           localStorage.setItem('isAuthenticated', 'true')
         }
         
+        console.log('[useAuth CheckAuth] 返回成功結果')
         return { status: 'success', user: userData }
       } else {
         if (isClient) {
@@ -238,13 +251,18 @@ export const AuthProvider = ({ children }) => {
         
         // 如果是受保護的頁面，重定向到登入頁
         if (protectedRoutes.some(route => router.pathname.startsWith(route))) {
-          router.push(loginRoute)
+          try {
+            router.push(loginRoute)
+          } catch (routerError) {
+            console.error('[useAuth] Router push error:', routerError)
+          }
         }
         
-        return { status: 'error', message: res.data?.message || '驗證失敗' }
+        console.log('[useAuth CheckAuth] 返回失敗結果')
+        return { status: 'error', message: result?.message || '驗證失敗' }
       }
     } catch (error) {
-      console.error('身份驗證檢查失敗:', error)
+      console.error('[useAuth CheckAuth] 捕獲錯誤:', error)
       
       setAuth({
         isAuth: false,
@@ -256,58 +274,93 @@ export const AuthProvider = ({ children }) => {
       if (isClient) {
         localStorage.removeItem('isAuthenticated')
       }
-      
+
+      console.log('[useAuth CheckAuth] 返回錯誤結果')
       return { status: 'error', message: error.message }
+    }
+  }
+
+  // 安全的 handleCheckAuth 包裝器
+  const safeHandleCheckAuth = async (force = false) => {
+    try {
+      const result = await handleCheckAuth(force)
+      return result || { status: 'error', message: '未知錯誤' }
+    } catch (error) {
+      console.error('[useAuth] safeHandleCheckAuth 錯誤:', error)
+      return { status: 'error', message: error.message || '檢查失敗' }
     }
   }
 
   // 初始檢查身份狀態
   useEffect(() => {
     const initialCheck = async () => {
-      // 如果瀏覽器本地存儲顯示已登入，才進行驗證
-      if (isClient && localStorage.getItem('isAuthenticated') === 'true') {
-        await handleCheckAuth(true) // 強制檢查
-      } else {
-        // 如果沒有本地存儲的登入狀態，直接設置為未登入狀態
-        setAuth(prev => ({ ...prev, isLoading: false }))
+      try {
+        // 如果瀏覽器本地存儲顯示已登入，才進行驗證
+        if (isClient && localStorage.getItem('isAuthenticated') === 'true') {
+          console.log('[useAuth] 執行初始身份檢查')
+          const result = await safeHandleCheckAuth(true) // 強制檢查
+          console.log('[useAuth] 初始身份檢查完成:', result)
+        } else {
+          // 如果沒有本地存儲的登入狀態，直接設置為未登入狀態
+          console.log('[useAuth] 無本地登入狀態，設置為未登入')
+          setAuth(prev => ({ ...prev, isLoading: false }))
+        }
+      } catch (error) {
+        console.error('[useAuth] 初始檢查錯誤:', error)
+        setAuth(prev => ({ ...prev, isLoading: false, error: error.message }))
       }
     }
 
     if (router.isReady) {
-      initialCheck()
+      initialCheck().catch((error) => {
+        console.error('[useAuth] Initial check error:', error)
+      })
     }
   }, [router.isReady])
 
   // 檢查訪問受保護的頁面
   useEffect(() => {
     const checkProtectedRoute = async () => {
-      // 如果當前頁面是受保護的且用戶未登入
-      if (protectedRoutes.some(route => router.pathname.startsWith(route))) {
-        if (!auth.isAuth && !auth.isLoading) {
-          // 本地存儲中檢查是否曾經登入過
-          if (isClient && localStorage.getItem('isAuthenticated') === 'true') {
-            // 嘗試驗證身份
-            const result = await handleCheckAuth(true)
-            if (result.status !== 'success') {
-              // 驗證失敗，顯示提示並重定向
-              Swal.fire({
-                icon: 'warning',
-                title: '需要登入',
-                text: '請先登入以訪問此頁面',
-              }).then(() => {
-                router.push(loginRoute)
+      try {
+        // 如果當前頁面是受保護的且用戶未登入
+        if (protectedRoutes.some(route => router.pathname.startsWith(route))) {
+          if (!auth.isAuth && !auth.isLoading) {
+            // 本地存儲中檢查是否曾經登入過
+            if (isClient && localStorage.getItem('isAuthenticated') === 'true') {
+              // 嘗試驗證身份
+              console.log('[useAuth] 保護路由檢查身份驗證')
+              const result = await safeHandleCheckAuth(true)
+              console.log('[useAuth] 保護路由檢查結果:', result)
+              
+              if (result && result.status !== 'success') {
+                // 驗證失敗，顯示提示並重定向
+                Swal.fire({
+                  icon: 'warning',
+                  title: '需要登入',
+                  text: '請先登入以訪問此頁面',
+                }).then(() => {
+                  router.push(loginRoute).catch((routerError) => {
+                    console.error('[useAuth] Router push error in Swal:', routerError)
+                  })
+                })
+              }
+            } else {
+              // 從未登入過，直接重定向
+              router.push(loginRoute).catch((routerError) => {
+                console.error('[useAuth] Router push error:', routerError)
               })
             }
-          } else {
-            // 從未登入過，直接重定向
-            router.push(loginRoute)
           }
         }
+      } catch (error) {
+        console.error('[useAuth] 保護路由檢查錯誤:', error)
       }
     }
 
     if (router.isReady && !auth.isLoading) {
-      checkProtectedRoute()
+      checkProtectedRoute().catch((error) => {
+        console.error('[useAuth] Check protected route error:', error)
+      })
     }
   }, [router.pathname, auth.isAuth, auth.isLoading, router.isReady])
 
@@ -319,7 +372,7 @@ export const AuthProvider = ({ children }) => {
         setAuth,
         login,
         logout,
-        checkAuth: handleCheckAuth,
+        checkAuth: safeHandleCheckAuth,
       }}
     >
       {children}

@@ -49,10 +49,16 @@ export default function LogIn() {
 
   useEffect(() => {
     console.log('Auth state changed:', auth) // 監視 auth 狀態變化
-    if (auth.isAuth) {
-      router.replace('/dashboard')
+    if (auth.isAuth && !auth.isLoading) {
+      console.log('Navigating to dashboard...')
+      // 使用 setTimeout 來避免同步路由問題
+      setTimeout(() => {
+        router.replace('/dashboard').catch((routerError) => {
+          console.error('Router navigation error:', routerError)
+        })
+      }, 0)
     }
-  }, [auth.isAuth, router])
+  }, [auth.isAuth, auth.isLoading, router])
 
   const validateForm = () => {
     const newErrors = {}
