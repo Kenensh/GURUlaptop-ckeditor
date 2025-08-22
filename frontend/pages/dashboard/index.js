@@ -3,18 +3,49 @@ import { Nav, Tab } from 'react-bootstrap'
 import { useAuth } from '@/hooks/use-auth'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
+import dynamic from 'next/dynamic'
 
-// 組件導入
-import UserProfile from '@/components/dashboard/userInfoEdit'
-import MembershipLevels from '@/components/dashboard/membership-levels'
-import EditPassword from '@/components/dashboard/EditPassword'
-import CouponList from '@/components/coupon/coupon-list-components'
-import CouponUser from '@/components/coupon/coupon-user-components'
-import EventManagement from '@/components/event/EventManagement'
-import GroupManagement from '@/components/group/GroupManagement'
-import BuylistPage from '@/components/dashboard/buylist-page'
-import Favorites from '@/components/product/favorites'
-import BlogUserOverview from '@/components/blog/bloguseroverview'
+// 使用動態導入來避免初始加載時的複雜依賴
+const UserProfile = dynamic(() => import('@/components/dashboard/userInfoEdit'), {
+  loading: () => <div>載入中...</div>,
+  ssr: false
+})
+const MembershipLevels = dynamic(() => import('@/components/dashboard/membership-levels'), {
+  loading: () => <div>載入中...</div>,
+  ssr: false
+})
+const EditPassword = dynamic(() => import('@/components/dashboard/EditPassword'), {
+  loading: () => <div>載入中...</div>,
+  ssr: false
+})
+const CouponList = dynamic(() => import('@/components/coupon/coupon-list-components'), {
+  loading: () => <div>載入中...</div>,
+  ssr: false
+})
+const CouponUser = dynamic(() => import('@/components/coupon/coupon-user-components'), {
+  loading: () => <div>載入中...</div>,
+  ssr: false
+})
+const EventManagement = dynamic(() => import('@/components/event/EventManagement'), {
+  loading: () => <div>載入中...</div>,
+  ssr: false
+})
+const GroupManagement = dynamic(() => import('@/components/group/GroupManagement'), {
+  loading: () => <div>載入中...</div>,
+  ssr: false
+})
+const BuylistPage = dynamic(() => import('@/components/dashboard/buylist-page'), {
+  loading: () => <div>載入中...</div>,
+  ssr: false
+})
+const Favorites = dynamic(() => import('@/components/product/favorites'), {
+  loading: () => <div>載入中...</div>,
+  ssr: false
+})
+const BlogUserOverview = dynamic(() => import('@/components/blog/bloguseroverview'), {
+  loading: () => <div>載入中...</div>,
+  ssr: false
+})
 
 export default function DashboardIndex() {
   const [activeKey, setActiveKey] = useState('home')
@@ -23,44 +54,37 @@ export default function DashboardIndex() {
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
+  // Auth Hook - 必須在其他 useEffect 之前調用
+  const { auth } = useAuth()
+
   useEffect(() => {
     const checkAuth = async () => {
+      const requestId = Math.random().toString(36).substring(7)
       try {
-        if (!auth.isAuth) {
+        console.log(`[Dashboard ${requestId}] 檢查認證狀態:`, auth)
+        
+        if (!auth.isAuth && !auth.isLoading) {
+          console.log(`[Dashboard ${requestId}] 未認證，重定向到登入頁面`)
           await router.replace('/member/login')
           return
         }
-        setIsLoading(false)
-      } catch (error) {
-        console.error('Dashboard auth check failed:', error)
-        await router.replace('/member/login')
-      }
-    }
-
-    checkAuth()
-  }, [auth.isAuth, router])
-
-  // Auth Hook
-  const { auth } = useAuth()
-
-  // 用戶檢查
-  useEffect(() => {
-    const checkUserAuth = async () => {
-      const requestId = Math.random().toString(36).substring(7)
-      try {
-        if (!auth?.isAuth) {
-          window.location.href = '/member/login'
-          throw new Error('未授權的存取')
+        
+        if (auth.isAuth) {
+          console.log(`[Dashboard ${requestId}] 認證成功，載入頁面`)
+          setIsLoading(false)
         }
       } catch (error) {
-        console.error(`[${requestId}] 授權檢查錯誤:`, error)
-      } finally {
-        setIsLoading(false)
+        console.error(`[Dashboard ${requestId}] 認證檢查失敗:`, error)
+        // 使用 window.location 作為後備方案
+        window.location.href = '/member/login'
       }
     }
 
-    checkUserAuth()
-  }, [auth.isAuth])
+    // 只有在 auth 不是初始加載狀態時才執行檢查
+    if (!auth.isLoading) {
+      checkAuth()
+    }
+  }, [auth.isAuth, auth.isLoading, router])
 
   // 頁籤配置
   const sideNavConfigs = {
@@ -120,23 +144,43 @@ export default function DashboardIndex() {
 
   // 渲染主要內容
   const renderMainContent = () => {
-    const contentMap = {
-      home: () => renderHome(subActiveKey),
-      'shopping-record': () => <BuylistPage orderStatus={subActiveKey} />,
-      'coupon-record': () =>
-        couponActiveKey === 'available' ? <CouponUser /> : <CouponList />,
-      'blog-record': () => <BlogUserOverview />,
-      'activity-record': () => <EventManagement />,
-      'group-record': () => <GroupManagement />,
-      favorites: () => <Favorites />,
-    }
+    try {
+      const contentMap = {
+        home: () => renderHome(subActiveKey),
+        'shopping-record': () => <BuylistPage orderStatus={subActiveKey} />,
+        'coupon-record': () =>
+          couponActiveKey === 'available' ? <CouponUser /> : <CouponList />,
+        'blog-record': () => <BlogUserOverview />,
+        'activity-record': () => <EventManagement />,
+        'group-record': () => <GroupManagement />,
+        favorites: () => <Favorites />,
+      }
 
-    const render = contentMap[activeKey]
-    return render ? render() : null
+      const render = contentMap[activeKey]
+      if (!render) {
+        console.warn(`[Dashboard] 未知的 activeKey: ${activeKey}`)
+        return <div>頁面載入中...</div>
+      }
+      
+      return render()
+    } catch (error) {
+      console.error('[Dashboard] 渲染內容錯誤:', error)
+      return <div className="text-center p-3">載入失敗，請重新整理頁面</div>
+    }
   }
 
-  if (isLoading) {
-    return <div className="text-center p-5">載入中...</div>
+  // 如果正在載入或認證中，顯示載入畫面
+  if (isLoading || auth.isLoading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+        <div>載入中...</div>
+      </div>
+    )
+  }
+
+  // 如果未認證，不渲染內容（將在 useEffect 中重定向）
+  if (!auth.isAuth) {
+    return null
   }
 
   return (

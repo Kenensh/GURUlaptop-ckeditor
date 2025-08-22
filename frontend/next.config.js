@@ -10,9 +10,10 @@ const nextConfig = {
   compress: true,
   poweredByHeader: false,
   
-  // 快速啟動設置
+  // 禁用可能導致問題的實驗性功能
   experimental: {
-    // 減少構建時間
+    esmExternals: false,
+    forceSwcTransforms: false,
   },
   
   images: {
@@ -37,26 +38,22 @@ const nextConfig = {
   
   // 最小化 webpack 設定
   webpack: (config, { dev, isServer }) => {
-    // 生產環境優化
+    // 簡化生產環境設定，避免 splitChunks 問題
     if (!dev && !isServer) {
+      // 使用預設的 splitChunks 設定
       config.optimization.splitChunks = {
         chunks: 'all',
         cacheGroups: {
-          default: false,
-          vendors: false,
-          vendor: {
-            name: 'vendor',
-            chunks: 'all',
-            test: /node_modules/,
-            priority: 20
-          },
-          common: {
+          default: {
             minChunks: 2,
-            chunks: 'all',
-            name: 'common',
-            priority: 10,
-            reuseExistingChunk: true,
-            enforce: true
+            priority: -20,
+            reuseExistingChunk: true
+          },
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            priority: -10,
+            chunks: 'all'
           }
         }
       }
