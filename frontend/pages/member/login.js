@@ -51,20 +51,7 @@ export default function LogIn() {
     console.log('Auth state changed:', auth) // 監視 auth 狀態變化
     if (auth.isAuth && !auth.isLoading) {
       console.log('Navigating to dashboard...')
-      // 使用更安全的導航方式
-      const navigate = async () => {
-        try {
-          await router.push('/dashboard')
-        } catch (routerError) {
-          console.error('Router navigation error:', routerError)
-          // 如果路由失敗，使用 window.location
-          window.location.href = '/dashboard'
-        }
-      }
-      
-      // 延遲執行以確保狀態更新完成
-      const timeoutId = setTimeout(navigate, 100)
-      return () => clearTimeout(timeoutId)
+      router.replace('/dashboard')
     }
   }, [auth.isAuth, auth.isLoading, router])
 
