@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>清除瀏覽器儲存數據</title>
+    <meta charset="utf-8">
+</head>
+<body>
+    <h1>清除瀏覽器儲存數據</h1>
+    <p>如果您遇到登入問題或黑屏問題，請點擊下面的按鈕清除舊的儲存數據：</p>
+    <button onclick="clearStorage()">清除儲存數據</button>
+    <p id="result"></p>
+    
+    <script>
+        function clearStorage() {
+            try {
+                // 清除所有 localStorage
+                localStorage.clear();
+                
+                // 清除所有 sessionStorage
+                sessionStorage.clear();
+                
+                // 清除 cookies (僅限同域)
+                document.cookie.split(";").forEach(function(c) { 
+                    document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+                });
+                
+                document.getElementById('result').innerHTML = '✅ 儲存數據已清除！請重新整理頁面或重新開啟瀏覽器。';
+                
+                // 3 秒後自動跳轉到首頁
+                setTimeout(function() {
+                    window.location.href = '/';
+                }, 3000);
+                
+            } catch (error) {
+                document.getElementById('result').innerHTML = '❌ 清除失敗：' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>

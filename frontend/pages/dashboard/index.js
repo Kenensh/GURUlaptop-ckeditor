@@ -27,12 +27,12 @@ export default function DashboardIndex() {
   const { auth } = useAuth()
 
   useEffect(() => {
-    if (!auth.isAuth && !auth.isLoading) {
+    if (!auth.isAuth) {
       router.replace('/member/login')
-    } else if (auth.isAuth) {
+    } else {
       setIsLoading(false)
     }
-  }, [auth.isAuth, auth.isLoading, router])
+  }, [auth.isAuth, router])
 
   // 頁籤配置
   const sideNavConfigs = {
@@ -107,7 +107,7 @@ export default function DashboardIndex() {
     return render ? render() : null
   }
 
-  if (isLoading || auth.isLoading) {
+  if (isLoading) {
     return <div className="text-center p-5">載入中...</div>
   }
 

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '@/hooks/use-auth'
+import { logout } from '@/services/user'
 import Swal from 'sweetalert2'
 import { useRouter } from 'next/router'
 import { MessageCircle, ShoppingCart, Menu } from 'lucide-react'
@@ -28,7 +29,7 @@ const fetchApi = async (endpoint, options = {}) => {
 
 export default function Header() {
   // 修改後 - 更安全的寫法
-  const { auth, logout } = useAuth()
+  const { auth, setAuth } = useAuth()
   const isAuth = auth?.isAuth ?? false
   const userData = auth?.userData || null
   const [user_id, setUserId] = useState('')
@@ -70,32 +71,32 @@ export default function Header() {
 
       if (!result.isConfirmed) return
 
+      // 使用 services/user 的 logout 函數
       await logout()
+      
+      // 清除本地狀態
+      setAuth({
+        isAuth: false,
+        userData: { user_id: 0, name: '', email: '' },
+      })
 
-      if (isClient) {
-        await Swal.fire({
-          title: '登出成功',
-          text: '您已成功登出',
-          timer: 1000,
-          icon: 'success',
-          confirmButtonColor: '#805AF5',
-        })
-      }
+      await Swal.fire({
+        title: '登出成功',
+        text: '您已成功登出',
+        timer: 1000,
+        icon: 'success',
+        showConfirmButton: false,
+      })
 
-      setTimeout(() => {
-        router.push('/member/login')
-      }, 1000)
+      // 重定向到首頁
+      router.push('/')
     } catch (error) {
       console.error('登出失敗:', error)
-      if (isClient) {
-        Swal.fire({
-          title: '登出失敗',
-          text: '請稍後再試',
-          timer: 1000,
-          icon: 'error',
-          confirmButtonColor: '#805AF5',
-        })
-      }
+      Swal.fire({
+        title: '登出失敗',
+        text: '登出時發生錯誤，請重試',
+        icon: 'error',
+      })
     }
   }
 

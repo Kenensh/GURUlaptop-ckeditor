@@ -3,7 +3,7 @@ import styles from '@/styles/pages/_login.module.scss'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useAuth } from '@/hooks/use-auth'
+import { useAuth, initUserData } from '@/hooks/use-auth'
 import { MdOutlineEmail } from 'react-icons/md'
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 import { useLoader } from '@/hooks/use-loader'
@@ -11,7 +11,14 @@ import Head from 'next/head'
 import Header from '@/components/layout/default-layout/header'
 import MyFooter from '@/components/layout/default-layout/my-footer'
 import GlowingText from '@/components/dashboard/glowing-text/glowing-text'
-import api from '@/services/api'
+import { login, getUserById } from '@/services/user'
+
+// 解析JWT token的函數
+const parseJwt = (token) => {
+  const base64Payload = token.split('.')[1]
+  const payload = Buffer.from(base64Payload, 'base64')
+  return JSON.parse(payload.toString())
+}
 
 export default function LogIn() {
   const [formData, setFormData] = useState({
@@ -23,37 +30,14 @@ export default function LogIn() {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const router = useRouter()
-  const { login, auth, setAuth } = useAuth()
+  const { auth, setAuth } = useAuth()
   const { showLoader, hideLoader } = useLoader()
 
-  // 定義初始用戶數據結構
-  const initUserData = {
-    user_id: 0,
-    email: '',
-    name: '',
-    phone: '',
-    birthdate: null,
-    gender: '',
-    level: 0,
-    valid: true,
-    created_at: '',
-    country: '',
-    city: '',
-    district: '',
-    road_name: '',
-    detailed_address: '',
-    image_path: null,
-    google_uid: null,
-    remarks: null
-  }
-
   useEffect(() => {
-    console.log('Auth state changed:', auth) // 監視 auth 狀態變化
-    if (auth.isAuth && !auth.isLoading) {
-      console.log('Navigating to dashboard...')
+    if (auth.isAuth) {
       router.replace('/dashboard')
     }
-  }, [auth.isAuth, auth.isLoading, router])
+  }, [auth.isAuth, router])
 
   const validateForm = () => {
     const newErrors = {}
@@ -83,22 +67,39 @@ export default function LogIn() {
     showLoader()
     
     try {
-      console.log('[Login Page] 開始登入流程')
+      // 使用原本的 services/user 登入方法
+      const res = await login({ username: formData.email, password: formData.password })
       
-      // 使用 useAuth hook 的 login 函數，而不是 API 層
-      const result = await login(formData)
-      
-      console.log('[Login Page] 登入結果:', result)
-      
-      if (result?.status === 'success') {
-        console.log('[Login Page] 登入成功，等待導航到 dashboard')
-        // useAuth hook 會自動處理狀態更新和導航
-        // 不需要手動設置 auth 狀態或導航
+      if (res.data.status === 'success') {
+        // 從JWT存取令牌中解析出會員資料
+        const jwtUser = parseJwt(res.data.data.accessToken)
+
+        const res1 = await getUserById(jwtUser.id)
+
+        if (res1.data.status === 'success') {
+          // 只需要initUserData中的定義屬性值
+          const dbUser = res1.data.data.user
+          const userData = { ...initUserData }
+
+          for (const key in userData) {
+            if (Object.hasOwn(dbUser, key)) {
+              userData[key] = dbUser[key]
+            }
+          }
+
+          // 設定到全域狀態中
+          setAuth({
+            isAuth: true,
+            userData,
+          })
+        } else {
+          throw new Error('登入後無法得到會員資料')
+        }
       } else {
-        throw new Error(result?.message || '登入失敗')
+        throw new Error(res.data.message || '登入失敗')
       }
     } catch (error) {
-      console.error('[Login Page] 登入錯誤:', error)
+      console.error('登入錯誤:', error)
       setErrors({ general: error.message || '登入失敗' })
     } finally {
       setIsSubmitting(false)

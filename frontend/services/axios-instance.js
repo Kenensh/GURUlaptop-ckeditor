@@ -60,9 +60,9 @@ axiosInstance.interceptors.response.use(
     if (error.response?.status === 401) {
       if (isClient) {
         console.log('[Axios] 清除本地認證資料因為 401 錯誤');
+        // 清除本地存儲
         localStorage.removeItem('token');
         localStorage.removeItem('userData');
-        localStorage.removeItem('isAuthenticated');
       }
     }
     
