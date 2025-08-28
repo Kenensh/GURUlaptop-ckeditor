@@ -68,7 +68,7 @@ export default function LogIn() {
     
     try {
       // 使用原本的 services/user 登入方法
-      const res = await login({ username: formData.email, password: formData.password })
+      const res = await login({ email: formData.email, password: formData.password })
       
       if (res.data.status === 'success') {
         // 從JWT存取令牌中解析出會員資料
